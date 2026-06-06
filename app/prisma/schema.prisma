@@ -1,0 +1,145 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                  String        @id @default(cuid())
+  email               String        @unique
+  passwordHash        String
+  name                String
+  phone               String?
+  emailVerified       Boolean       @default(false)
+  failedLoginAttempts Int           @default(0)
+  lockedUntil         DateTime?
+  kycLevel            Int           @default(0)
+  kycStatus           KycStatus     @default(PENDING)
+  
+  // Linked Bank details for KYC Level 2+ and Withdrawals
+  bankAccountNumber   String?
+  bankCode            String?
+  bankName            String?
+  bankAccountName     String?
+
+  campaigns           Campaign[]
+  wallet              Wallet?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+}
+
+model Campaign {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  title         String
+  description   String
+  type          CampaignType
+  coverPhoto    String?
+  goalAmount    Decimal?
+  deadline      DateTime?
+  status        CampaignStatus @default(ACTIVE)
+  allowOverflow Boolean       @default(false)
+  ownerId       String
+  owner         User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  items         WishlistItem[]
+  contributions Contribution[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([ownerId])
+  @@index([status])
+}
+
+model WishlistItem {
+  id            String        @id @default(cuid())
+  campaignId    String
+  campaign      Campaign      @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  name          String
+  description   String?
+  targetAmount  Decimal
+  fundedAmount  Decimal       @default(0)
+  isFulfilled   Boolean       @default(false)
+  contributions Contribution[]
+
+  @@index([campaignId])
+}
+
+model Contribution {
+  id              String        @id @default(cuid())
+  campaignId      String
+  campaign        Campaign      @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  wishlistItemId  String?
+  wishlistItem    WishlistItem? @relation(fields: [wishlistItemId], references: [id], onDelete: SetNull)
+  amount          Decimal
+  isAnonymous     Boolean       @default(false)
+  displayName     String?
+  message         String?
+  status          PaymentStatus @default(PENDING)
+  flwTxRef        String        @unique
+  flwTxId         String?
+  createdAt       DateTime      @default(now())
+
+  @@index([campaignId])
+  @@index([status])
+  @@index([flwTxRef])
+}
+
+model Wallet {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance         Decimal       @default(0)
+  transactions    WalletTransaction[]
+}
+
+model WalletTransaction {
+  id          String              @id @default(cuid())
+  walletId    String
+  wallet      Wallet              @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  type        TransactionType
+  amount      Decimal
+  description String
+  status      TransactionStatus   @default(COMPLETED)
+  createdAt   DateTime            @default(now())
+
+  @@index([walletId])
+  @@index([createdAt])
+}
+
+enum CampaignType {
+  WISHLIST
+  GOAL
+}
+
+enum CampaignStatus {
+  ACTIVE
+  GOAL_REACHED
+  EXPIRED
+  CLOSED
+}
+
+enum KycStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}

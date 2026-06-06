@@ -1,0 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500&family=DM+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+/* ── Altar Brand Tokens ─────────────────────────────────────────────────────── */
+@theme inline {
+  /* Colours */
+  --color-primary:        #3D1F6B; /* deepViolet — primary actions, buttons, headings */
+  --color-primary-hover:  #6B3FA0; /* midViolet  — hover state */
+  --color-accent:         #C084D4; /* softLilac  — decorative accents */
+  --color-ghost:          #F5EEF9; /* blushMist  — ghost button bg, tag fills */
+  --color-petal:          #E8D5F5; /* petal       — soft card backgrounds */
+  --color-border-soft:    #D4A8E3; /* lavender    — borders on cards and inputs */
+  --color-success:        #1D9E75; /* trustGreen  — semantic success only */
+  --color-success-light:  #5DCAA5; /* mint        — secondary success accents */
+  --color-page:           #F9F7FD; /* offWhite    — page background */
+  --color-body:           #2C2C2A; /* charcoal    — all body text */
+  --color-error:          #D93025; /* error       — error states only */
+  --color-surface:        #FFFFFF; /* card, modal, elevated surfaces */
+  --color-surface-muted:  #F5F5F5; /* muted surfaces (hover, disabled bg) */
+  --color-muted:          #787878; /* secondary text, placeholder */
+  --color-muted-strong:   #666666; /* stronger muted text */
+  --color-border-default: #E5E5E5; /* default borders */
+
+  /* Fonts */
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body:    "DM Sans", sans-serif;
+  --font-mono:    "IBM Plex Mono", monospace;
+
+  /* Custom animations */
+  --animate-slide-in: slide-in 0.2s ease-out forwards;
+  --animate-spin:     spin 1s linear infinite;
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────────────────── */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Base Styles ─────────────────────────────────────────────────────────────── */
+html {
+  background-color: var(--color-page);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-page);
+}
+
+/* ── Focus ring reset ────────────────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

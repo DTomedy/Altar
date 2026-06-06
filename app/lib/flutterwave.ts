@@ -1,0 +1,80 @@
+import 'server-only';
+
+/**
+ * Flutterwave Transfer API wrapper.
+ */
+export async function initiateTransfer(params: {
+  accountNumber: string;
+  bankCode: string;
+  amount: number;
+  narration: string;
+  reference: string;
+}) {
+  const response = await fetch('https://api.flutterwave.com/v3/transfers', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      account_bank: params.bankCode,
+      account_number: params.accountNumber,
+      amount: params.amount,
+      currency: 'NGN',
+      narration: params.narration,
+      reference: params.reference,
+      debit_currency: 'NGN',
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(`Transfer failed: ${error.message || response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Resolves a bank account number to verify the account name.
+ */
+export async function resolveBankAccount(accountNumber: string, bankCode: string) {
+  const response = await fetch('https://api.flutterwave.com/v3/accounts/resolve', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      account_number: accountNumber,
+      account_bank: bankCode,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(`Account resolution failed: ${error.message || response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetches the list of Nigerian banks supported by Flutterwave.
+ */
+export async function getNigerianBanks() {
+  const response = await fetch('https://api.flutterwave.com/v3/banks/NG', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(`Failed to fetch bank list: ${error.message || response.statusText}`);
+  }
+
+  return response.json();
+}

@@ -49,7 +49,9 @@ export default function RootLayout({
     >
       <body className="bg-page text-body antialiased min-h-screen flex flex-col font-body">
         <ToastProvider>
-          {children}
+          <div className="flex flex-col flex-1 min-h-screen">
+            {children}
+          </div>
         </ToastProvider>
       </body>
     </html>

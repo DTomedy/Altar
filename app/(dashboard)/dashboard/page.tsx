@@ -1,7 +1,7 @@
 import 'server-only';
 
 import Link from 'next/link';
-import { Gift, Plus } from 'lucide-react';
+import { Gift, Plus, TrendingUp, Activity, Layers } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
@@ -101,16 +101,31 @@ export default async function DashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-surface border border-default rounded-2xl p-5">
-          <p className="font-body text-xs text-muted font-medium uppercase tracking-wider mb-1">Total raised</p>
-          <p className="font-mono font-medium text-2xl text-primary">{formatNaira(totalRaised)}</p>
+        <div className="bg-surface border border-border-soft rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-full border border-border-soft flex items-center justify-center">
+              <TrendingUp className="w-4 h-4 text-primary" />
+            </div>
+            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Total raised</p>
+          </div>
+          <p className="font-display font-medium text-2xl text-primary">{formatNaira(totalRaised)}</p>
         </div>
-        <div className="bg-surface border border-default rounded-2xl p-5">
-          <p className="font-body text-xs text-muted font-medium uppercase tracking-wider mb-1">Active campaigns</p>
+        <div className="bg-surface border border-border-soft rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-full border border-border-soft flex items-center justify-center">
+              <Activity className="w-4 h-4 text-primary" />
+            </div>
+            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Active campaigns</p>
+          </div>
           <p className="font-display font-medium text-2xl text-body">{activeCount}</p>
         </div>
-        <div className="bg-surface border border-default rounded-2xl p-5">
-          <p className="font-body text-xs text-muted font-medium uppercase tracking-wider mb-1">Total campaigns</p>
+        <div className="bg-surface border border-border-soft rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-full border border-border-soft flex items-center justify-center">
+              <Layers className="w-4 h-4 text-primary" />
+            </div>
+            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Total campaigns</p>
+          </div>
           <p className="font-display font-medium text-2xl text-body">{totalCampaigns}</p>
         </div>
       </div>
@@ -161,7 +176,7 @@ export default async function DashboardPage() {
                     </span>
                   </div>
                   <p className="font-body text-xs text-body/50 line-clamp-2 mb-3">{campaign.description}</p>
-                  <p className="font-mono font-medium text-lg text-primary">{formatNaira(campaign.totalRaised)}</p>
+                  <p className="font-display font-medium text-lg text-primary">{formatNaira(campaign.totalRaised)}</p>
                 </div>
               </Link>
             ))}

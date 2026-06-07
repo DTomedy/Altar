@@ -20,6 +20,8 @@
   --color-muted:          #787878; /* secondary text, placeholder */
   --color-muted-strong:   #666666; /* stronger muted text */
   --color-border-default: #E5E5E5; /* default borders */
+  --color-neutral-0:      #000000; /* neutral 0 — pure black */
+  --color-neutral-10:     #1B1D1D; /* neutral 10 — onBackground */
 
   /* Fonts */
   --font-display: "Plus Jakarta Sans", sans-serif;

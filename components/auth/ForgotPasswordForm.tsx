@@ -49,7 +49,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
         </p>
         <button
           onClick={onBackToLogin}
-          className="text-primary font-body font-medium underline underline-offset-2 hover:text-primary-hover transition-colors"
+          className="text-primary font-body font-medium underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
         >
           Back to sign in
         </button>
@@ -88,7 +88,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
         Remember your password?{' '}
         <button
           onClick={onBackToLogin}
-          className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover transition-colors"
+          className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
         >
           Sign in
         </button>

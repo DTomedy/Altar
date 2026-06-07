@@ -34,20 +34,14 @@ export function AuthPage() {
             </div>
           )}
 
-          <LoginForm />
+          <LoginForm onForgotPassword={() => setMode('forgot-password')} />
 
           <div className="mt-6 flex flex-col items-center gap-2">
-            <button
-              onClick={() => setMode('forgot-password')}
-              className="font-body text-sm text-primary underline underline-offset-2 hover:text-primary-hover transition-colors"
-            >
-              Forgot your password?
-            </button>
             <p className="font-body text-sm text-body/60">
               Don&apos;t have an account?{' '}
               <button
                 onClick={() => setMode('register')}
-                className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover transition-colors"
+                className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
               >
                 Create one
               </button>
@@ -63,7 +57,7 @@ export function AuthPage() {
             Already have an account?{' '}
             <button
               onClick={() => setMode('login')}
-              className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover transition-colors"
+              className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
             >
               Sign in
             </button>

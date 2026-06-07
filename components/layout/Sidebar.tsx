@@ -18,8 +18,8 @@ export function Sidebar() {
   return (
     <aside className="w-64 min-h-screen bg-surface border-r border-border-soft flex flex-col shrink-0">
       <div className="p-6">
-        <Link href="/" className="font-display font-medium text-2xl text-primary">
-          Altar
+        <Link href="/">
+          <img src="/logo/Altar Logo.svg" alt="Altar" className="h-7 w-auto" />
         </Link>
       </div>
 

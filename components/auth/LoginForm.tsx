@@ -4,7 +4,11 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 
-export function LoginForm() {
+interface LoginFormProps {
+  onForgotPassword: () => void;
+}
+
+export function LoginForm({ onForgotPassword }: LoginFormProps) {
   const router = useRouter();
 
   const [email, setEmail] = useState('');
@@ -68,6 +72,15 @@ export function LoginForm() {
           required
           autoComplete="current-password"
         />
+        <div className="-mt-2">
+          <button
+            type="button"
+            onClick={onForgotPassword}
+            className="font-body text-sm text-primary underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
+          >
+            Forgot your password?
+          </button>
+        </div>
         <Button type="submit" isLoading={loading} className="w-full">
           Sign in
         </Button>

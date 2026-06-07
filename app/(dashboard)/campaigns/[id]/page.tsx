@@ -93,7 +93,7 @@ export default async function CampaignDetailPage({
       <div className="bg-surface border border-default rounded-2xl p-5 mb-8">
         <div className="flex items-end justify-between mb-3">
           <div>
-            <p className="font-mono font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
+            <p className="font-display font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
             {goal && (
               <p className="font-body text-sm text-body/60 mt-1">
                 raised of {formatNaira(goal)} goal
@@ -136,7 +136,7 @@ export default async function CampaignDetailPage({
                     {item.description && (
                       <p className="font-body text-xs text-body/60 mb-2">{item.description}</p>
                     )}
-                    <p className="font-mono font-medium text-sm text-primary">
+<p className="font-display font-medium text-sm text-primary">
                       {formatNaira(item.fundedAmount)} / {formatNaira(item.targetAmount)}
                     </p>
                   </div>

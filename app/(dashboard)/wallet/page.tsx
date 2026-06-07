@@ -54,7 +54,7 @@ export default async function WalletPage() {
       {/* Balance card */}
       <div className="bg-primary text-white rounded-2xl p-6 mb-8">
         <p className="font-body text-sm text-white/70 mb-1">Available balance</p>
-        <p className="font-mono font-medium text-3xl mb-4">
+        <p className="font-display font-medium text-3xl mb-4">
           {wallet ? formatNaira(wallet.balance) : '₦0.00'}
         </p>
         {canWithdraw ? (
@@ -105,7 +105,7 @@ export default async function WalletPage() {
                   </div>
                 </div>
                 <p
-                  className={`font-mono font-medium text-sm ${
+                  className={`font-display font-medium text-sm ${
                     tx.type === 'CREDIT' ? 'text-success' : 'text-error'
                   }`}
                 >

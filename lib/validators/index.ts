@@ -33,14 +33,6 @@ export const CreateCampaignSchema = z.object({
 }, {
   message: 'Goal amount and deadline are required for goal-based fundraisers',
   path: ['goalAmount'],
-}).refine(data => {
-  if (data.type === 'WISHLIST') {
-    return data.items !== undefined && data.items !== null && data.items.length >= 1;
-  }
-  return true;
-}, {
-  message: 'At least one wishlist item is required for wishlist campaigns',
-  path: ['items'],
 });
 
 export const CreateContributionSchema = z.object({

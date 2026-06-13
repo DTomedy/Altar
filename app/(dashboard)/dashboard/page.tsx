@@ -7,6 +7,8 @@ import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { Button } from '@/components/ui';
 import { CampaignModal } from '@/components/campaign/CampaignModal';
+import { CampaignActions } from '@/components/campaign/CampaignActions';
+import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
 import { formatNaira } from '@/lib/formatters';
 
 interface CampaignSummary {
@@ -14,7 +16,11 @@ interface CampaignSummary {
   title: string;
   description: string;
   status: string;
+  type: string;
   totalRaised: number;
+  donorCount: number;
+  goalAmount: number | null;
+  daysLeft: number | null;
   slug: string;
 }
 
@@ -32,6 +38,7 @@ async function getUserData() {
       name: true,
       email: true,
       kycLevel: true,
+      onboardingViewed: true,
     },
   });
 
@@ -42,15 +49,18 @@ async function getUserData() {
   });
 
   const campaignIds = campaigns.map((c) => c.id);
-  const contributions = await prisma.contribution.groupBy({
+  const contributionsAgg = await prisma.contribution.groupBy({
     by: ['campaignId'],
     where: { campaignId: { in: campaignIds }, status: 'SUCCESS' },
     _sum: { amount: true },
+    _count: { id: true },
   });
 
   const raisedMap = new Map<string, number>();
-  for (const row of contributions) {
+  const donorCountMap = new Map<string, number>();
+  for (const row of contributionsAgg) {
     raisedMap.set(row.campaignId, Number(row._sum.amount) || 0);
+    donorCountMap.set(row.campaignId, row._count.id);
   }
 
   const campaignSummaries: CampaignSummary[] = campaigns.map((c) => ({
@@ -58,7 +68,13 @@ async function getUserData() {
     title: c.title,
     description: c.description,
     status: c.status,
+    type: c.type,
     totalRaised: raisedMap.get(c.id) || 0,
+    donorCount: donorCountMap.get(c.id) || 0,
+    goalAmount: c.goalAmount ? Number(c.goalAmount) : null,
+    daysLeft: c.deadline
+      ? Math.ceil((new Date(c.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+      : null,
     slug: c.slug,
   }));
 
@@ -152,39 +168,73 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {campaigns.map((campaign) => (
-              <Link key={campaign.id} href={`/campaigns/${campaign.id}`}>
-                <div className="bg-surface border border-default rounded-2xl p-5 hover:border-primary/30 transition-colors">
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="font-display font-medium text-base text-body">{campaign.title}</h3>
-                    <span
-                      className={`inline-flex items-center font-body font-medium text-xs px-3 py-1 rounded-full shrink-0 ${
-                        campaign.status === 'ACTIVE'
-                          ? 'bg-ghost text-primary'
-                          : campaign.status === 'GOAL_REACHED'
-                            ? 'bg-success/10 text-success'
-                            : 'bg-surface-muted text-muted'
-                      }`}
-                    >
-                      {campaign.status === 'ACTIVE'
-                        ? 'Active'
-                        : campaign.status === 'GOAL_REACHED'
-                          ? 'Goal reached'
-                          : campaign.status === 'EXPIRED'
-                            ? 'Expired'
-                            : 'Closed'}
-                    </span>
+            {campaigns.map((campaign) => {
+              const percentage = campaign.goalAmount && campaign.goalAmount > 0
+                ? Math.min(Math.round((campaign.totalRaised / campaign.goalAmount) * 100), 100)
+                : 0;
+
+              return (
+                <Link key={campaign.id} href={`/campaigns/${campaign.id}`}>
+                  <div className="bg-surface border border-default rounded-2xl p-5 hover:border-primary/30 transition-colors h-full flex flex-col">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-display font-medium text-base text-body line-clamp-1">{campaign.title}</h3>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span
+                          className={`inline-flex items-center font-body font-medium text-xs px-3 py-1 rounded-full ${
+                            campaign.status === 'ACTIVE'
+                              ? 'bg-ghost text-primary'
+                              : campaign.status === 'GOAL_REACHED'
+                                ? 'bg-success/10 text-success'
+                                : 'bg-surface-muted text-muted'
+                          }`}
+                        >
+                          {campaign.status === 'ACTIVE'
+                            ? 'In progress'
+                            : campaign.status === 'GOAL_REACHED'
+                              ? 'Goal reached'
+                              : campaign.status === 'CLOSED'
+                                ? 'Completed'
+                                : 'Expired'}
+                        </span>
+                        <CampaignActions campaignId={campaign.id} campaignStatus={campaign.status} />
+                      </div>
+                    </div>
+
+                    <p className="font-body text-xs text-body/50 line-clamp-2 mb-3 flex-1">{campaign.description}</p>
+
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                      <span className="font-mono font-medium text-base text-primary">{formatNaira(campaign.totalRaised)}</span>
+                      <span className="font-body text-xs text-muted">
+                        {campaign.donorCount} donor{campaign.donorCount !== 1 ? 's' : ''}
+                      </span>
+                      {campaign.daysLeft !== null && campaign.daysLeft > 0 && (
+                        <span className="font-body text-xs text-muted">{campaign.daysLeft} day{campaign.daysLeft !== 1 ? 's' : ''} left</span>
+                      )}
+                      {campaign.daysLeft !== null && campaign.daysLeft <= 0 && (
+                        <span className="font-body text-xs text-muted">Ended</span>
+                      )}
+                    </div>
+
+                    {campaign.type === 'GOAL' && campaign.goalAmount && campaign.goalAmount > 0 && (
+                      <div>
+                        <div className="w-full bg-surface-muted rounded-full h-1.5">
+                          <div
+                            className="bg-primary rounded-full h-1.5 transition-all duration-300"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <p className="font-body text-xs text-body/50 line-clamp-2 mb-3">{campaign.description}</p>
-                  <p className="font-display font-medium text-lg text-primary">{formatNaira(campaign.totalRaised)}</p>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>
 
       <CampaignModal />
+      {user && !user.onboardingViewed && <OnboardingTour />}
     </div>
   );
 }

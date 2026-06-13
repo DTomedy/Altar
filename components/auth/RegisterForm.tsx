@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Circle, CheckCircle2 } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { cn } from '@/lib/utils';
@@ -48,8 +48,6 @@ function validatePassword(value: string): string | undefined {
 }
 
 export function RegisterForm() {
-  const router = useRouter();
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -59,6 +57,7 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const validateField = useCallback((field: string, value: string) => {
     switch (field) {
@@ -88,9 +87,10 @@ export function RegisterForm() {
       name.trim().length >= 2 &&
       emailRegex.test(email) &&
       /^\+234\d{10}$/.test(phone.replace(/\s/g, '')) &&
-      passwordAllMet
+      passwordAllMet &&
+      termsAccepted
     );
-  }, [name, email, phone, passwordAllMet]);
+  }, [name, email, phone, passwordAllMet, termsAccepted]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,7 +119,7 @@ export function RegisterForm() {
     } finally {
       setLoading(false);
     }
-  }, [name, email, phone, password, router, isFormValid]);
+  }, [name, email, phone, password, isFormValid]);
 
   return (
     <>
@@ -221,6 +221,26 @@ export function RegisterForm() {
             </div>
           )}
         </div>
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-border-soft text-primary focus:ring-2 focus:ring-primary/20 focus:outline-none shrink-0"
+          />
+          <span className="font-body text-xs text-body/70 leading-relaxed">
+            I have read, understood and I agree to Altar{' '}
+            <Link href="/terms" className="text-primary underline underline-offset-2 hover:text-primary-hover transition-colors">
+              Terms and conditions
+            </Link>
+            , and{' '}
+            <Link href="/privacy" className="text-primary underline underline-offset-2 hover:text-primary-hover transition-colors">
+              Privacy policy
+            </Link>
+            .
+          </span>
+        </label>
+
         <Button
           type="submit"
           isLoading={loading}

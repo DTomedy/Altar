@@ -47,7 +47,7 @@ altar/
 │   └── migrations/
 ├── types/                        # Shared TypeScript types and interfaces
 ├── hooks/                        # Custom React hooks
-├── middleware.ts                 # Route protection for dashboard routes
+├── proxy.ts                      # Route protection for dashboard routes
 └── .env.local                    # Never commit — all secrets live here
 ```
 
@@ -162,18 +162,18 @@ enum TransactionStatus { PENDING COMPLETED FAILED }
 
 ### Campaign Types
 
-| Type | `goalAmount` | `deadline` | Wishlist items | Behavior |
-|---|---|---|---|---|
-| `WISHLIST` | Optional | Optional | Required (≥ 1) | Contributions can be allocated to specific items. No deadline required. |
-| `GOAL` | Required | Required | None | Contributions go to the general goal. Campaign expires at deadline. |
+| Type       | `goalAmount` | `deadline` | Wishlist items | Behavior                                                                |
+| ---------- | ------------ | ---------- | -------------- | ----------------------------------------------------------------------- |
+| `WISHLIST` | Optional     | Optional   | Required (≥ 1) | Contributions can be allocated to specific items. No deadline required. |
+| `GOAL`     | Required     | Required   | None           | Contributions go to the general goal. Campaign expires at deadline.     |
 
 ### KYC Levels
 
-| Level | Meaning | Requirements | Grants access to |
-|---|---|---|---|
-| 0 | Unverified (default) | Email + password | Browsing, viewing campaigns |
-| 1 | Identity verified | Government ID upload matching name | Creating campaigns, wallet view |
-| 2 | Bank linked | Bank account verified with BVN match | Withdrawal |
+| Level | Meaning              | Requirements                         | Grants access to                |
+| ----- | -------------------- | ------------------------------------ | ------------------------------- |
+| 0     | Unverified (default) | Email + password                     | Browsing, viewing campaigns     |
+| 1     | Identity verified    | Government ID upload matching name   | Creating campaigns, wallet view |
+| 2     | Bank linked          | Bank account verified with BVN match | Withdrawal                      |
 
 Wallet creation requires KYC Level ≥ 1. Withdrawal requires KYC Level ≥ 2.
 
@@ -181,7 +181,7 @@ Wallet creation requires KYC Level ≥ 1. Withdrawal requires KYC Level ≥ 2.
 
 ## Routing Rules
 
-- All dashboard routes are protected via `middleware.ts` — redirect to `/login` if no valid JWT
+- All dashboard routes are protected via `proxy.ts` — redirect to `/login` if no valid JWT
 - Campaign pages at `/c/[slug]` use **SSR (dynamic rendering)** — not static generation. This ensures Open Graph meta tags, wallet balance, and campaign status are always current when shared via WhatsApp. Auth is not required.
 - API routes under `/api/webhooks/` are public but verified via Flutterwave signature
 - API routes under `/api/wallet/` and `/api/kyc/` require auth middleware
@@ -214,15 +214,15 @@ All API responses follow a consistent envelope:
 
 ### Error Codes
 
-| Code | HTTP Status | Meaning |
-|---|---|---|
-| `UNAUTHORIZED` | 401 | Missing or invalid JWT |
-| `FORBIDDEN` | 403 | Valid JWT but insufficient KYC level |
-| `NOT_FOUND` | 404 | Resource does not exist |
-| `VALIDATION_ERROR` | 422 | Input failed Zod validation |
-| `CONFLICT` | 409 | Duplicate or conflicting state |
-| `RATE_LIMITED` | 429 | Too many requests |
-| `INTERNAL_ERROR` | 500 | Unexpected server error |
+| Code               | HTTP Status | Meaning                              |
+| ------------------ | ----------- | ------------------------------------ |
+| `UNAUTHORIZED`     | 401         | Missing or invalid JWT               |
+| `FORBIDDEN`        | 403         | Valid JWT but insufficient KYC level |
+| `NOT_FOUND`        | 404         | Resource does not exist              |
+| `VALIDATION_ERROR` | 422         | Input failed Zod validation          |
+| `CONFLICT`         | 409         | Duplicate or conflicting state       |
+| `RATE_LIMITED`     | 429         | Too many requests                    |
+| `INTERNAL_ERROR`   | 500         | Unexpected server error              |
 
 ---
 
@@ -242,11 +242,11 @@ All API responses follow a consistent envelope:
 
 ### Rate Limiting
 
-| Endpoint group | Limit | Scope |
-|---|---|---|
-| `POST /api/auth/*` | 10 req/min | Per IP |
-| `POST /api/contributions` | 30 req/min | Per IP |
-| All other API routes | 100 req/min | Per IP |
+| Endpoint group            | Limit       | Scope  |
+| ------------------------- | ----------- | ------ |
+| `POST /api/auth/*`        | 10 req/min  | Per IP |
+| `POST /api/contributions` | 30 req/min  | Per IP |
+| All other API routes      | 100 req/min | Per IP |
 
 Use a sliding window approach (Vercel KV in production, in-memory with `lru-cache` in development).
 
@@ -265,10 +265,10 @@ Use a sliding window approach (Vercel KV in production, in-memory with `lru-cach
 
 All uploads go through Cloudinary via the server-side `lib/cloudinary.ts` wrapper — never from the client directly.
 
-| Use | Max size | Accepted formats | Recommended dimensions |
-|---|---|---|---|
-| Campaign cover photo | 5 MB | JPEG, PNG, WebP | 1200×630 (OG ratio) |
-| KYC documents | 10 MB | JPEG, PNG, PDF | — |
+| Use                  | Max size | Accepted formats | Recommended dimensions |
+| -------------------- | -------- | ---------------- | ---------------------- |
+| Campaign cover photo | 5 MB     | JPEG, PNG, WebP  | 1200×630 (OG ratio)    |
+| KYC documents        | 10 MB    | JPEG, PNG, PDF   | —                      |
 
 ---
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -45,10 +46,13 @@ export function Avatar({
 
   if (imageUrl) {
     return (
-      <img
+      <Image
         src={imageUrl}
         alt={name || 'Avatar'}
+        width={40}
+        height={40}
         className={cn('rounded-full object-cover shrink-0', sizeClasses[size], className)}
+        unoptimized
       />
     );
   }

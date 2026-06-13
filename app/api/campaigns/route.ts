@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { CreateCampaignSchema } from '@/lib/validators';
 import { generateUniqueSlug } from '@/lib/slugs';
+import { uploadPublicImage } from '@/lib/cloudinary';
 import { rateLimit } from '@/lib/rate-limit';
 
 function getUserId(req: NextRequest): string | null {
@@ -34,6 +35,9 @@ export async function POST(req: NextRequest) {
 
     const { title, description, type, goalAmount, deadline, coverPhoto, allowOverflow } = parsed.data;
 
+    // Upload cover photo to Cloudinary
+    const coverPhotoUrl = await uploadPublicImage(coverPhoto, 'campaigns');
+
     const slug = await generateUniqueSlug(title, async (s: string) => {
       const existing = await prisma.campaign.findUnique({ where: { slug: s } });
       return existing !== null;
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
         title,
         description,
         type,
-        coverPhoto: coverPhoto ?? null,
+        coverPhoto: coverPhotoUrl,
         goalAmount: goalAmount ?? null,
         deadline: deadline ? new Date(deadline) : null,
         allowOverflow,

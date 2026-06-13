@@ -1,23 +1,59 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Button, Input, Select } from '@/components/ui';
+import { CampaignCreatedDialog } from './CampaignCreatedDialog';
 
 export function CampaignForm() {
-  const router = useRouter();
-
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<'WISHLIST' | 'GOAL'>('WISHLIST');
   const [goalAmount, setGoalAmount] = useState('');
   const [deadline, setDeadline] = useState('');
+  const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
+  const [coverPhotoError, setCoverPhotoError] = useState<string | null>(null);
+  const [createdCampaign, setCreatedCampaign] = useState<{ id: string; slug: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const handleCoverPhotoChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      setCoverPhotoError('Image must be less than 2MB');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setCoverPhotoError('Only image files are allowed');
+      return;
+    }
+
+    setCoverPhotoError(null);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setCoverPhoto(event.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const handleRemoveCoverPhoto = useCallback(() => {
+    setCoverPhoto(null);
+    setCoverPhotoError(null);
+  }, []);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!coverPhoto) {
+      setCoverPhotoError('Cover image is required');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -28,6 +64,7 @@ export function CampaignForm() {
           title,
           description,
           type,
+          coverPhoto,
           goalAmount: goalAmount ? Number(goalAmount) : undefined,
           deadline: deadline || undefined,
         }),
@@ -40,13 +77,13 @@ export function CampaignForm() {
         return;
       }
 
-      router.push(`/campaigns/${data.id}`);
+      setCreatedCampaign({ id: data.id, slug: data.slug });
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
-  }, [title, description, type, goalAmount, deadline, router]);
+  }, [title, description, type, coverPhoto, goalAmount, deadline]);
 
   return (
     <>
@@ -66,6 +103,48 @@ export function CampaignForm() {
           onChange={(e) => setTitle(e.target.value)}
           required
         />
+
+        {/* Cover image */}
+        <div className="w-full">
+          <label className="block font-body text-sm text-body/80 mb-1.5 font-medium">
+            Cover image
+          </label>
+          {coverPhoto ? (
+            <div className="relative rounded-xl overflow-hidden">
+              <Image
+                src={coverPhoto}
+                alt="Cover preview"
+                width={1200}
+                height={600}
+                className="w-full h-48 object-cover"
+                unoptimized
+              />
+              <button
+                type="button"
+                onClick={handleRemoveCoverPhoto}
+                className="absolute top-2 right-2 bg-white/80 hover:bg-white text-body text-xs font-body px-3 py-1.5 rounded-lg transition-colors"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border-soft rounded-xl cursor-pointer hover:border-primary/50 transition-colors bg-surface-muted/30">
+              <div className="flex flex-col items-center gap-1">
+                <span className="font-body text-sm text-body/60">Click to upload</span>
+                <span className="font-body text-xs text-body/40">PNG or JPG, max 2MB</span>
+              </div>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={handleCoverPhotoChange}
+              />
+            </label>
+          )}
+          {coverPhotoError && (
+            <p className="text-error text-sm mt-1 font-body">{coverPhotoError}</p>
+          )}
+        </div>
 
         <div className="w-full">
           <label htmlFor="description" className="block font-body text-sm text-body/80 mb-1.5 font-medium">
@@ -118,6 +197,10 @@ export function CampaignForm() {
           Create campaign
         </Button>
       </form>
+
+      {createdCampaign && (
+        <CampaignCreatedDialog id={createdCampaign.id} slug={createdCampaign.slug} />
+      )}
     </>
   );
 }

@@ -19,7 +19,10 @@ model User {
   kycLevel            Int           @default(0)
   kycStatus           KycStatus     @default(PENDING)
   
+  profilePicture      String?
+  
   // Linked Bank details for KYC Level 2+ and Withdrawals
+  onboardingViewed    Boolean       @default(false)
   bankAccountNumber   String?
   bankCode            String?
   bankName            String?

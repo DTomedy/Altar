@@ -1,16 +1,24 @@
 import 'server-only';
 
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
-import { Badge, Button } from '@/components/ui';
+import { Badge } from '@/components/ui';
 import { GiveForm } from '@/components/contribution/GiveForm';
+import { ShareButton } from '@/components/ui/ShareButton';
+import { LandingHeader } from '@/components/layout/LandingHeader';
+import { LandingFooter } from '@/components/layout/LandingFooter';
 import { formatNaira, formatDate } from '@/lib/formatters';
-import { Gift } from 'lucide-react';
+import { Gift, Users, CalendarDays, ShieldCheck } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+function getDaysLeft(deadline: Date): number {
+  const diff = new Date(deadline).getTime() - Date.now();
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 }
 
 async function getCampaign(slug: string) {
@@ -36,7 +44,11 @@ async function getCampaign(slug: string) {
   const goal = campaign.goalAmount ? Number(campaign.goalAmount) : null;
   const percentage = goal && goal > 0 ? Math.min(Math.round((totalRaised / goal) * 100), 100) : 0;
 
-  return { campaign, totalRaised, goal, percentage };
+  const contributorCount = await prisma.contribution.count({
+    where: { campaignId: campaign.id, status: 'SUCCESS' },
+  });
+
+  return { campaign, totalRaised, goal, percentage, contributorCount };
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -70,76 +82,92 @@ export default async function PublicCampaignPage({ params }: PageProps) {
     notFound();
   }
 
-  const { campaign, totalRaised, goal, percentage } = data;
+  const { campaign, totalRaised, goal, percentage, contributorCount } = data;
   const isActive = campaign.status === 'ACTIVE';
   const isExpired = campaign.status === 'EXPIRED';
   const isGoalReached = campaign.status === 'GOAL_REACHED';
   const hasGoal = goal !== null;
+  const isAcceptingContributions = isActive || isGoalReached;
 
   const statusText = isActive ? 'Active' : isGoalReached ? 'Goal reached' : isExpired ? 'Expired' : 'Closed';
+  const daysLeft = campaign.deadline ? getDaysLeft(campaign.deadline) : 0;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const campaignUrl = `${appUrl}/c/${campaign.slug}`;
 
   return (
-    <div className="min-h-screen bg-page">
-      {/* Navbar */}
-      <div className="bg-primary w-full px-12">
-        <header className="flex items-center justify-between py-6 max-w-7xl mx-auto w-full">
-          <img src="/logo/Altar Logo_white.svg" alt="Altar" className="h-8 w-auto" />
-          <div className="flex items-center gap-4">
-            <Link href="/auth">
-              <Button variant="secondary" className="text-white hover:bg-transparent">Log in</Button>
-            </Link>
-            <Link href="/auth?mode=register">
-              <Button variant="ghost">Get started</Button>
-            </Link>
-          </div>
-        </header>
+    <div className="min-h-screen bg-page flex flex-col">
+      <div className="bg-primary w-full">
+        <LandingHeader />
       </div>
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
-        {!isActive && !isGoalReached ? (
-          /* Inactive campaign state */
+      <main className="flex-1 max-w-5xl mx-auto px-4 py-8 w-full">
+        {isExpired ? (
+          /* Expired campaign */
           <div className="max-w-lg mx-auto text-center py-16">
             <div className="w-16 h-16 rounded-full bg-surface-muted flex items-center justify-center mx-auto mb-4">
               <Gift className="w-8 h-8 text-muted" />
             </div>
             <h1 className="font-display font-medium text-xl text-body mb-2">{campaign.title}</h1>
             <p className="font-body text-sm text-body/60 mb-2">
-              {isExpired
-                ? 'This campaign has ended.'
-                : isGoalReached
-                  ? 'This campaign has reached its goal.'
-                  : 'This campaign is no longer active.'}
+              This campaign has ended.
             </p>
-            <span className="inline-flex items-center font-body font-medium text-xs px-3 py-1 rounded-full bg-surface-muted text-muted">
-              {statusText}
-            </span>
+            {totalRaised > 0 && (
+              <p className="font-mono font-medium text-xl text-body mb-4">
+                {formatNaira(totalRaised)} raised
+              </p>
+            )}
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <span className="inline-flex items-center font-body font-medium text-xs px-3 py-1 rounded-full bg-surface-muted text-muted">
+                {statusText}
+              </span>
+              {campaign.deadline && (
+                <span className="font-body text-xs text-body/40">
+                  Ended {formatDate(campaign.deadline)}
+                </span>
+              )}
+            </div>
+            <ShareButton url={campaignUrl} label="Share link" />
           </div>
-        ) : (
+        ) : isAcceptingContributions ? (
           <div className="lg:grid lg:grid-cols-3 lg:gap-8">
             {/* Main content */}
             <div className="lg:col-span-2 space-y-6">
               {/* Cover photo */}
               {campaign.coverPhoto && (
                 <div className="rounded-2xl overflow-hidden">
-                  <img
+                  <Image
                     src={campaign.coverPhoto}
                     alt={campaign.title}
+                    width={1200}
+                    height={600}
                     className="w-full h-64 object-cover"
+                    sizes="(max-width: 768px) 100vw, 66vw"
                   />
                 </div>
               )}
 
               {/* Title & status */}
               <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <h1 className="font-display font-medium text-3xl text-body">{campaign.title}</h1>
-                  <Badge variant={isActive ? 'primary' : 'success'}>{statusText}</Badge>
+                <div className="flex items-start gap-3 mb-2">
+                  <h1 className="font-display font-medium text-3xl text-body flex-1">{campaign.title}</h1>
+                  <Badge variant={isActive ? 'primary' : 'success'}>
+                    {isGoalReached ? 'Goal reached' : 'Active'}
+                  </Badge>
                 </div>
-                {campaign.deadline && (
-                  <p className="font-body text-sm text-body/60">
-                    {isExpired ? 'Ended' : 'Ends'} {formatDate(campaign.deadline)}
-                  </p>
-                )}
+                <div className="flex flex-wrap items-center gap-4 font-body text-sm text-body/60">
+                  {campaign.deadline && (
+                    <span className="flex items-center gap-1.5">
+                      <CalendarDays className="w-4 h-4" />
+                      {daysLeft > 0 ? `${daysLeft} days left` : `Ended ${formatDate(campaign.deadline)}`}
+                    </span>
+                  )}
+                  {contributorCount > 0 && (
+                    <span className="flex items-center gap-1.5">
+                      <Users className="w-4 h-4" />
+                      {contributorCount} {contributorCount === 1 ? 'gift' : 'gifts'}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Progress card */}
@@ -166,6 +194,18 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                   </div>
                 )}
               </div>
+
+              {isGoalReached && (
+                <div className="flex items-start gap-3 p-4 bg-success/5 border border-success/20 rounded-2xl">
+                  <ShieldCheck className="w-5 h-5 text-success shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-body font-medium text-sm text-body">Goal reached</p>
+                    <p className="font-body text-xs text-body/60 mt-0.5">
+                      This campaign reached its goal. Gifts beyond the goal go directly to the campaign owner.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* About */}
               <div>
@@ -239,28 +279,52 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Sidebar — Give form */}
+            {/* Sidebar — Give form + trust signals */}
             <div className="mt-8 lg:mt-0">
-              <div className="lg:sticky lg:top-8">
+              <div className="lg:sticky lg:top-8 space-y-4">
                 <GiveForm
                   campaignId={campaign.id}
                   campaignTitle={campaign.title}
                 />
+
+                {/* Trust badge */}
+                <div className="flex items-center gap-2 justify-center py-3">
+                  <ShieldCheck className="w-4 h-4 text-success" />
+                  <p className="font-body text-xs text-body/50">
+                    Secured by <span className="font-medium text-body/70">Flutterwave</span>
+                  </p>
+                </div>
+
+                {/* Share */}
+                <div className="text-center">
+                  <ShareButton url={campaignUrl} label="Share this campaign" />
+                </div>
               </div>
             </div>
+          </div>
+        ) : (
+          /* Closed campaign */
+          <div className="max-w-lg mx-auto text-center py-16">
+            <div className="w-16 h-16 rounded-full bg-surface-muted flex items-center justify-center mx-auto mb-4">
+              <Gift className="w-8 h-8 text-muted" />
+            </div>
+            <h1 className="font-display font-medium text-xl text-body mb-2">{campaign.title}</h1>
+            <p className="font-body text-sm text-body/60 mb-2">
+              This campaign is no longer accepting gifts.
+            </p>
+            {totalRaised > 0 && (
+              <p className="font-mono font-medium text-xl text-body mb-4">
+                {formatNaira(totalRaised)} raised
+              </p>
+            )}
+            <span className="inline-flex items-center font-body font-medium text-xs px-3 py-1 rounded-full bg-surface-muted text-muted">
+              {statusText}
+            </span>
           </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-primary py-8 px-12 mt-16">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <img src="/logo/Altar Logo_white.svg" alt="Altar" className="h-6 w-auto" />
-          <p className="font-body text-xs text-white/60 text-center">
-            Give with intention. &copy; {new Date().getFullYear()} Altar. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <LandingFooter />
     </div>
   );
 }

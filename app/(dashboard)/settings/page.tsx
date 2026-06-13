@@ -1,44 +1,67 @@
-import 'server-only';
+'use client';
 
-import { prisma } from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { Badge } from '@/components/ui';
-import { formatDate } from '@/lib/formatters';
+import React, { useState } from 'react';
+import { cn } from '@/lib/utils';
+import { ProfileTab } from '@/components/settings/ProfileTab';
+import { KycTab } from '@/components/settings/KycTab';
+import { PasswordTab } from '@/components/settings/PasswordTab';
+import { BankTab } from '@/components/settings/BankTab';
 
-async function getUser() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('altar_token')?.value;
-  if (!token) return null;
-  const payload = verifyToken(token);
-  if (!payload) return null;
+const TABS = [
+  { id: 'profile', label: 'Profile' },
+  { id: 'verification', label: 'Verification' },
+  { id: 'password', label: 'Password' },
+  { id: 'bank', label: 'Bank Account' },
+] as const;
 
-  const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
-    select: {
-      name: true,
-      email: true,
-      phone: true,
-      emailVerified: true,
-      kycLevel: true,
-      kycStatus: true,
-      bankAccountNumber: true,
-      bankCode: true,
-      bankName: true,
-      bankAccountName: true,
-      createdAt: true,
-    },
-  });
+type TabId = (typeof TABS)[number]['id'];
 
-  return user;
-}
+export default function SettingsPage() {
+  const [activeTab, setActiveTab] = useState<TabId>('profile');
+  const [user, setUser] = useState<{
+    name: string;
+    email: string;
+    phone: string | null;
+    profilePicture: string | null;
+    kycLevel: number;
+    kycStatus: string;
+    emailVerified: boolean;
+    bankAccountNumber: string | null;
+    bankCode: string | null;
+    bankName: string | null;
+    bankAccountName: string | null;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export default async function SettingsPage() {
-  const user = await getUser();
+  React.useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) setUser(data.user);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div>
+        <h1 className="font-display font-medium text-2xl text-body mb-1">Settings</h1>
+        <p className="font-body text-sm text-body/60 mb-8">Manage your profile and account settings.</p>
+        <div className="animate-pulse space-y-4">
+          <div className="h-10 bg-surface-muted rounded-xl w-full max-w-lg" />
+          <div className="h-64 bg-surface-muted rounded-2xl w-full max-w-lg" />
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
-    redirect('/auth');
+    return (
+      <div>
+        <h1 className="font-display font-medium text-2xl text-body mb-1">Settings</h1>
+        <p className="font-body text-sm text-body/60">Please log in to access settings.</p>
+      </div>
+    );
   }
 
   return (
@@ -46,104 +69,53 @@ export default async function SettingsPage() {
       <h1 className="font-display font-medium text-2xl text-body mb-1">Settings</h1>
       <p className="font-body text-sm text-body/60 mb-8">Manage your profile and account settings.</p>
 
-      <div className="max-w-lg space-y-8">
-        {/* Profile */}
-        <section>
-          <h2 className="font-display font-medium text-lg text-body mb-4">Profile</h2>
-          <div className="bg-surface border border-default rounded-2xl p-5 space-y-4">
-            <div>
-              <p className="font-body text-xs text-muted uppercase tracking-wider mb-1">Full name</p>
-              <p className="font-body text-sm text-body">{user.name}</p>
-            </div>
-            <div>
-              <p className="font-body text-xs text-muted uppercase tracking-wider mb-1">Email</p>
-              <div className="flex items-center gap-2">
-                <p className="font-body text-sm text-body">{user.email}</p>
-                {user.emailVerified ? (
-                  <Badge variant="success">Verified</Badge>
-                ) : (
-                  <Badge variant="muted">Unverified</Badge>
-                )}
-              </div>
-            </div>
-            <div>
-              <p className="font-body text-xs text-muted uppercase tracking-wider mb-1">Phone</p>
-              <p className="font-body text-sm text-body">{user.phone || 'Not set'}</p>
-            </div>
-            <div>
-              <p className="font-body text-xs text-muted uppercase tracking-wider mb-1">Member since</p>
-              <p className="font-body text-sm text-body">{formatDate(user.createdAt)}</p>
-            </div>
-          </div>
-        </section>
+      {/* Tabs */}
+      <div className="flex gap-1 mb-8 border-b border-border-soft overflow-x-auto">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={cn(
+              'font-body font-medium text-sm px-4 py-3 border-b-2 transition-colors whitespace-nowrap',
+              activeTab === tab.id
+                ? 'border-primary text-primary'
+                : 'border-transparent text-body/60 hover:text-body hover:border-default'
+            )}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-        {/* KYC */}
-        <section>
-          <h2 className="font-display font-medium text-lg text-body mb-4">Verification</h2>
-          <div className="bg-surface border border-default rounded-2xl p-5">
-            <div className="flex items-center justify-between mb-3">
-              <p className="font-body text-sm text-body font-medium">KYC Level {user.kycLevel}</p>
-              <Badge
-                variant={
-                  user.kycStatus === 'VERIFIED'
-                    ? 'success'
-                    : user.kycStatus === 'REJECTED'
-                      ? 'error'
-                      : 'muted'
-                }
-              >
-                {user.kycStatus}
-              </Badge>
-            </div>
+      {/* Tab content */}
+      <div className="max-w-lg">
+        {activeTab === 'profile' && (
+          <ProfileTab
+            initialName={user.name}
+            initialPhone={user.phone}
+            initialEmail={user.email}
+            initialProfilePicture={user.profilePicture}
+          />
+        )}
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="font-body text-sm text-body/60">Email verified</p>
-                <span className={`font-body text-sm ${user.emailVerified ? 'text-success' : 'text-body/40'}`}>
-                  {user.emailVerified ? 'Done' : 'Pending'}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="font-body text-sm text-body/60">Phone confirmed</p>
-                <span className={`font-body text-sm ${user.phone ? 'text-success' : 'text-body/40'}`}>
-                  {user.phone ? 'Done' : 'Pending'}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="font-body text-sm text-body/60">Government ID</p>
-                <span className={`font-body text-sm ${user.kycLevel >= 1 ? 'text-success' : 'text-body/40'}`}>
-                  {user.kycLevel >= 1 ? 'Done' : 'Pending'}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="font-body text-sm text-body/60">Bank account</p>
-                <span className={`font-body text-sm ${user.kycLevel >= 2 ? 'text-success' : 'text-body/40'}`}>
-                  {user.kycLevel >= 2 ? 'Done' : 'Pending'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
+        {activeTab === 'verification' && (
+          <KycTab
+            kycLevel={user.kycLevel}
+            kycStatus={user.kycStatus}
+            emailVerified={user.emailVerified}
+            phone={user.phone}
+          />
+        )}
 
-        {/* Bank */}
-        {user.bankAccountName && (
-          <section>
-            <h2 className="font-display font-medium text-lg text-body mb-4">Bank account</h2>
-            <div className="bg-surface border border-default rounded-2xl p-5 space-y-4">
-              <div>
-                <p className="font-body text-xs text-muted uppercase tracking-wider mb-1">Account name</p>
-                <p className="font-body text-sm text-body">{user.bankAccountName}</p>
-              </div>
-              <div>
-                <p className="font-body text-xs text-muted uppercase tracking-wider mb-1">Account number</p>
-                <p className="font-mono text-sm text-body">{user.bankAccountNumber}</p>
-              </div>
-              <div>
-                <p className="font-body text-xs text-muted uppercase tracking-wider mb-1">Bank</p>
-                <p className="font-body text-sm text-body">{user.bankName}</p>
-              </div>
-            </div>
-          </section>
+        {activeTab === 'password' && <PasswordTab />}
+
+        {activeTab === 'bank' && (
+          <BankTab
+            initialAccountNumber={user.bankAccountNumber}
+            initialBankCode={user.bankCode}
+            initialBankName={user.bankName}
+            initialAccountName={user.bankAccountName}
+          />
         )}
       </div>
     </div>

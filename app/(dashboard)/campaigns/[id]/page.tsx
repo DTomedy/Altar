@@ -1,7 +1,8 @@
 import 'server-only';
 
 import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
@@ -93,6 +94,20 @@ export default async function CampaignDetailPage({
           )}
         </div>
       </div>
+
+      {/* Cover image */}
+      {campaign.coverPhoto && (
+        <div className="rounded-2xl overflow-hidden mb-6">
+          <Image
+            src={campaign.coverPhoto}
+            alt={campaign.title}
+            width={1200}
+            height={600}
+            className="w-full h-64 object-cover"
+            sizes="(max-width: 768px) 100vw, 66vw"
+          />
+        </div>
+      )}
 
       {/* Progress */}
       <div className="bg-surface border border-default rounded-2xl p-5 mb-8">

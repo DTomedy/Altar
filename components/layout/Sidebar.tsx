@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Gift, Wallet, Settings, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -19,7 +20,7 @@ export function Sidebar() {
     <aside className="w-64 min-h-screen bg-surface border-r border-border-soft flex flex-col shrink-0">
       <div className="p-6">
         <Link href="/">
-          <img src="/logo/Altar Logo.svg" alt="Altar" className="h-7 w-auto" />
+          <Image src="/logo/Altar Logo.svg" alt="Altar" width={100} height={28} className="h-7 w-auto" priority />
         </Link>
       </div>
 

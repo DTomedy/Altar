@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Suspense } from 'react';
 import { ResetPasswordForm } from '@/components/auth';
 
@@ -7,7 +8,7 @@ export default function ResetPasswordPage() {
     <div className="flex min-h-screen flex-col bg-white">
       <header className="flex items-center justify-center py-8">
         <Link href="/">
-          <img src="/logo/Altar Logo.svg" alt="Altar" className="h-7 w-auto" />
+          <Image src="/logo/Altar Logo.svg" alt="Altar" width={100} height={28} className="h-7 w-auto" />
         </Link>
       </header>
       <main className="flex flex-1 items-center justify-center px-4 pb-16">

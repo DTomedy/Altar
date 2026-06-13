@@ -1,23 +1,19 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui';
-import { Card } from '@/components/ui';
-import { FeatureCards } from '@/components/landing/FeatureCards';
+import Image from 'next/image';
+import dynamic from 'next/dynamic';
+import { Button, Card } from '@/components/ui';
+import { LandingHeader } from '@/components/layout/LandingHeader';
+import { LandingFooter } from '@/components/layout/LandingFooter';
+
+const FeatureCards = dynamic(() => import('@/components/landing/FeatureCards').then(mod => mod.FeatureCards), {
+  ssr: true,
+});
 
 export default function HomePage() {
   return (
     <div className="flex flex-col flex-1">
-      <div className="bg-primary w-full px-12">
-        <header className="flex items-center justify-between py-6 max-w-7xl mx-auto w-full">
-          <img src="/logo/Altar Logo_white.svg" alt="Altar" className="h-8 w-auto" />
-          <div className="flex items-center gap-4">
-            <Link href="/auth">
-              <Button variant="secondary" className="text-white hover:bg-transparent">Log in</Button>
-            </Link>
-            <Link href="/auth?mode=register">
-              <Button variant="ghost">Get started</Button>
-            </Link>
-          </div>
-        </header>
+      <div className="bg-primary w-full">
+        <LandingHeader />
       </div>
 
       <main className="flex-1">
@@ -39,7 +35,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex-1 flex justify-center lg:justify-end">
-              <img src="/images/hero.svg" alt="Hero illustration" className="w-full max-w-2xl h-auto" />
+              <Image src="/images/hero.svg" alt="Hero illustration" width={600} height={500} className="w-full max-w-2xl h-auto" priority />
             </div>
           </div>
         </section>
@@ -84,14 +80,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      <footer className="bg-primary py-8 px-12">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <img src="/logo/Altar Logo_white.svg" alt="Altar" className="h-6 w-auto" />
-          <p className="font-body text-xs text-white/60 text-center">
-            Give with intention. &copy; {new Date().getFullYear()} Altar. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <LandingFooter />
     </div>
   );
 }

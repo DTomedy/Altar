@@ -24,42 +24,44 @@ These rules are absolute. They are never overridden by convenience, speed, or us
 
 ```ts
 // lib/auth.ts
-import 'server-only'
+import "server-only";
 
-import jwt from 'jsonwebtoken'
-import { NextRequest } from 'next/server'
+import jwt from "jsonwebtoken";
+import { NextRequest } from "next/server";
 
 function getSecret(): string {
-  const secret = process.env.JWT_SECRET
-  if (!secret) throw new Error('JWT_SECRET is not set — check .env.local')
-  return secret
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error("JWT_SECRET is not set — check .env.local");
+  return secret;
 }
 
 export interface JWTPayload {
-  userId: string
-  email: string
-  kycLevel: number
+  userId: string;
+  email: string;
+  kycLevel: number;
 }
 
 export function signToken(payload: JWTPayload): string {
-  return jwt.sign(payload, getSecret(), { expiresIn: process.env.JWT_EXPIRES_IN ?? '7d' })
+  return jwt.sign(payload, getSecret(), {
+    expiresIn: process.env.JWT_EXPIRES_IN ?? "7d",
+  });
 }
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, getSecret()) as JWTPayload
+    return jwt.verify(token, getSecret()) as JWTPayload;
   } catch {
-    return null
+    return null;
   }
 }
 ```
 
 ### Token Delivery Strategy
 
-| Channel | Used for | Method |
-|---|---|---|
-| **`httpOnly` cookie** | Page routes (middleware, SSR) | Set on login/register via `NextResponse`. Read by `middleware.ts` via `req.cookies`. |
-| **Authorization header** | API routes | Client sends `Authorization: Bearer <token>`. Verified server-side via `verifyToken`. |
+| Channel                  | Used for                      | Method                                                                                |
+| ------------------------ | ----------------------------- | ------------------------------------------------------------------------------------- |
+| **`httpOnly` cookie**    | Page routes (middleware, SSR) | Set on login/register via `NextResponse`. Read by `proxy.ts` via `req.cookies`.       |
+| **Authorization header** | API routes                    | Client sends `Authorization: Bearer <token>`. Verified server-side via `verifyToken`. |
 
 Both channels use the same JWT — the token is always the same signed payload. The cookie is for page-level protection (redirect to login), the header is for API-level protection (return 401).
 
@@ -67,16 +69,16 @@ Both channels use the same JWT — the token is always the same signed payload. 
 
 ```ts
 // Login route
-const token = signToken({ userId, email, kycLevel })
-const response = NextResponse.json({ user: { id: userId, email } })
-response.cookies.set('altar_token', token, {
+const token = signToken({ userId, email, kycLevel });
+const response = NextResponse.json({ user: { id: userId, email } });
+response.cookies.set("altar_token", token, {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
-  path: '/',
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  path: "/",
   maxAge: 60 * 60 * 24 * 7, // 7 days
-})
-return response
+});
+return response;
 ```
 
 - The cookie is **`httpOnly`** (not accessible via JavaScript) and **`secure`** in production
@@ -87,55 +89,67 @@ return response
 
 ```ts
 export async function verifyAuth(req: NextRequest): Promise<JWTPayload | null> {
-  const authHeader = req.headers.get('authorization')
-  if (!authHeader?.startsWith('Bearer ')) return null
-  const token = authHeader.slice(7)
-  return verifyToken(token)
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader?.startsWith("Bearer ")) return null;
+  const token = authHeader.slice(7);
+  return verifyToken(token);
 }
 
 // Fallback: read from cookie if Bearer header is absent
-export async function verifyAuthWithFallback(req: NextRequest): Promise<JWTPayload | null> {
-  const headerResult = await verifyAuth(req)
-  if (headerResult) return headerResult
-  const token = req.cookies.get('altar_token')?.value
-  if (!token) return null
-  return verifyToken(token)
+export async function verifyAuthWithFallback(
+  req: NextRequest,
+): Promise<JWTPayload | null> {
+  const headerResult = await verifyAuth(req);
+  if (headerResult) return headerResult;
+  const token = req.cookies.get("altar_token")?.value;
+  if (!token) return null;
+  return verifyToken(token);
 }
 ```
 
 ### Password Hashing
 
 ```ts
-import bcrypt from 'bcryptjs'
+import bcrypt from "bcryptjs";
 
 // Always use cost factor 12 minimum
 export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 12)
+  return bcrypt.hash(password, 12);
 }
 
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(password, hash)
+export async function verifyPassword(
+  password: string,
+  hash: string,
+): Promise<boolean> {
+  return bcrypt.compare(password, hash);
 }
 ```
 
 ### Middleware — Route Protection
 
 ```ts
-// middleware.ts
-import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken } from '@/lib/auth'
+// proxy.ts
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "@/lib/auth";
 
-const PROTECTED_PATHS = ['/dashboard', '/wallet', '/settings', '/campaigns/new']
+const PROTECTED_PATHS = [
+  "/dashboard",
+  "/wallet",
+  "/settings",
+  "/campaigns/new",
+];
 
 export function middleware(req: NextRequest) {
-  const isProtected = PROTECTED_PATHS.some(p => req.nextUrl.pathname.startsWith(p))
-  if (!isProtected) return NextResponse.next()
+  const isProtected = PROTECTED_PATHS.some((p) =>
+    req.nextUrl.pathname.startsWith(p),
+  );
+  if (!isProtected) return NextResponse.next();
 
-  const token = req.cookies.get('altar_token')?.value
+  const token = req.cookies.get("altar_token")?.value;
   if (!token || !verifyToken(token)) {
-    return NextResponse.redirect(new URL('/login', req.url))
+    return NextResponse.redirect(new URL("/login", req.url));
   }
-  return NextResponse.next()
+  return NextResponse.next();
 }
 ```
 
@@ -149,12 +163,12 @@ Logout clears the cookie. Token blacklisting is not required in V1 — tokens ar
 
 KYC gates withdrawal — not wallet access. Never block a user from viewing their wallet because KYC is incomplete.
 
-| KYC Level | Requirement | Unlocks |
-|---|---|---|
-| 0 | None | Creating campaigns, receiving contributions |
-| 1 | Email verified + phone number confirmed | Basic wallet access |
-| 2 | Government-issued ID uploaded and approved | Withdrawals up to ₦500,000 |
-| 3 | Bank account verified with BVN match | Withdrawals above ₦500,000 |
+| KYC Level | Requirement                                | Unlocks                                     |
+| --------- | ------------------------------------------ | ------------------------------------------- |
+| 0         | None                                       | Creating campaigns, receiving contributions |
+| 1         | Email verified + phone number confirmed    | Basic wallet access                         |
+| 2         | Government-issued ID uploaded and approved | Withdrawals up to ₦500,000                  |
+| 3         | Bank account verified with BVN match       | Withdrawals above ₦500,000                  |
 
 ### Email Verification Flow
 
@@ -168,9 +182,9 @@ Email verification is required to reach KYC Level 1. The flow:
 ```ts
 // lib/kyc.ts
 export function canWithdraw(kycLevel: number, amount: Decimal): boolean {
-  if (kycLevel < 2) return false
-  if (kycLevel < 3 && amount.gt(500000)) return false
-  return true
+  if (kycLevel < 2) return false;
+  if (kycLevel < 3 && amount.gt(500000)) return false;
+  return true;
 }
 ```
 
@@ -185,23 +199,23 @@ export function canWithdraw(kycLevel: number, amount: Decimal): boolean {
 ```ts
 // Correct — atomic wallet debit with fee
 await prisma.$transaction(async (tx) => {
-  const fee = calculatePlatformFee(amount)
-  const netAmount = amount.sub(fee)
+  const fee = calculatePlatformFee(amount);
+  const netAmount = amount.sub(fee);
 
   await tx.wallet.update({
     where: { userId },
-    data: { balance: { decrement: amount } }
-  })
+    data: { balance: { decrement: amount } },
+  });
 
   await tx.walletTransaction.create({
     data: {
       walletId,
-      type: 'DEBIT',
+      type: "DEBIT",
       amount,
-      description: `Withdrawal of ${formatNaira(netAmount)} (3% fee: ${formatNaira(fee)})`
-    }
-  })
-})
+      description: `Withdrawal of ${formatNaira(netAmount)} (3% fee: ${formatNaira(fee)})`,
+    },
+  });
+});
 ```
 
 ---
@@ -231,13 +245,13 @@ Altar uses `sameSite: 'lax'` on the auth cookie as the primary CSRF defence — 
 
 Apply rate limiting to these endpoints:
 
-| Endpoint | Limit | Window | Scope |
-|---|---|---|---|
-| `POST /api/auth/login` | 5 attempts | 15 minutes | Per IP |
-| `POST /api/auth/register` | 3 attempts | 1 hour | Per IP |
-| `POST /api/contributions` | 10 requests | 1 minute | Per IP |
-| `POST /api/wallet/withdraw` | 3 requests | 1 hour | Per user |
-| `POST /api/kyc` | 5 uploads | 1 hour | Per user |
+| Endpoint                    | Limit       | Window     | Scope    |
+| --------------------------- | ----------- | ---------- | -------- |
+| `POST /api/auth/login`      | 5 attempts  | 15 minutes | Per IP   |
+| `POST /api/auth/register`   | 3 attempts  | 1 hour     | Per IP   |
+| `POST /api/contributions`   | 10 requests | 1 minute   | Per IP   |
+| `POST /api/wallet/withdraw` | 3 requests  | 1 hour     | Per user |
+| `POST /api/kyc`             | 5 uploads   | 1 hour     | Per user |
 
 ### Account Lockout
 
@@ -245,9 +259,17 @@ In addition to rate limiting, lock accounts after **10 consecutive failed login 
 
 ```ts
 // Lockout logic (pseudo-code, implement in login route)
-const failedAttempts = await redis.get(`login:${email}`) ?? 0
+const failedAttempts = (await redis.get(`login:${email}`)) ?? 0;
 if (failedAttempts >= 10) {
-  return NextResponse.json({ error: { code: 'ACCOUNT_LOCKED', message: 'Account locked. Try again in 1 hour.' } }, { status: 429 })
+  return NextResponse.json(
+    {
+      error: {
+        code: "ACCOUNT_LOCKED",
+        message: "Account locked. Try again in 1 hour.",
+      },
+    },
+    { status: 429 },
+  );
 }
 // On failed attempt: increment counter with 1-hour TTL
 // On successful login: clear the counter
@@ -260,6 +282,7 @@ Use Redis or Vercel KV for the counter. In development, an in-memory `Map` with 
 ## Fraud Detection Triggers
 
 Flag for review when:
+
 - A single campaign receives more than 50 contributions in under 60 minutes
 - A single IP makes more than 10 contribution attempts in 1 minute
 - A contribution amount exceeds ₦5,000,000
@@ -276,9 +299,9 @@ See `Skills/flutterwave-integration/resources/webhook-handler.ts` for the full i
 The key rule: **never process a webhook event without first verifying the `verif-hash` header against `FLUTTERWAVE_WEBHOOK_HASH`.**
 
 ```ts
-const hash = req.headers.get('verif-hash')
+const hash = req.headers.get("verif-hash");
 if (!hash || hash !== process.env.FLUTTERWAVE_WEBHOOK_HASH) {
-  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }
 ```
 
@@ -292,33 +315,43 @@ Add these headers to `next.config.ts` via the `headers()` function:
 // next.config.ts
 const securityHeaders = [
   // Prevent MIME-type sniffing
-  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: "X-Content-Type-Options", value: "nosniff" },
   // Prevent clickjacking
-  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
   // Enforce HTTPS — 1 year, include subdomains
-  { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=31536000; includeSubDomains",
+  },
   // Restrict referrer data to same-origin
-  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   // Restrict browser features
-  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
   // Content Security Policy — restrict script sources
-  { key: 'Content-Security-Policy', value: [
-    "default-src 'self'",
-    "script-src 'self'",
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https://res.cloudinary.com",
-    "font-src 'self'",
-    "connect-src 'self' https://api.flutterwave.com",
-    "frame-src 'self' https://checkout.flutterwave.com",
-    "base-uri 'self'",
-    "form-action 'self'",
-  ].join('; ') },
+  {
+    key: "Content-Security-Policy",
+    value: [
+      "default-src 'self'",
+      "script-src 'self'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https://res.cloudinary.com",
+      "font-src 'self'",
+      "connect-src 'self' https://api.flutterwave.com",
+      "frame-src 'self' https://checkout.flutterwave.com",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; "),
+  },
   // DNS prefetch control
-  { key: 'X-DNS-Prefetch-Control', value: 'on' },
-]
+  { key: "X-DNS-Prefetch-Control", value: "on" },
+];
 ```
 
 The CSP allows:
+
 - `'unsafe-inline'` for styles (required by Tailwind CSS and Next.js)
 - `https://res.cloudinary.com` for campaign cover images
 - `https://api.flutterwave.com` for payment API calls
@@ -331,10 +364,10 @@ API routes do not need CORS headers in V1 — the frontend is served from the sa
 ```ts
 // Example — only if cross-origin clients are added
 const corsHeaders = {
-  'Access-Control-Allow-Origin': process.env.NEXT_PUBLIC_APP_URL,
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-}
+  "Access-Control-Allow-Origin": process.env.NEXT_PUBLIC_APP_URL,
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
 ```
 
 ---
@@ -343,14 +376,14 @@ const corsHeaders = {
 
 Log the following security events with timestamp, actor, action, and outcome:
 
-| Event | Fields to log | Retention |
-|---|---|---|
-| Failed login | `email`, `ip`, `timestamp`, `attemptCount` | 90 days |
-| Successful login | `userId`, `ip`, `timestamp` | 90 days |
-| Contribution initiated | `campaignId`, `contributorId?`, `amount`, `flwTxRef` | 1 year |
-| Withdrawal requested | `userId`, `amount`, `fee`, `bankAccount` | 1 year |
-| KYC document upload | `userId`, `documentType`, `status` | 1 year |
-| KYC level change | `userId`, `fromLevel`, `toLevel`, `reviewerId?` | 1 year |
+| Event                  | Fields to log                                        | Retention |
+| ---------------------- | ---------------------------------------------------- | --------- |
+| Failed login           | `email`, `ip`, `timestamp`, `attemptCount`           | 90 days   |
+| Successful login       | `userId`, `ip`, `timestamp`                          | 90 days   |
+| Contribution initiated | `campaignId`, `contributorId?`, `amount`, `flwTxRef` | 1 year    |
+| Withdrawal requested   | `userId`, `amount`, `fee`, `bankAccount`             | 1 year    |
+| KYC document upload    | `userId`, `documentType`, `status`                   | 1 year    |
+| KYC level change       | `userId`, `fromLevel`, `toLevel`, `reviewerId?`      | 1 year    |
 
 Use `console.error` structured logging in V1 (JSON-formatted). Switch to a logging service (e.g., Logtail, Axiom) for production.
 
@@ -360,10 +393,10 @@ Use `console.error` structured logging in V1 (JSON-formatted). Switch to a loggi
 
 Sensitive fields are encrypted at the application layer before writing to PostgreSQL:
 
-| Field | Method | Location |
-|---|---|---|
-| Password hashes | `bcryptjs` with cost factor 12 | `lib/auth.ts` |
-| Phone numbers | AES-256-GCM via `lib/encryption.ts` | Before write to DB |
+| Field                   | Method                                                       | Location            |
+| ----------------------- | ------------------------------------------------------------ | ------------------- |
+| Password hashes         | `bcryptjs` with cost factor 12                               | `lib/auth.ts`       |
+| Phone numbers           | AES-256-GCM via `lib/encryption.ts`                          | Before write to DB  |
 | KYC document references | Not stored — use Cloudinary secure URLs with signed delivery | `lib/cloudinary.ts` |
 
 PostgreSQL column-level encryption (pgcrypto) is not used — all sensitive data is encrypted before it reaches Prisma. The encryption key lives in `ENCRYPTION_KEY` environment variable — never in the codebase.
@@ -373,6 +406,7 @@ PostgreSQL column-level encryption (pgcrypto) is not used — all sensitive data
 ## Secrets Checklist
 
 Before any commit, verify:
+
 - [ ] No hardcoded API keys or secrets anywhere in the codebase
 - [ ] `.env.local` is in `.gitignore` — never committed
 - [ ] No `console.log` statements printing sensitive data (tokens, user IDs, amounts)

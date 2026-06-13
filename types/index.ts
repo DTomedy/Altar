@@ -1,3 +1,20 @@
+declare global {
+  function FlutterwaveCheckout(config: FlutterwaveConfig): void;
+}
+
+export interface FlutterwaveConfig {
+  public_key: string;
+  tx_ref: string;
+  amount: number;
+  currency: string;
+  payment_options?: string;
+  customer: { email: string; name: string };
+  meta?: Record<string, string>;
+  customizations: { title: string; description: string; logo: string };
+  callback: (response: { tx_ref: string; status: string }) => void;
+  onclose: () => void;
+}
+
 export type CampaignType = 'WISHLIST' | 'GOAL';
 export type CampaignStatus = 'ACTIVE' | 'GOAL_REACHED' | 'EXPIRED' | 'CLOSED';
 export type KycStatus = 'PENDING' | 'VERIFIED' | 'REJECTED';

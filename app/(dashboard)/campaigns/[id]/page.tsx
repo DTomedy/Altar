@@ -5,8 +5,8 @@ import { notFound, redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
-import { Button, Badge } from '@/components/ui';
-import { Share2, ExternalLink } from 'lucide-react';
+import { Button, Badge, ShareButton } from '@/components/ui';
+import { ExternalLink } from 'lucide-react';
 import { formatNaira, formatDate } from '@/lib/formatters';
 
 async function getCampaign(id: string) {
@@ -79,12 +79,17 @@ export default async function CampaignDetailPage({
         </div>
         <div className="flex gap-2">
           {campaign.slug && (
-            <Link href={`/c/${campaign.slug}`} target="_blank">
-              <Button variant="secondary">
-                <ExternalLink className="w-5 h-5 mr-2" />
-                View page
-              </Button>
-            </Link>
+            <>
+              <ShareButton
+                url={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/c/${campaign.slug}`}
+              />
+              <Link href={`/c/${campaign.slug}`} target="_blank">
+                <Button variant="secondary">
+                  <ExternalLink className="w-5 h-5 mr-2" />
+                  View page
+                </Button>
+              </Link>
+            </>
           )}
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { Card } from '@/components/ui';
+import { FeatureCards } from '@/components/landing/FeatureCards';
 
 export default function HomePage() {
   return (
@@ -78,24 +79,7 @@ export default function HomePage() {
         <div className="bg-white">
           <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h2 className="font-display font-medium text-4xl text-body text-center mb-12">Why Altar</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <Card className="p-6">
-              <h3 className="font-display font-medium text-lg text-body mb-2">In-app wallet</h3>
-              <p className="font-body text-sm text-body/60">All contributions are held securely in your Altar wallet. No awkward manual coordination.</p>
-            </Card>
-            <Card className="p-6">
-              <h3 className="font-display font-medium text-lg text-body mb-2">Anonymous giving</h3>
-              <p className="font-body text-sm text-body/60">Contributors can give without revealing their identity. Sometimes the best gifts come from nowhere.</p>
-            </Card>
-            <Card className="p-6">
-              <h3 className="font-display font-medium text-lg text-body mb-2">Wishlist campaigns</h3>
-              <p className="font-body text-sm text-body/60">List exactly what you want. Friends can contribute toward specific items.</p>
-            </Card>
-            <Card className="p-6">
-              <h3 className="font-display font-medium text-lg text-body mb-2">No account needed to give</h3>
-              <p className="font-body text-sm text-body/60">Anyone with the link can contribute via card, bank transfer, or USSD. No sign-up required.</p>
-            </Card>
-          </div>
+          <FeatureCards />
         </section>
         </div>
       </main>

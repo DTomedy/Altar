@@ -226,7 +226,8 @@ Mobile-first is the default. Design for mobile first, then add breakpoints.
 
 ## Icon System
 
-- **Library:** Lucide React (`lucide-react`) — the only icon library
+- **Primary library:** Lucide React (`lucide-react`) — use by default
+- **Secondary library:** Phosphor Icons (`@phosphor-icons/react`) — use when Lucide doesn't have the icon you need
 - **Sizing:** Icons use `w-5 h-5` for default UI, `w-4 h-4` for inline/small, `w-6 h-6` for large
 - **Colouring:** Icons inherit `currentColor` from the parent element by default
 - **Button icons:** Always use `w-5 h-5` inside buttons. For icon-only buttons, use the icon button pattern above.
@@ -246,8 +247,17 @@ import { Gift, Heart, Wallet, Share2, X, ChevronLeft, Check, AlertCircle } from 
 </button>
 ```
 
-- Never import the full `lucide-react` barrel — import individual icons by name
+```tsx
+import { Gift, Heart, Wallet, Share2, X } from '@phosphor-icons/react'
+
+// Usage is identical — Phosphor icons also accept className
+<Gift className="w-5 h-5" />
+<Heart className="w-5 h-5 text-error" />
+```
+
+- Never import the full barrel (`import * from`) from either library — import individual icons by name
 - Never wrap icons in custom SVG components — use the library directly
+- Phosphor Icons provide weight variants via the `weight` prop: `thin`, `light`, `regular` (default), `bold`, `fill`, `duotone`. Prefer `regular` or `bold` for UI consistency.
 
 ---
 

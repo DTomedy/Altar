@@ -42,7 +42,6 @@ export const CreateContributionSchema = z.object({
   isAnonymous: z.boolean(),
   displayName: z.string().optional().nullable(),
   message: z.string().optional().nullable(),
-  txRef: z.string().min(1, 'Transaction reference is required'),
 });
 
 export const VerifyContributionSchema = z.object({

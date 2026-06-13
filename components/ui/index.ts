@@ -10,3 +10,4 @@ export { ProgressBar, type ProgressBarProps } from './ProgressBar';
 export { Avatar, type AvatarProps } from './Avatar';
 export { Skeleton, type SkeletonProps } from './Skeleton';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
+export { ShareButton } from './ShareButton';

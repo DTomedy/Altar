@@ -60,7 +60,7 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
     return info;
   } catch (err) {
     console.error('[Nodemailer] Primary SMTP failed:', err);
-    if (process.env.SMTP_HOST) {
+    if (!process.env.SMTP_HOST) {
       console.log('[Nodemailer] Falling back to Ethereal...');
       transporterPromise = null;
       const fallback = await getTransporter(true);
@@ -80,7 +80,7 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
 }
 
 export async function sendVerificationEmail(email: string, token: string) {
-  const verifyUrl = `${APP_URL}/api/auth/verify-email?token=${token}`;
+  const verifyUrl = `${APP_URL}/verify-email?token=${token}`;
   const html = `
     <div style="font-family: 'DM Sans', sans-serif; color: #2C2C2A; max-width: 600px; margin: 0 auto; padding: 20px;">
       <h1 style="color: #3D1F6B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 500;">Verify your Altar account</h1>

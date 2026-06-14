@@ -84,7 +84,12 @@ async function getUserData() {
   return { user, campaigns: campaignSummaries, totalRaised, activeCount, totalCampaigns: campaigns.length };
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ verified?: string }>;
+}) {
+  const { verified } = await searchParams;
   const data = await getUserData();
 
   if (!data) {
@@ -114,6 +119,20 @@ export default async function DashboardPage() {
           </Button>
         </Link>
       </div>
+
+      {verified === 'true' && (
+        <div className="mb-6 flex items-center gap-3 rounded-2xl bg-success/10 border border-success/20 px-5 py-4">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-success">
+            <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <div>
+            <p className="font-body text-sm font-medium text-body">Email verified successfully</p>
+            <p className="font-body text-xs text-body/60">Your account is now fully active. Welcome to Altar!</p>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">

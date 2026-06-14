@@ -21,23 +21,26 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const token = searchParams.get('token');
     if (!token) {
-      return NextResponse.json({ error: { code: 'VALIDATION_ERROR', message: 'Verification token is required' } }, { status: 422 });
+      return NextResponse.redirect(new URL('/verify-email?error=missing', req.url));
     }
 
     let payload: EmailVerifyPayload;
     try {
       payload = jwt.verify(token, getSecret()) as EmailVerifyPayload;
-    } catch {
-      return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Invalid or expired verification token' } }, { status: 401 });
+    } catch (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        return NextResponse.redirect(new URL('/verify-email?error=expired', req.url));
+      }
+      return NextResponse.redirect(new URL('/verify-email?error=invalid', req.url));
     }
 
     if (payload.type !== 'email-verify') {
-      return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Invalid verification token' } }, { status: 401 });
+      return NextResponse.redirect(new URL('/verify-email?error=invalid', req.url));
     }
 
     const user = await prisma.user.findUnique({ where: { id: payload.userId } });
     if (!user) {
-      return NextResponse.json({ error: { code: 'NOT_FOUND', message: 'User not found' } }, { status: 404 });
+      return NextResponse.redirect(new URL('/verify-email?error=invalid', req.url));
     }
 
     await prisma.user.update({
@@ -61,6 +64,6 @@ export async function GET(req: NextRequest) {
     return response;
   } catch (error) {
     console.error('[GET /api/auth/verify-email]', error);
-    return NextResponse.redirect(new URL('/auth?mode=login&error=verification_failed', req.url));
+    return NextResponse.redirect(new URL('/verify-email?error=invalid', req.url));
   }
 }

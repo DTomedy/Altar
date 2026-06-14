@@ -1,58 +1,26 @@
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
-import { prisma } from '@/lib/prisma';
-import { signToken } from '@/lib/auth';
 import Link from 'next/link';
 
 interface Props {
-  searchParams: Promise<{ token?: string }>;
+  searchParams: Promise<{ token?: string; error?: string }>;
 }
 
 export default async function VerifyEmailPage({ searchParams }: Props) {
-  const { token } = await searchParams;
+  const { token, error } = await searchParams;
 
-  if (!token) {
+  if (error === 'expired') {
+    return <VerifyError expired />;
+  }
+
+  if (error) {
     return <VerifyError />;
   }
 
-  try {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error('JWT_SECRET is not set');
-
-    const payload = jwt.verify(token, secret) as { userId: string; type: string };
-    if (payload.type !== 'email-verify') throw new Error('Invalid token type');
-
-    const user = await prisma.user.findUnique({ where: { id: payload.userId } });
-    if (!user) throw new Error('User not found');
-
-    const newKycLevel = Math.max(user.kycLevel, 1);
-
-    await prisma.user.update({
-      where: { id: payload.userId },
-      data: { emailVerified: true, kycLevel: newKycLevel },
-    });
-
-    const authToken = signToken({
-      userId: user.id,
-      email: user.email,
-      kycLevel: newKycLevel,
-      emailVerified: true,
-    });
-
-    const cookieStore = await cookies();
-    cookieStore.set('altar_token', authToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7,
-    });
-  } catch (err) {
-    return <VerifyError expired={err instanceof jwt.TokenExpiredError} />;
+  if (token) {
+    redirect(`/api/auth/verify-email?token=${encodeURIComponent(token)}`);
   }
 
-  redirect('/dashboard?verified=true');
+  return <VerifyError />;
 }
 
 function VerifyError({ expired = false }: { expired?: boolean }) {

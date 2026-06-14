@@ -5,8 +5,9 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
 let transporterPromise: Promise<nodemailer.Transporter> | null = null;
 
-async function getTransporter(): Promise<nodemailer.Transporter> {
-  if (process.env.SMTP_HOST && process.env.SMTP_USER) {
+async function getTransporter(forceEthereal = false): Promise<nodemailer.Transporter> {
+  if (!forceEthereal && process.env.SMTP_HOST && process.env.SMTP_USER) {
+    console.log('[Nodemailer] Using SMTP:', process.env.SMTP_HOST, process.env.SMTP_USER);
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
@@ -41,19 +42,41 @@ async function getTransporter(): Promise<nodemailer.Transporter> {
 const FROM_EMAIL = process.env.SMTP_FROM || 'Altar <noreply@altar.app>';
 
 export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
-  const transporter = await getTransporter();
-  const info = await transporter.sendMail({
-    from: FROM_EMAIL,
-    to,
-    subject,
-    html,
-  });
+  const primaryTransporter = await getTransporter(false);
+  try {
+    const info = await primaryTransporter.sendMail({
+      from: FROM_EMAIL,
+      to,
+      subject,
+      html,
+    });
 
-  if (info.messageId && !process.env.SMTP_HOST) {
-    console.log('[Nodemailer] Preview URL:', nodemailer.getTestMessageUrl(info));
+    if (info.messageId && !process.env.SMTP_HOST) {
+      console.log('[Nodemailer] Preview URL:', nodemailer.getTestMessageUrl(info));
+    } else if (info.messageId) {
+      console.log('[Nodemailer] Email sent:', info.messageId);
+    }
+
+    return info;
+  } catch (err) {
+    console.error('[Nodemailer] Primary SMTP failed:', err);
+    if (process.env.SMTP_HOST) {
+      console.log('[Nodemailer] Falling back to Ethereal...');
+      transporterPromise = null;
+      const fallback = await getTransporter(true);
+      const info = await fallback.sendMail({
+        from: 'Altar <noreply@altar.app>',
+        to,
+        subject,
+        html,
+      });
+      if (info.messageId) {
+        console.log('[Nodemailer] Ethereal Preview URL:', nodemailer.getTestMessageUrl(info));
+      }
+      return info;
+    }
+    throw err;
   }
-
-  return info;
 }
 
 export async function sendVerificationEmail(email: string, token: string) {

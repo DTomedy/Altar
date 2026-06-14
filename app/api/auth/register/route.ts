@@ -48,8 +48,8 @@ export async function POST(req: NextRequest) {
     try {
       const emailToken = jwt.sign({ userId: user.id, type: 'email-verify' }, getSecret(), { expiresIn: '24h' });
       await sendVerificationEmail(email, emailToken);
-    } catch {
-      console.error('[POST /api/auth/register] Failed to send verification email');
+    } catch (emailErr) {
+      console.error('[POST /api/auth/register] Failed to send verification email:', emailErr);
     }
 
     return NextResponse.json({

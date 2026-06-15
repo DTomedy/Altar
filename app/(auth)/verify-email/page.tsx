@@ -1,13 +1,12 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [checking, setChecking] = useState(true);
 
@@ -16,21 +15,29 @@ function VerifyEmailContent() {
     const errorParam = searchParams.get('error');
 
     if (errorParam === 'expired') {
-      setError('expired');
-      setChecking(false);
+      queueMicrotask(() => {
+        setError('expired');
+        setChecking(false);
+      });
       return;
     }
 
     if (errorParam || !token) {
-      setError('invalid');
-      setChecking(false);
+      queueMicrotask(() => {
+        setError('invalid');
+        setChecking(false);
+      });
       return;
     }
 
     fetch(`/api/auth/verify-email?token=${encodeURIComponent(token)}`)
       .then(async (res) => {
         if (res.ok) {
-          router.push('/dashboard?verified=true');
+          // Small delay to ensure the Set-Cookie header is applied
+          // by the browser before navigating to the dashboard.
+          // Use full page navigation so middleware sees the fresh token.
+          await new Promise((r) => setTimeout(r, 200));
+          window.location.href = '/dashboard?verified=true';
         } else {
           const data = await res.json();
           if (data.error?.code === 'UNAUTHORIZED' && data.error?.message?.includes('expired')) {
@@ -45,7 +52,7 @@ function VerifyEmailContent() {
         setError('invalid');
         setChecking(false);
       });
-  }, [searchParams, router]);
+  }, [searchParams]);
 
   if (checking) {
     return (

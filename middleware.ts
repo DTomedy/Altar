@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function base64UrlDecode(str: string): string {
+  str = str.replace(/-/g, "+").replace(/_/g, "/");
+  while (str.length % 4) str += "=";
+  return atob(str);
+}
+
 function parseToken(token: string): Record<string, unknown> | null {
   try {
     const parts = token.split(".");
     if (parts.length !== 3) return null;
-    const payload = JSON.parse(atob(parts[1]));
+    const payload = JSON.parse(base64UrlDecode(parts[1]));
     if (!payload.userId || !payload.email) return null;
     const exp = payload.exp;
     if (exp && Date.now() >= exp * 1000) return null;

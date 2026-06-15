@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Gift, Plus, Share2 } from 'lucide-react';
 
 const STEPS = [
@@ -25,6 +26,7 @@ const STEPS = [
 ];
 
 export function OnboardingTour() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -33,12 +35,15 @@ export function OnboardingTour() {
     setLoading(true);
     try {
       await fetch('/api/auth/onboarding', { method: 'POST' });
+      // Re-fetch server component data so the dashboard sees
+      // the updated onboardingViewed flag from the database.
+      router.refresh();
     } catch {
       /* ignore */
     } finally {
       setDismissed(true);
     }
-  }, []);
+  }, [router]);
 
   if (dismissed) return null;
 

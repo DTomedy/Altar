@@ -48,6 +48,7 @@ export function OnboardingTour() {
 
   const current = STEPS[step];
   const Icon = current.icon;
+  const isFirst = step === 0;
   const isLast = step === STEPS.length - 1;
 
   return (
@@ -55,7 +56,7 @@ export function OnboardingTour() {
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative bg-surface border border-border-soft rounded-2xl w-full max-w-md p-6 shadow-lg">
-        {/* Skip link */}
+        {/* Skip link — always available */}
         <button
           onClick={handleComplete}
           className="absolute top-4 right-4 font-body text-sm text-muted hover:text-body transition-colors"
@@ -97,12 +98,19 @@ export function OnboardingTour() {
 
         {/* Actions */}
         <div className="flex gap-3">
-          {!isLast && (
+          {isFirst ? (
             <button
               onClick={handleComplete}
               className="flex-1 bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
             >
               Skip
+            </button>
+          ) : (
+            <button
+              onClick={() => setStep(step - 1)}
+              className="flex-1 bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
+            >
+              Back
             </button>
           )}
           {isLast ? (

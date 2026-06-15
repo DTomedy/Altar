@@ -51,9 +51,7 @@ export async function GET(req: NextRequest) {
     // Set JWT cookie after verification
     const authToken = signToken({ userId: user.id, email: user.email, kycLevel: user.kycLevel < 1 ? 1 : user.kycLevel, emailVerified: true });
 
-    const redirectUrl = new URL('/dashboard', req.url);
-    redirectUrl.searchParams.set('verified', 'true');
-    const response = NextResponse.redirect(redirectUrl);
+    const response = NextResponse.json({ success: true });
     response.cookies.set('altar_token', authToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

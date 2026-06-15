@@ -1,26 +1,67 @@
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-interface Props {
-  searchParams: Promise<{ token?: string; error?: string }>;
-}
+export default function VerifyEmailPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(true);
 
-export default async function VerifyEmailPage({ searchParams }: Props) {
-  const { token, error } = await searchParams;
+  useEffect(() => {
+    const token = searchParams.get('token');
+    const errorParam = searchParams.get('error');
 
-  if (error === 'expired') {
-    return <VerifyError expired />;
+    if (errorParam === 'expired') {
+      setError('expired');
+      setChecking(false);
+      return;
+    }
+
+    if (errorParam || !token) {
+      setError('invalid');
+      setChecking(false);
+      return;
+    }
+
+    fetch(`/api/auth/verify-email?token=${encodeURIComponent(token)}`)
+      .then(async (res) => {
+        if (res.ok) {
+          router.push('/dashboard?verified=true');
+        } else {
+          const data = await res.json();
+          if (data.error?.code === 'UNAUTHORIZED' && data.error?.message?.includes('expired')) {
+            setError('expired');
+          } else {
+            setError('invalid');
+          }
+          setChecking(false);
+        }
+      })
+      .catch(() => {
+        setError('invalid');
+        setChecking(false);
+      });
+  }, [searchParams, router]);
+
+  if (checking) {
+    return (
+      <div className="bg-surface rounded-2xl p-6 sm:p-8 text-center">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-ghost">
+          <svg className="h-6 w-6 text-primary animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        </div>
+        <h1 className="font-display text-xl font-medium text-body mb-2">Verifying your email...</h1>
+        <p className="font-body text-sm text-body/60">Please wait while we confirm your account.</p>
+      </div>
+    );
   }
 
-  if (error) {
-    return <VerifyError />;
-  }
-
-  if (token) {
-    redirect(`/api/auth/verify-email?token=${encodeURIComponent(token)}`);
-  }
-
-  return <VerifyError />;
+  return <VerifyError expired={error === 'expired'} />;
 }
 
 function VerifyError({ expired = false }: { expired?: boolean }) {

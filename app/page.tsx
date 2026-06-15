@@ -22,10 +22,10 @@ export default function HomePage() {
           <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
             <div className="flex-1 text-center lg:text-left">
-              <h1 className="font-display font-medium text-4xl sm:text-[56px] text-primary leading-tight">
+              <h1 className="font-display font-medium text-primary leading-tight" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
                 Give with intention
               </h1>
-              <p className="font-body text-lg text-body/60 max-w-lg mt-4 leading-relaxed">
+              <p className="font-body text-body/60 max-w-lg mt-4 leading-relaxed" style={{ fontSize: 'clamp(0.875rem, 2vw, 1.125rem)' }}>
                 Create a birthday wishlist or goal campaign, share the link, and receive gifts from the people who matter most.
               </p>
               <div className="flex items-center mt-8 justify-center lg:justify-start">
@@ -44,7 +44,7 @@ export default function HomePage() {
         {/* How it works */}
         <div className="bg-primary/70 w-full">
           <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="font-display font-medium text-4xl text-white text-center mb-12">How it works</h2>
+          <h2 className="font-display font-medium text-white text-center mb-12" style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}>How it works</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <Card className="text-center p-6 border-none">
               <div className="w-12 h-12 rounded-full bg-ghost flex items-center justify-center mx-auto mb-4">
@@ -74,7 +74,7 @@ export default function HomePage() {
         {/* Features */}
         <div className="bg-white">
           <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="font-display font-medium text-4xl text-body text-center mb-12">Why Altar</h2>
+          <h2 className="font-display font-medium text-body text-center mb-12" style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}>Why Altar</h2>
           <FeatureCards />
         </section>
         </div>

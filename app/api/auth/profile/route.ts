@@ -1,13 +1,11 @@
 import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { verifyAuthWithFallback } from '@/lib/auth';
-import { uploadPublicImage } from '@/lib/cloudinary';
+import { authService, userRepository, storageService } from '@/lib/services';
 
 export async function PATCH(req: NextRequest) {
   try {
-    const user = await verifyAuthWithFallback(req);
+    const user = await authService.verifyAuthWithFallback(req);
     if (!user) {
       return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Authentication required' } }, { status: 401 });
     }
@@ -35,26 +33,24 @@ export async function PATCH(req: NextRequest) {
 
       const buffer = Buffer.from(await profilePictureFile.arrayBuffer());
       const base64 = `data:${profilePictureFile.type};base64,${buffer.toString('base64')}`;
-      profilePicture = await uploadPublicImage(base64, 'profiles');
+      profilePicture = await storageService.uploadPublicImage(base64, 'profiles');
     }
 
     const updateData: Record<string, string> = { name: name.trim() };
     if (phone !== null) updateData.phone = phone.trim() || '';
     if (profilePicture) updateData.profilePicture = profilePicture;
 
-    const updated = await prisma.user.update({
-      where: { id: user.userId },
-      data: updateData,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        profilePicture: true,
+    const updated = await userRepository.update(user.userId, updateData);
+
+    return NextResponse.json({
+      user: {
+        id: updated.id,
+        name: updated.name,
+        email: updated.email,
+        phone: updated.phone,
+        profilePicture: updated.profilePicture,
       },
     });
-
-    return NextResponse.json({ user: updated });
   } catch (error) {
     console.error('[PATCH /api/auth/profile]', error);
     return NextResponse.json({ error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' } }, { status: 500 });

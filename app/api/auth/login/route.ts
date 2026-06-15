@@ -1,13 +1,12 @@
 import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { signToken, verifyPassword } from '@/lib/auth';
+import { authService, userRepository } from '@/lib/services';
 import { LoginSchema } from '@/lib/validators';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const MAX_FAILED_ATTEMPTS = 10;
-const LOCKOUT_DURATION_MS = 60 * 60 * 1000; // 1 hour
+const LOCKOUT_DURATION_MS = 60 * 60 * 1000;
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,41 +24,36 @@ export async function POST(req: NextRequest) {
 
     const { email, password } = parsed.data;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await userRepository.findByEmail(email);
     if (!user) {
       return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Invalid email or password' } }, { status: 401 });
     }
 
-    // Check account lockout
     if (user.lockedUntil && user.lockedUntil > new Date()) {
       const remainingMs = user.lockedUntil.getTime() - Date.now();
       const remainingMin = Math.ceil(remainingMs / 60000);
       return NextResponse.json({ error: { code: 'ACCOUNT_LOCKED', message: `Account locked. Try again in ${remainingMin} minutes.` } }, { status: 429 });
     }
 
-    const valid = await verifyPassword(password, user.passwordHash);
+    const valid = await authService.verifyPassword(password, user.passwordHash);
     if (!valid) {
       const newAttempts = user.failedLoginAttempts + 1;
       const updates: Record<string, unknown> = { failedLoginAttempts: newAttempts };
       if (newAttempts >= MAX_FAILED_ATTEMPTS) {
         updates.lockedUntil = new Date(Date.now() + LOCKOUT_DURATION_MS);
       }
-      await prisma.user.update({ where: { id: user.id }, data: updates });
+      await userRepository.update(user.id, updates);
 
       return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Invalid email or password' } }, { status: 401 });
     }
 
-    // Reset failed attempts on successful login
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { failedLoginAttempts: 0, lockedUntil: null },
-    });
+    await userRepository.update(user.id, { failedLoginAttempts: 0, lockedUntil: null });
 
     if (!user.emailVerified) {
       return NextResponse.json({ error: { code: 'FORBIDDEN', message: 'Please verify your email before signing in. Check your inbox for the verification link.' } }, { status: 403 });
     }
 
-    const token = signToken({ userId: user.id, email: user.email, kycLevel: user.kycLevel, emailVerified: user.emailVerified });
+    const token = authService.signToken({ userId: user.id, email: user.email, kycLevel: user.kycLevel, emailVerified: user.emailVerified });
     const response = NextResponse.json({
       user: {
         id: user.id,

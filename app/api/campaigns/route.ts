@@ -1,17 +1,16 @@
 import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
+import { authService, campaignRepository, storageService } from '@/lib/services';
 import { CreateCampaignSchema } from '@/lib/validators';
 import { generateUniqueSlug } from '@/lib/slugs';
-import { uploadPublicImage } from '@/lib/cloudinary';
+import { prisma } from '@/lib/prisma';
 import { rateLimit } from '@/lib/rate-limit';
 
 function getUserId(req: NextRequest): string | null {
   const token = req.cookies.get('altar_token')?.value;
   if (!token) return null;
-  const payload = verifyToken(token);
+  const payload = authService.verifyToken(token);
   return payload?.userId ?? null;
 }
 
@@ -35,33 +34,29 @@ export async function POST(req: NextRequest) {
 
     const { title, description, type, goalAmount, deadline, coverPhoto, allowOverflow } = parsed.data;
 
-    // Upload cover photo to Cloudinary
-    const coverPhotoUrl = await uploadPublicImage(coverPhoto, 'campaigns');
+    const coverPhotoUrl = await storageService.uploadPublicImage(coverPhoto, 'campaigns');
 
     const slug = await generateUniqueSlug(title, async (s: string) => {
-      const existing = await prisma.campaign.findUnique({ where: { slug: s } });
+      const existing = await campaignRepository.findBySlug(s);
       return existing !== null;
     });
 
-    // Ensure user has a wallet
     await prisma.wallet.upsert({
       where: { userId },
       create: { userId },
       update: {},
     });
 
-    const campaign = await prisma.campaign.create({
-      data: {
-        slug,
-        title,
-        description,
-        type,
-        coverPhoto: coverPhotoUrl,
-        goalAmount: goalAmount ?? null,
-        deadline: deadline ? new Date(deadline) : null,
-        allowOverflow,
-        ownerId: userId,
-      },
+    const campaign = await campaignRepository.create({
+      slug,
+      title,
+      description,
+      type,
+      coverPhoto: coverPhotoUrl,
+      goalAmount: goalAmount ?? null,
+      deadline: deadline ? new Date(deadline) : null,
+      allowOverflow,
+      ownerId: userId,
     });
 
     return NextResponse.json({ id: campaign.id, slug: campaign.slug }, { status: 201 });

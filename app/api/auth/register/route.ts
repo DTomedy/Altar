@@ -2,12 +2,9 @@ import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
-import { hashPassword } from '@/lib/auth';
+import { authService, emailService, userRepository } from '@/lib/services';
 import { RegisterSchema } from '@/lib/validators';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
-import { sendVerificationEmail } from '@/lib/email';
 
 function getSecret(): string {
   const secret = process.env.JWT_SECRET;
@@ -31,15 +28,8 @@ export async function POST(req: NextRequest) {
 
     const { email, password, name, phone } = parsed.data;
 
-    const passwordHash = await hashPassword(password);
-    const user = await prisma.user.create({
-      data: { email, passwordHash, name, phone },
-    }).catch((err) => {
-      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
-        return null;
-      }
-      throw err;
-    });
+    const passwordHash = await authService.hashPassword(password);
+    const user = await userRepository.create({ email, passwordHash, name, phone });
 
     if (!user) {
       return NextResponse.json({ error: { code: 'CONFLICT', message: 'An account with this email already exists' } }, { status: 409 });
@@ -47,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     try {
       const emailToken = jwt.sign({ userId: user.id, type: 'email-verify' }, getSecret(), { expiresIn: '24h' });
-      await sendVerificationEmail(email, emailToken);
+      await emailService.sendVerificationEmail(email, emailToken);
     } catch (emailErr) {
       console.error('[POST /api/auth/register] Failed to send verification email:', emailErr);
     }

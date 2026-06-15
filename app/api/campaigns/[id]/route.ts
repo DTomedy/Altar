@@ -1,13 +1,12 @@
 import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
+import { authService, campaignRepository } from '@/lib/services';
 
 function getUserId(req: NextRequest): string | null {
   const token = req.cookies.get('altar_token')?.value;
   if (!token) return null;
-  const payload = verifyToken(token);
+  const payload = authService.verifyToken(token);
   return payload?.userId ?? null;
 }
 
@@ -23,7 +22,7 @@ export async function PATCH(
 
     const { id } = await params;
 
-    const campaign = await prisma.campaign.findUnique({ where: { id } });
+    const campaign = await campaignRepository.findById(id);
     if (!campaign) {
       return NextResponse.json({ error: { code: 'NOT_FOUND', message: 'Campaign not found' } }, { status: 404 });
     }
@@ -34,10 +33,7 @@ export async function PATCH(
       return NextResponse.json({ error: { code: 'INVALID_STATE', message: 'Only active campaigns can be ended' } }, { status: 422 });
     }
 
-    await prisma.campaign.update({
-      where: { id },
-      data: { status: 'CLOSED' },
-    });
+    await campaignRepository.update(id, { status: 'CLOSED' });
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -58,7 +54,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const campaign = await prisma.campaign.findUnique({ where: { id } });
+    const campaign = await campaignRepository.findById(id);
     if (!campaign) {
       return NextResponse.json({ error: { code: 'NOT_FOUND', message: 'Campaign not found' } }, { status: 404 });
     }
@@ -66,7 +62,7 @@ export async function DELETE(
       return NextResponse.json({ error: { code: 'FORBIDDEN', message: 'Not your campaign' } }, { status: 403 });
     }
 
-    await prisma.campaign.delete({ where: { id } });
+    await campaignRepository.delete(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

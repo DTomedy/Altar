@@ -1,12 +1,11 @@
 import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { verifyAuthWithFallback, hashPassword, verifyPassword } from '@/lib/auth';
+import { authService, userRepository } from '@/lib/services';
 
 export async function PATCH(req: NextRequest) {
   try {
-    const user = await verifyAuthWithFallback(req);
+    const user = await authService.verifyAuthWithFallback(req);
     if (!user) {
       return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Authentication required' } }, { status: 401 });
     }
@@ -26,26 +25,18 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: { code: 'VALIDATION_ERROR', message: 'New passwords do not match' } }, { status: 400 });
     }
 
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.userId },
-      select: { passwordHash: true },
-    });
-
+    const dbUser = await userRepository.findById(user.userId);
     if (!dbUser) {
       return NextResponse.json({ error: { code: 'NOT_FOUND', message: 'User not found' } }, { status: 404 });
     }
 
-    const isValid = await verifyPassword(currentPassword, dbUser.passwordHash);
+    const isValid = await authService.verifyPassword(currentPassword, dbUser.passwordHash);
     if (!isValid) {
       return NextResponse.json({ error: { code: 'INVALID_PASSWORD', message: 'Current password is incorrect' } }, { status: 400 });
     }
 
-    const newHash = await hashPassword(newPassword);
-
-    await prisma.user.update({
-      where: { id: user.userId },
-      data: { passwordHash: newHash },
-    });
+    const newHash = await authService.hashPassword(newPassword);
+    await userRepository.update(user.userId, { passwordHash: newHash });
 
     return NextResponse.json({ message: 'Password updated successfully' });
   } catch (error) {

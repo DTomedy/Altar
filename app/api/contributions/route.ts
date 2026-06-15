@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { campaignRepository, contributionRepository } from '@/lib/services';
 import { CreateContributionSchema } from '@/lib/validators';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import crypto from 'crypto';
@@ -20,9 +20,9 @@ export async function POST(req: NextRequest) {
     }, { status: 422 });
   }
 
-  const { campaignId, wishlistItemId, amount, isAnonymous, displayName, message, } = parsed.data;
+  const { campaignId, wishlistItemId, amount, isAnonymous, displayName, message } = parsed.data;
 
-  const campaign = await prisma.campaign.findUnique({ where: { id: campaignId } });
+  const campaign = await campaignRepository.findById(campaignId);
   if (!campaign || campaign.status !== 'ACTIVE') {
     return NextResponse.json({
       error: { code: 'CAMPAIGN_NOT_ACTIVE', message: 'Campaign is not active' }
@@ -31,17 +31,14 @@ export async function POST(req: NextRequest) {
 
   const txRef = `altar-${campaignId}-${crypto.randomUUID()}`;
 
-  const contribution = await prisma.contribution.create({
-    data: {
-      campaignId,
-      wishlistItemId: wishlistItemId ?? null,
-      amount,
-      isAnonymous,
-      displayName: isAnonymous ? null : displayName,
-      message,
-      flwTxRef: txRef,
-      status: 'PENDING',
-    }
+  const contribution = await contributionRepository.create({
+    campaignId,
+    wishlistItemId: wishlistItemId ?? null,
+    amount,
+    isAnonymous,
+    displayName: isAnonymous ? null : displayName,
+    message,
+    flwTxRef: txRef,
   });
 
   return NextResponse.json({ data: { contributionId: contribution.id, txRef } }, { status: 201 });

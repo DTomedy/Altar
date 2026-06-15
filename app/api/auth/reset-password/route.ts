@@ -3,8 +3,7 @@ import 'server-only';
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-import { prisma } from '@/lib/prisma';
-import { hashPassword } from '@/lib/auth';
+import { authService, userRepository } from '@/lib/services';
 
 function getSecret(): string {
   const secret = process.env.JWT_SECRET;
@@ -43,11 +42,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Invalid reset token' } }, { status: 401 });
     }
 
-    const passwordHash = await hashPassword(password);
-    await prisma.user.update({
-      where: { id: payload.userId },
-      data: { passwordHash },
-    });
+    const passwordHash = await authService.hashPassword(password);
+    await userRepository.update(payload.userId, { passwordHash });
 
     return NextResponse.json({ message: 'Password has been reset successfully. You can now log in with your new password.' });
   } catch (error) {

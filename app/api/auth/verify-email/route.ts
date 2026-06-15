@@ -2,8 +2,7 @@ import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { prisma } from '@/lib/prisma';
-import { signToken } from '@/lib/auth';
+import { authService, userRepository } from '@/lib/services';
 
 function getSecret(): string {
   const secret = process.env.JWT_SECRET;
@@ -38,18 +37,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL('/verify-email?error=invalid', req.url));
     }
 
-    const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+    const user = await userRepository.findById(payload.userId);
     if (!user) {
       return NextResponse.redirect(new URL('/verify-email?error=invalid', req.url));
     }
 
-    await prisma.user.update({
-      where: { id: payload.userId },
-      data: { emailVerified: true, kycLevel: user.kycLevel < 1 ? 1 : user.kycLevel },
-    });
+    const newKycLevel = user.kycLevel < 1 ? 1 : user.kycLevel;
+    await userRepository.update(payload.userId, { emailVerified: true, kycLevel: newKycLevel });
 
-    // Set JWT cookie after verification
-    const authToken = signToken({ userId: user.id, email: user.email, kycLevel: user.kycLevel < 1 ? 1 : user.kycLevel, emailVerified: true });
+    const authToken = authService.signToken({ userId: user.id, email: user.email, kycLevel: newKycLevel, emailVerified: true });
 
     const response = NextResponse.json({ success: true });
     response.cookies.set('altar_token', authToken, {

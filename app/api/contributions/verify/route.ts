@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { contributionRepository, paymentService } from '@/lib/services';
 import { VerifyContributionSchema } from '@/lib/validators';
 import Decimal from 'decimal.js';
 
-const AMOUNT_TOLERANCE = 0.01; // 1% tolerance for minor variations
+const AMOUNT_TOLERANCE = 0.01;
 
 export async function POST(req: NextRequest) {
   const parsed = VerifyContributionSchema.safeParse(await req.json());
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
   const { txRef } = parsed.data;
 
-  const contribution = await prisma.contribution.findUnique({ where: { flwTxRef: txRef } });
+  const contribution = await contributionRepository.findByTxRef(txRef);
   if (!contribution) {
     return NextResponse.json({
       error: { code: 'NOT_FOUND', message: 'Contribution not found' }
@@ -32,39 +32,42 @@ export async function POST(req: NextRequest) {
     }, { status: 400 });
   }
 
-  const flwResponse = await fetch(
-    `https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=${txRef}`,
-    { headers: { Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}` } }
-  );
-  const flwData = await flwResponse.json();
-
-  if (
-    flwData.status !== 'success' ||
-    flwData.data?.status !== 'successful' ||
-    flwData.data?.currency !== 'NGN'
-  ) {
-    await prisma.contribution.update({ where: { id: contribution.id }, data: { status: 'FAILED' } });
+  let flwResponse: { status: string; data?: { status?: string; currency?: string; amount?: number; id?: number } };
+  try {
+    flwResponse = await paymentService.verifyTransaction(txRef) as typeof flwResponse;
+  } catch {
+    await contributionRepository.update(contribution.id, { status: 'FAILED' });
     return NextResponse.json({
       error: { code: 'VERIFICATION_FAILED', message: 'Payment verification failed' }
     }, { status: 400 });
   }
 
-  const paidAmount = new Decimal(flwData.data.amount);
+  if (
+    flwResponse.status !== 'success' ||
+    flwResponse.data?.status !== 'successful' ||
+    flwResponse.data?.currency !== 'NGN'
+  ) {
+    await contributionRepository.update(contribution.id, { status: 'FAILED' });
+    return NextResponse.json({
+      error: { code: 'VERIFICATION_FAILED', message: 'Payment verification failed' }
+    }, { status: 400 });
+  }
+
+  const paidAmount = new Decimal(flwResponse.data!.amount!);
   const expectedAmount = new Decimal(contribution.amount);
   const allowedMin = expectedAmount.mul(1 - AMOUNT_TOLERANCE);
   const allowedMax = expectedAmount.mul(1 + AMOUNT_TOLERANCE);
 
   if (paidAmount.lessThan(allowedMin) || paidAmount.greaterThan(allowedMax)) {
-    await prisma.contribution.update({ where: { id: contribution.id }, data: { status: 'FAILED' } });
+    await contributionRepository.update(contribution.id, { status: 'FAILED' });
     return NextResponse.json({
       error: { code: 'AMOUNT_MISMATCH', message: `Paid amount (${paidAmount}) does not match expected amount (${expectedAmount})` }
     }, { status: 400 });
   }
 
-  // Mark as SUCCESS — wallet credit is handled by the webhook
-  await prisma.contribution.update({
-    where: { id: contribution.id },
-    data: { status: 'SUCCESS', flwTxId: String(flwData.data.id) }
+  await contributionRepository.update(contribution.id, {
+    status: 'SUCCESS',
+    flwTxId: String(flwResponse.data!.id!),
   });
 
   return NextResponse.json({ data: { success: true } });

@@ -1,20 +1,16 @@
 import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { verifyAuthWithFallback } from '@/lib/auth';
+import { authService, userRepository } from '@/lib/services';
 
 export async function POST(req: NextRequest) {
   try {
-    const user = await verifyAuthWithFallback(req);
+    const user = await authService.verifyAuthWithFallback(req);
     if (!user) {
       return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Authentication required' } }, { status: 401 });
     }
 
-    await prisma.user.update({
-      where: { id: user.userId },
-      data: { onboardingViewed: true },
-    });
+    await userRepository.update(user.userId, { onboardingViewed: true });
 
     return NextResponse.json({ success: true });
   } catch (error) {

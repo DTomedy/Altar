@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 
 interface LoginFormProps {
@@ -9,7 +8,6 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onForgotPassword }: LoginFormProps) {
-  const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,13 +33,17 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
         return;
       }
 
-      router.push('/dashboard');
+      // Small delay to ensure the Set-Cookie header is applied
+      // before navigating. Use full page navigation so middleware
+      // sees the fresh token.
+      await new Promise((r) => setTimeout(r, 200));
+      window.location.href = '/dashboard';
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
-  }, [email, password, router]);
+  }, [email, password]);
 
   return (
     <>

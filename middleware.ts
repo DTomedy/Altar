@@ -3,7 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 function base64UrlDecode(str: string): string {
   str = str.replace(/-/g, "+").replace(/_/g, "/");
   while (str.length % 4) str += "=";
-  return atob(str);
+  try {
+    return Buffer.from(str, "base64").toString("utf-8");
+  } catch {
+    return atob(str);
+  }
 }
 
 function parseToken(token: string): Record<string, unknown> | null {

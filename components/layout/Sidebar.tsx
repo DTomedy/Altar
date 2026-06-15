@@ -32,6 +32,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={false}
               className={cn(
                 'flex items-center gap-3 font-body font-medium px-3 py-2.5 rounded-xl transition-colors text-sm',
                 isActive
@@ -49,6 +50,7 @@ export function Sidebar() {
       <div className="p-3 border-t border-border-soft">
         <Link
           href="/api/auth/logout"
+          prefetch={false}
           className="flex items-center gap-3 font-body font-medium px-3 py-2.5 rounded-xl transition-colors text-sm text-muted hover:text-error hover:bg-error/5"
         >
           <LogOut className="w-5 h-5" />

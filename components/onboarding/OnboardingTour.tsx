@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { Gift, Plus, Share2 } from 'lucide-react';
 
 const STEPS = [
@@ -26,8 +25,6 @@ const STEPS = [
 ];
 
 export function OnboardingTour() {
-  const router = useRouter();
-
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -40,9 +37,8 @@ export function OnboardingTour() {
       /* ignore */
     } finally {
       setDismissed(true);
-      router.refresh();
     }
-  }, [router]);
+  }, []);
 
   if (dismissed) return null;
 

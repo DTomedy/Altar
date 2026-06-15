@@ -1,25 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { contributionRepository, paymentService } from '@/lib/services';
+import { contributionRepository, paymentService, paymentLogRepository, campaignRepository } from '@/lib/services';
 import { VerifyContributionSchema } from '@/lib/validators';
+import { formatNaira } from '@/lib/formatters';
 import Decimal from 'decimal.js';
-
-const AMOUNT_TOLERANCE = 0.01;
 
 export async function POST(req: NextRequest) {
   const parsed = VerifyContributionSchema.safeParse(await req.json());
   if (!parsed.success) {
-    return NextResponse.json({
-      error: { code: 'VALIDATION_ERROR', message: 'Invalid input', details: parsed.error.flatten() }
-    }, { status: 422 });
+    return NextResponse.json(
+      { error: { code: 'VALIDATION_ERROR', message: 'Invalid input', details: parsed.error.flatten() } },
+      { status: 422 },
+    );
   }
 
   const { txRef } = parsed.data;
 
   const contribution = await contributionRepository.findByTxRef(txRef);
   if (!contribution) {
-    return NextResponse.json({
-      error: { code: 'NOT_FOUND', message: 'Contribution not found' }
-    }, { status: 404 });
+    return NextResponse.json(
+      { error: { code: 'NOT_FOUND', message: 'Contribution not found' } },
+      { status: 404 },
+    );
   }
 
   if (contribution.status === 'SUCCESS') {
@@ -27,19 +28,65 @@ export async function POST(req: NextRequest) {
   }
 
   if (contribution.status === 'FAILED') {
-    return NextResponse.json({
-      error: { code: 'ALREADY_FAILED', message: 'This payment attempt has failed' }
-    }, { status: 400 });
+    return NextResponse.json(
+      { error: { code: 'ALREADY_FAILED', message: 'This payment attempt has failed' } },
+      { status: 400 },
+    );
   }
 
-  let flwResponse: { status: string; data?: { status?: string; currency?: string; amount?: number; id?: number } };
+  // ── Validate contribution amount against campaign range ───────────────────
+  const campaign = await campaignRepository.findById(contribution.campaignId);
+  if (campaign) {
+    const campaignMin = Number(campaign.minAmount);
+    const campaignMax = Number(campaign.maxAmount);
+    const contribAmount = Number(contribution.amount);
+    if (contribAmount < campaignMin || contribAmount > campaignMax) {
+      await contributionRepository.update(contribution.id, { status: 'FAILED' });
+      void paymentLogRepository.create({
+        flwTxRef: txRef,
+        campaignId: contribution.campaignId,
+        contributionId: contribution.id,
+        amountExpected: contribAmount,
+        outcome: 'FAILED',
+        failureReason: `Amount ${formatNaira(contribAmount)} outside campaign range (${formatNaira(campaignMin)} – ${formatNaira(campaignMax)})`,
+      });
+      return NextResponse.json(
+        { error: { code: 'AMOUNT_OUT_OF_RANGE', message: 'Contribution amount is outside the allowed range for this campaign' } },
+        { status: 422 },
+      );
+    }
+  }
+
+  // ── Verify with Flutterwave (server-side — non-negotiable) ────────────────
+  let flwResponse: {
+    status: string;
+    data?: {
+      status?: string;
+      currency?: string;
+      amount?: number;
+      id?: number;
+      payment_type?: string;
+    };
+  };
+
   try {
-    flwResponse = await paymentService.verifyTransaction(txRef) as typeof flwResponse;
+    flwResponse = (await paymentService.verifyTransaction(txRef)) as typeof flwResponse;
   } catch {
     await contributionRepository.update(contribution.id, { status: 'FAILED' });
-    return NextResponse.json({
-      error: { code: 'VERIFICATION_FAILED', message: 'Payment verification failed' }
-    }, { status: 400 });
+
+    void paymentLogRepository.create({
+      flwTxRef: txRef,
+      campaignId: contribution.campaignId,
+      contributionId: contribution.id,
+      amountExpected: Number(contribution.amount),
+      outcome: 'VERIFICATION_ERROR',
+      failureReason: 'Flutterwave API call failed',
+    });
+
+    return NextResponse.json(
+      { error: { code: 'VERIFICATION_FAILED', message: 'Payment verification failed' } },
+      { status: 400 },
+    );
   }
 
   if (
@@ -48,26 +95,67 @@ export async function POST(req: NextRequest) {
     flwResponse.data?.currency !== 'NGN'
   ) {
     await contributionRepository.update(contribution.id, { status: 'FAILED' });
-    return NextResponse.json({
-      error: { code: 'VERIFICATION_FAILED', message: 'Payment verification failed' }
-    }, { status: 400 });
+
+    void paymentLogRepository.create({
+      flwTxRef: txRef,
+      campaignId: contribution.campaignId,
+      contributionId: contribution.id,
+      amountExpected: Number(contribution.amount),
+      amountPaid: flwResponse.data?.amount ?? null,
+      outcome: 'FAILED',
+      failureReason: `Flutterwave status: ${flwResponse.data?.status ?? 'unknown'}, currency: ${flwResponse.data?.currency ?? 'unknown'}`,
+    });
+
+    return NextResponse.json(
+      { error: { code: 'VERIFICATION_FAILED', message: 'Payment verification failed' } },
+      { status: 400 },
+    );
   }
 
+  // ── Amount check: paidAmount must be >= expectedAmount ────────────────────
+  // No tolerance band. Overpayment is allowed. Underpayment is always rejected.
   const paidAmount = new Decimal(flwResponse.data!.amount!);
   const expectedAmount = new Decimal(contribution.amount);
-  const allowedMin = expectedAmount.mul(1 - AMOUNT_TOLERANCE);
-  const allowedMax = expectedAmount.mul(1 + AMOUNT_TOLERANCE);
 
-  if (paidAmount.lessThan(allowedMin) || paidAmount.greaterThan(allowedMax)) {
+  if (paidAmount.lessThan(expectedAmount)) {
     await contributionRepository.update(contribution.id, { status: 'FAILED' });
-    return NextResponse.json({
-      error: { code: 'AMOUNT_MISMATCH', message: `Paid amount (${paidAmount}) does not match expected amount (${expectedAmount})` }
-    }, { status: 400 });
+
+    void paymentLogRepository.create({
+      flwTxRef: txRef,
+      flwTxId: String(flwResponse.data!.id!),
+      campaignId: contribution.campaignId,
+      contributionId: contribution.id,
+      amountExpected: Number(contribution.amount),
+      amountPaid: flwResponse.data!.amount!,
+      outcome: 'AMOUNT_MISMATCH',
+      failureReason: `Paid ₦${paidAmount.toFixed(2)}, expected ₦${expectedAmount.toFixed(2)}`,
+    });
+
+    return NextResponse.json(
+      {
+        error: {
+          code: 'AMOUNT_MISMATCH',
+          message: `Amount paid (₦${paidAmount.toFixed(2)}) is less than the expected amount (₦${expectedAmount.toFixed(2)})`,
+        },
+      },
+      { status: 400 },
+    );
   }
 
+  // ── All checks passed — mark SUCCESS ─────────────────────────────────────
   await contributionRepository.update(contribution.id, {
     status: 'SUCCESS',
     flwTxId: String(flwResponse.data!.id!),
+  });
+
+  void paymentLogRepository.create({
+    flwTxRef: txRef,
+    flwTxId: String(flwResponse.data!.id!),
+    campaignId: contribution.campaignId,
+    contributionId: contribution.id,
+    amountExpected: Number(contribution.amount),
+    amountPaid: flwResponse.data!.amount!,
+    outcome: 'SUCCESS',
   });
 
   return NextResponse.json({ data: { success: true } });

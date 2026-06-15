@@ -17,6 +17,8 @@ export const CreateCampaignSchema = z.object({
   description: z.string().min(10, 'Description must be at least 10 characters').max(1000).trim(),
   type: z.enum(['WISHLIST', 'GOAL']),
   coverPhoto: z.string().min(1, 'Cover image is required'),
+  minAmount: z.number().min(500, 'Minimum gift must be at least ₦500').max(50000000).optional().nullable(),
+  maxAmount: z.number().min(500).max(10000000, 'Maximum gift must be at most ₦10,000,000').optional().nullable(),
   goalAmount: z.number().min(500, 'Minimum goal is ₦500').max(50000000, 'Maximum goal is ₦50,000,000').optional().nullable(),
   deadline: z.string().optional().nullable(), // ISO string date
   allowOverflow: z.boolean().default(false),

@@ -5,8 +5,21 @@ import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui';
-import { formatNaira, formatDate } from '@/lib/formatters';
-import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { formatNaira, formatDateTime } from '@/lib/formatters';
+
+type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
+
+const STATUS_LABELS: Record<PaymentStatus, string> = {
+  PENDING: 'Pending',
+  SUCCESS: 'Successful',
+  FAILED: 'Failed',
+};
+
+const STATUS_STYLES: Record<PaymentStatus, string> = {
+  PENDING: 'bg-petal text-primary',
+  SUCCESS: 'bg-success/10 text-success',
+  FAILED: 'bg-error/10 text-error',
+};
 
 async function getWalletData() {
   const cookieStore = await cookies();
@@ -22,17 +35,28 @@ async function getWalletData() {
 
   if (!user) return null;
 
-  const wallet = await prisma.wallet.findUnique({
-    where: { userId: payload.userId },
-    include: {
-      transactions: {
-        orderBy: { createdAt: 'desc' },
-        take: 20,
+  const [wallet, contributions] = await Promise.all([
+    prisma.wallet.findUnique({
+      where: { userId: payload.userId },
+    }),
+    prisma.contribution.findMany({
+      where: { campaign: { ownerId: payload.userId } },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+      select: {
+        id: true,
+        flwTxRef: true,
+        amount: true,
+        status: true,
+        displayName: true,
+        isAnonymous: true,
+        createdAt: true,
+        campaign: { select: { title: true } },
       },
-    },
-  });
+    }),
+  ]);
 
-  return { wallet, kycLevel: user.kycLevel, kycStatus: user.kycStatus };
+  return { wallet, contributions, kycLevel: user.kycLevel, kycStatus: user.kycStatus };
 }
 
 export default async function WalletPage() {
@@ -42,7 +66,7 @@ export default async function WalletPage() {
     redirect('/auth');
   }
 
-  const { wallet, kycLevel } = data;
+  const { wallet, contributions, kycLevel } = data;
 
   const canWithdraw = kycLevel >= 2;
 
@@ -68,51 +92,74 @@ export default async function WalletPage() {
         )}
       </div>
 
-      {/* Transactions */}
+      {/* Transactions table */}
       <div>
         <h2 className="font-display font-medium text-lg text-body mb-4">Transaction history</h2>
 
-        {!wallet || wallet.transactions.length === 0 ? (
+        {contributions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center bg-surface border border-default rounded-2xl">
             <p className="font-body text-sm text-body/60">No transactions yet.</p>
           </div>
         ) : (
-          <div className="bg-surface border border-default rounded-2xl divide-y divide-border-soft">
-            {wallet.transactions.map((tx) => (
-              <div key={tx.id} className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                      tx.type === 'CREDIT' ? 'bg-success/10' : 'bg-error/10'
-                    }`}
-                  >
-                    {tx.type === 'CREDIT' ? (
-                      <ArrowDownLeft className={`w-4 h-4 ${tx.type === 'CREDIT' ? 'text-success' : 'text-error'}`} />
-                    ) : (
-                      <ArrowUpRight className="w-4 h-4 text-error" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="font-body text-sm text-body">{tx.description}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <p className="font-body text-xs text-muted">{formatDate(tx.createdAt)}</p>
-                      {tx.status === 'PENDING' && (
-                        <span className="inline-flex items-center font-body font-medium text-xs px-2 py-0.5 rounded-full bg-petal text-primary">
-                          Pending
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <p
-                  className={`font-display font-medium text-sm ${
-                    tx.type === 'CREDIT' ? 'text-success' : 'text-error'
-                  }`}
-                >
-                  {tx.type === 'CREDIT' ? '+' : '-'}{formatNaira(tx.amount)}
-                </p>
-              </div>
-            ))}
+          <div className="bg-surface border border-default rounded-2xl overflow-hidden overflow-x-auto">
+            <table className="w-full min-w-[600px]">
+              <thead>
+                <tr className="border-b border-border-soft">
+                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
+                    Transaction ID
+                  </th>
+                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-right px-5 py-3">
+                    Amount
+                  </th>
+                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
+                    Payment status
+                  </th>
+                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
+                    Payer name
+                  </th>
+                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
+                    Date / time
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-soft">
+                {contributions.map((c) => (
+                  <tr key={c.id} className="hover:bg-ghost/30 transition-colors">
+                    <td className="px-5 py-4">
+                      <span className="font-mono text-xs text-body" title={c.flwTxRef}>
+                        {c.flwTxRef.length > 28
+                          ? `${c.flwTxRef.slice(0, 16)}...${c.flwTxRef.slice(-8)}`
+                          : c.flwTxRef}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <span className="font-display font-medium text-sm text-body">
+                        {formatNaira(c.amount)}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span
+                        className={`inline-flex items-center font-body font-medium text-xs px-2.5 py-1 rounded-full ${
+                          STATUS_STYLES[c.status as PaymentStatus]
+                        }`}
+                      >
+                        {STATUS_LABELS[c.status as PaymentStatus]}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="font-body text-sm text-body">
+                        {c.isAnonymous ? '—' : c.displayName || '—'}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="font-body text-sm text-muted">
+                        {formatDateTime(c.createdAt)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
+import { paymentLogRepository } from '@/lib/services';
 import { formatNaira } from '@/lib/formatters';
 import Decimal from 'decimal.js';
 
@@ -41,10 +42,32 @@ async function handleChargeCompleted(data: z.infer<typeof chargeSchema>) {
 
   const contribution = await prisma.contribution.findUnique({
     where: { flwTxRef: tx_ref },
-    include: { campaign: { select: { ownerId: true } } },
+    include: { campaign: { select: { ownerId: true, minAmount: true, maxAmount: true } } },
   });
 
   if (!contribution || contribution.status === 'FAILED') {
+    return NextResponse.json({ data: { received: true } });
+  }
+
+  const campaignMin = Number(contribution.campaign?.minAmount ?? 500);
+  const campaignMax = Number(contribution.campaign?.maxAmount ?? 10_000_000);
+  if (amount < campaignMin || amount > campaignMax) {
+    await prisma.contribution.update({
+      where: { id: contribution.id },
+      data: { status: 'FAILED' },
+    });
+
+    void paymentLogRepository.create({
+      flwTxRef: tx_ref,
+      flwTxId: String(flwTxId),
+      campaignId: contribution.campaignId,
+      contributionId: contribution.id,
+      amountExpected: Number(contribution.amount),
+      amountPaid: amount,
+      outcome: 'AMOUNT_MISMATCH',
+      failureReason: `Webhook: paid ₦${amount} outside campaign range (₦${campaignMin} – ₦${campaignMax})`,
+    });
+
     return NextResponse.json({ data: { received: true } });
   }
 
@@ -53,6 +76,18 @@ async function handleChargeCompleted(data: z.infer<typeof chargeSchema>) {
       where: { id: contribution.id },
       data: { status: 'FAILED' },
     });
+
+    void paymentLogRepository.create({
+      flwTxRef: tx_ref,
+      flwTxId: String(flwTxId),
+      campaignId: contribution.campaignId,
+      contributionId: contribution.id,
+      amountExpected: Number(contribution.amount),
+      amountPaid: amount,
+      outcome: 'AMOUNT_MISMATCH',
+      failureReason: `Webhook: paid ₦${amount}, expected ₦${Number(contribution.amount)}`,
+    });
+
     return NextResponse.json({ data: { received: true } });
   }
 
@@ -129,6 +164,16 @@ async function handleChargeCompleted(data: z.infer<typeof chargeSchema>) {
         });
       }
     }
+  });
+
+  void paymentLogRepository.create({
+    flwTxRef: tx_ref,
+    flwTxId: String(flwTxId),
+    campaignId: contribution.campaignId,
+    contributionId: contribution.id,
+    amountExpected: Number(contribution.amount),
+    amountPaid: amount,
+    outcome: 'SUCCESS',
   });
 
   return NextResponse.json({ data: { received: true } });

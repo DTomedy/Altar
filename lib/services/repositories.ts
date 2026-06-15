@@ -5,9 +5,11 @@ import {
   IUserRepository,
   ICampaignRepository,
   IContributionRepository,
+  IPaymentLogRepository,
   CreateUserData,
   CreateCampaignData,
   CreateContributionData,
+  CreatePaymentLogData,
 } from './interfaces';
 
 export class UserRepository implements IUserRepository {
@@ -70,5 +72,24 @@ export class ContributionRepository implements IContributionRepository {
 
   async update(id: string, data: Prisma.ContributionUpdateInput) {
     return prisma.contribution.update({ where: { id }, data });
+  }
+}
+
+export class PaymentLogRepository implements IPaymentLogRepository {
+  async create(data: CreatePaymentLogData): Promise<void> {
+    await prisma.paymentLog.create({
+      data: {
+        flwTxRef: data.flwTxRef,
+        flwTxId: data.flwTxId ?? null,
+        campaignId: data.campaignId,
+        contributionId: data.contributionId ?? null,
+        amountExpected: data.amountExpected,
+        amountPaid: data.amountPaid ?? null,
+        currency: data.currency ?? 'NGN',
+        outcome: data.outcome as 'INITIATED' | 'SUCCESS' | 'FAILED' | 'AMOUNT_MISMATCH' | 'VERIFICATION_ERROR',
+        failureReason: data.failureReason ?? null,
+        ipAddress: data.ipAddress ?? null,
+      },
+    });
   }
 }

@@ -82,6 +82,8 @@ export interface CreateCampaignData {
   description: string;
   type: string;
   coverPhoto: string;
+  minAmount: number;
+  maxAmount: number;
   goalAmount?: number | null;
   deadline?: Date | null;
   allowOverflow: boolean;
@@ -111,4 +113,23 @@ export interface IContributionRepository {
   findByTxRef(txRef: string): Promise<Contribution | null>;
   create(data: CreateContributionData): Promise<Contribution>;
   update(id: string, data: Partial<Contribution>): Promise<Contribution>;
+}
+
+// ─── Payment Log ─────────────────────────────────────────────────────────────
+
+export interface CreatePaymentLogData {
+  flwTxRef: string;
+  flwTxId?: string | null;
+  campaignId: string;
+  contributionId?: string | null;
+  amountExpected: number;
+  amountPaid?: number | null;
+  currency?: string;
+  outcome: 'INITIATED' | 'SUCCESS' | 'FAILED' | 'AMOUNT_MISMATCH' | 'VERIFICATION_ERROR';
+  failureReason?: string | null;
+  ipAddress?: string | null;
+}
+
+export interface IPaymentLogRepository {
+  create(data: CreatePaymentLogData): Promise<void>;
 }

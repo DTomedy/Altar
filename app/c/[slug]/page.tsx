@@ -285,6 +285,8 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                 <GiveForm
                   campaignId={campaign.id}
                   campaignTitle={campaign.title}
+                  minAmount={Number(campaign.minAmount)}
+                  maxAmount={Number(campaign.maxAmount)}
                 />
 
                 {/* Trust badge */}

@@ -32,3 +32,15 @@ export function formatDate(date: Date | string | number): string {
     year: 'numeric',
   });
 }
+
+export function formatDateTime(date: Date | string | number): string {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}

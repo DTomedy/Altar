@@ -12,11 +12,13 @@ interface GiveFormProps {
   campaignId: string;
   campaignTitle: string;
   wishlistItemId?: string;
+  minAmount?: number;
+  maxAmount?: number;
 }
 
 type FlwStatus = 'loading' | 'ready' | 'error';
 
-export function GiveForm({ campaignId, campaignTitle, wishlistItemId }: GiveFormProps) {
+export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount = 500, maxAmount = 10000000 }: GiveFormProps) {
   const [amount, setAmount] = useState<number>(10000);
   const [customAmount, setCustomAmount] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -111,13 +113,13 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId }: GiveForm
   }
 
   function handleSubmit() {
-    if (amount < 500) {
-      setErrorMessage('Minimum contribution is ₦500');
+    if (amount < minAmount) {
+      setErrorMessage(`Minimum gift is ${formatNaira(minAmount)}`);
       setStatus('error');
       return;
     }
-    if (amount > 10000000) {
-      setErrorMessage('Maximum contribution is ₦10,000,000');
+    if (amount > maxAmount) {
+      setErrorMessage(`Maximum gift is ${formatNaira(maxAmount)}`);
       setStatus('error');
       return;
     }
@@ -225,6 +227,11 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId }: GiveForm
             </button>
           ))}
         </div>
+
+        {/* Amount range hint */}
+        <p className="font-body text-xs text-body/40 mb-4">
+          Gifts between {formatNaira(minAmount)} and {formatNaira(maxAmount)}
+        </p>
 
         {/* Custom amount */}
         <div className="mb-4">

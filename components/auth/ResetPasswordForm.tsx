@@ -1,8 +1,22 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Circle, CheckCircle2 } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
+import { cn } from '@/lib/utils';
+
+type PasswordCheck = {
+  label: string;
+  test: (v: string) => boolean;
+};
+
+const passwordChecks: PasswordCheck[] = [
+  { label: 'At least 6 characters', test: (v) => v.length >= 6 },
+  { label: 'At least 1 uppercase letter', test: (v) => /[A-Z]/.test(v) },
+  { label: 'At least 1 lowercase letter', test: (v) => /[a-z]/.test(v) },
+  { label: 'At least 1 special character (e.g. !@#$%^&*)', test: (v) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(v) },
+];
 
 export function ResetPasswordForm() {
   const router = useRouter();
@@ -15,12 +29,14 @@ export function ResetPasswordForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const passwordAllMet = useMemo(() => passwordChecks.every((c) => c.test(password)), [password]);
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (!passwordAllMet) {
+      setError('Password does not meet all requirements');
       return;
     }
 
@@ -56,7 +72,7 @@ export function ResetPasswordForm() {
     } finally {
       setLoading(false);
     }
-  }, [password, confirmPassword, token]);
+  }, [passwordAllMet, password, confirmPassword, token]);
 
   if (!token) {
     return (
@@ -108,6 +124,25 @@ export function ResetPasswordForm() {
           required
           autoComplete="new-password"
         />
+        {password.length > 0 && !passwordAllMet && (
+          <div className="mt-1 space-y-1.5">
+            {passwordChecks.map((check, index) => {
+              const met = check.test(password);
+              return (
+                <div key={index} className="flex items-center gap-2">
+                  {met ? (
+                    <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                  ) : (
+                    <Circle className="w-4 h-4 text-muted shrink-0" />
+                  )}
+                  <span className={cn('font-body text-xs', met ? 'text-success' : 'text-body/60')}>
+                    {check.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
         <Input
           id="confirm-password"
           label="Confirm password"

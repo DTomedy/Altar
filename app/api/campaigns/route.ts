@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ id: campaign.id, slug: campaign.slug }, { status: 201 });
   } catch (error) {
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
     console.error('[POST /api/campaigns]', error);
-    return NextResponse.json({ error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' } }, { status: 500 });
+    return NextResponse.json({ error: { code: 'INTERNAL_ERROR', message } }, { status: 500 });
   }
 }

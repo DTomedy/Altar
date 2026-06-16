@@ -131,6 +131,16 @@ async function handleChargeCompleted(data: z.infer<typeof chargeSchema>) {
       },
     });
 
+    void tx.notification.create({
+      data: {
+        userId: ownerId,
+        type: 'CONTRIBUTION_RECEIVED',
+        title: `Gift received — ${formatNaira(contribution.amount)}`,
+        message: `Someone contributed to your campaign.`,
+        link: `/campaigns/${contribution.campaignId}`,
+      },
+    });
+
     if (contribution.wishlistItemId) {
       const item = await tx.wishlistItem.update({
         where: { id: contribution.wishlistItemId },
@@ -161,6 +171,16 @@ async function handleChargeCompleted(data: z.infer<typeof chargeSchema>) {
         await tx.campaign.update({
           where: { id: contribution.campaignId },
           data: { status: 'GOAL_REACHED' },
+        });
+
+        void tx.notification.create({
+          data: {
+            userId: ownerId,
+            type: 'CAMPAIGN_GOAL_REACHED',
+            title: `Campaign goal reached! 🎉`,
+            message: `Your campaign has reached its goal.`,
+            link: `/campaigns/${contribution.campaignId}`,
+          },
         });
       }
     }

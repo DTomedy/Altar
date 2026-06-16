@@ -91,7 +91,7 @@ export function Sidebar() {
       {!isOpen && (
         <button
           onClick={open}
-          className="lg:hidden fixed top-3 left-3 z-30 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white border border-border-soft text-body/60 hover:text-body hover:bg-ghost shadow-sm"
+          className="lg:hidden fixed top-3 left-3 z-40 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white border border-border-soft text-body/60 hover:text-body hover:bg-ghost shadow-sm"
           aria-label="Open sidebar"
         >
           <Menu className="w-5 h-5" />

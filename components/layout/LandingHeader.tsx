@@ -9,7 +9,7 @@ export function LandingHeader() {
         <Image src="/logo/Altar Logo_white.svg" alt="Altar" width={115} height={32} className="h-8 w-auto" priority />
       </Link>
       <div className="flex items-center gap-4">
-        <Link href="/auth">
+        <Link href="/auth" className="hidden sm:inline-flex">
           <Button variant="secondary" className="text-white hover:bg-transparent">Log in</Button>
         </Link>
         <Link href="/auth?mode=register">

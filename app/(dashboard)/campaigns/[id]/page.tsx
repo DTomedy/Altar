@@ -1,13 +1,11 @@
 import 'server-only';
 
-import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
-import { Button, Badge, ShareButton } from '@/components/ui';
-import { ExternalLink } from 'lucide-react';
+import { Badge, ShareButton } from '@/components/ui';
 import { formatNaira, formatDate } from '@/lib/formatters';
 
 async function getCampaign(id: string) {
@@ -84,12 +82,6 @@ export default async function CampaignDetailPage({
               <ShareButton
                 url={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/c/${campaign.slug}`}
               />
-              <Link href={`/c/${campaign.slug}`} target="_blank">
-                <Button variant="secondary">
-                  <ExternalLink className="w-5 h-5 mr-2" />
-                  View page
-                </Button>
-              </Link>
             </>
           )}
         </div>

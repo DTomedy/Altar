@@ -130,7 +130,7 @@ export function RegisterForm() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="font-display font-medium text-xl text-body mb-2">Check your email</h2>
+          <h2 className="font-display font-semibold text-xl text-body mb-2">Check your email</h2>
           <p className="font-body text-sm text-body/60 max-w-sm mx-auto">
             We sent a verification link to <strong className="text-body">{email}</strong>. Click the link to activate your account and access the dashboard.
           </p>

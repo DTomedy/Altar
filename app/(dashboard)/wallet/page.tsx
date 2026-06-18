@@ -4,8 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Button } from '@/components/ui';
 import { formatNaira, formatDateTime } from '@/lib/formatters';
+import { WalletWithdrawButton } from '@/components/wallet/WalletWithdrawButton';
 
 type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
 
@@ -21,6 +21,14 @@ const STATUS_STYLES: Record<PaymentStatus, string> = {
   FAILED: 'bg-error/10 text-error',
 };
 
+function shortCode(id: string): string {
+  const chars = id.replace(/[^a-z0-9]/gi, '').toUpperCase();
+  const a = chars.charAt(3) || 'X';
+  const b = chars.charAt(8) || 'X';
+  const c = chars.charAt(chars.length - 1) || 'X';
+  return `TR-${a}${b}${c}`;
+}
+
 async function getWalletData() {
   const cookieStore = await cookies();
   const token = cookieStore.get('altar_token')?.value;
@@ -35,7 +43,7 @@ async function getWalletData() {
 
   if (!user) return null;
 
-  const [wallet, contributions] = await Promise.all([
+  const [wallet, contributions, withdrawals] = await Promise.all([
     prisma.wallet.findUnique({
       where: { userId: payload.userId },
     }),
@@ -54,9 +62,23 @@ async function getWalletData() {
         campaign: { select: { title: true } },
       },
     }),
+    prisma.walletTransaction.findMany({
+      where: {
+        wallet: { userId: payload.userId },
+        type: 'DEBIT',
+        status: 'COMPLETED',
+      },
+      select: { amount: true },
+    }),
   ]);
 
-  return { wallet, contributions, kycLevel: user.kycLevel, kycStatus: user.kycStatus };
+  const totalReceived = contributions
+    .filter((c) => c.status === 'SUCCESS')
+    .reduce((sum, c) => sum + Number(c.amount), 0);
+
+  const totalWithdrawn = withdrawals.reduce((sum, w) => sum + Number(w.amount), 0);
+
+  return { wallet, contributions, totalReceived, totalWithdrawn, kycLevel: user.kycLevel, kycStatus: user.kycStatus };
 }
 
 export default async function WalletPage() {
@@ -66,59 +88,66 @@ export default async function WalletPage() {
     redirect('/auth');
   }
 
-  const { wallet, contributions, kycLevel } = data;
-
+  const { wallet, contributions, totalReceived, totalWithdrawn, kycLevel } = data;
   const canWithdraw = kycLevel >= 2;
 
   return (
     <div>
-      <h1 className="font-display font-medium text-2xl text-body mb-1">Wallet</h1>
+      <h1 className="font-display font-semibold text-2xl text-body mb-1">Wallet</h1>
       <p className="font-body text-sm text-body/60 mb-8">Manage your contributions and withdrawals.</p>
 
-      {/* Balance card */}
-      <div className="bg-primary text-white rounded-2xl p-6 mb-8">
-        <p className="font-body text-sm text-white/70 mb-1">Available balance</p>
-        <p className="font-display font-medium text-3xl mb-4">
-          {wallet ? formatNaira(wallet.balance) : '₦0.00'}
-        </p>
-        {canWithdraw ? (
-          <Button variant="secondary" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
-            Withdraw funds
-          </Button>
-        ) : (
-          <p className="font-body text-xs text-white/60">
-            Complete KYC verification to withdraw funds.
+      {/* Summary cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="bg-surface border border-border-soft rounded-2xl p-5">
+          <p className="font-body text-sm text-body/60 mb-1">Total received</p>
+          <p className="font-display font-semibold text-2xl text-primary">
+            {formatNaira(totalReceived)}
           </p>
-        )}
+        </div>
+
+        <div className="bg-primary text-white rounded-2xl p-5">
+          <p className="font-body text-sm text-white/70 mb-1">Available balance</p>
+          <p className="font-display font-semibold text-2xl mb-4">
+            {wallet ? formatNaira(wallet.balance) : '₦0.00'}
+          </p>
+          <WalletWithdrawButton canWithdraw={canWithdraw} />
+        </div>
+
+        <div className="bg-surface border border-border-soft rounded-2xl p-5">
+          <p className="font-body text-sm text-body/60 mb-1">Amount withdrawn</p>
+          <p className="font-display font-semibold text-2xl text-body">
+            {formatNaira(totalWithdrawn)}
+          </p>
+        </div>
       </div>
 
       {/* Transactions table */}
-      <div>
-        <h2 className="font-display font-medium text-lg text-body mb-4">Transaction history</h2>
+      <div className="bg-surface border border-default rounded-2xl p-5">
+        <h3 className="font-display font-semibold text-lg text-body mb-4">Transaction history</h3>
 
         {contributions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center bg-surface border border-default rounded-2xl">
+          <div className="flex flex-col items-center justify-center py-12 text-center">
             <p className="font-body text-sm text-body/60">No transactions yet.</p>
           </div>
         ) : (
-          <div className="bg-surface border border-default rounded-2xl overflow-hidden overflow-x-auto">
+          <div className="overflow-x-auto -mx-5">
             <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-border-soft">
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
-                    Transaction ID
+                  <th className="font-body text-xs text-muted font-semibold uppercase tracking-wider text-left px-5 py-3">
+                    Transaction
                   </th>
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-right px-5 py-3">
+                  <th className="font-body text-xs text-muted font-semibold uppercase tracking-wider text-right px-5 py-3">
                     Amount
                   </th>
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
-                    Payment status
+                  <th className="font-body text-xs text-muted font-semibold uppercase tracking-wider text-left px-5 py-3">
+                    Status
                   </th>
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
-                    Payer name
+                  <th className="font-body text-xs text-muted font-semibold uppercase tracking-wider text-left px-5 py-3">
+                    Payer
                   </th>
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
-                    Date / time
+                  <th className="font-body text-xs text-muted font-semibold uppercase tracking-wider text-left px-5 py-3">
+                    Date
                   </th>
                 </tr>
               </thead>
@@ -126,20 +155,18 @@ export default async function WalletPage() {
                 {contributions.map((c) => (
                   <tr key={c.id} className="hover:bg-ghost/30 transition-colors">
                     <td className="px-5 py-4">
-                      <span className="font-mono text-xs text-body" title={c.flwTxRef}>
-                        {c.flwTxRef.length > 28
-                          ? `${c.flwTxRef.slice(0, 16)}...${c.flwTxRef.slice(-8)}`
-                          : c.flwTxRef}
+                      <span className="font-mono text-xs text-primary font-semibold" title={c.flwTxRef}>
+                        {shortCode(c.id)}
                       </span>
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <span className="font-display font-medium text-sm text-body">
+                      <span className="font-mono font-semibold text-sm text-body">
                         {formatNaira(c.amount)}
                       </span>
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`inline-flex items-center font-body font-medium text-xs px-2.5 py-1 rounded-full ${
+                        className={`inline-flex items-center font-body font-semibold text-xs px-2.5 py-1 rounded-full ${
                           STATUS_STYLES[c.status as PaymentStatus]
                         }`}
                       >

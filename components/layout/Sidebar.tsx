@@ -35,9 +35,7 @@ export function Sidebar() {
   const sidebarContent = (
     <>
       <div className="flex items-center justify-between p-6">
-        <Link href="/">
           <Image src="/logo/Altar Logo.svg" alt="Altar" width={100} height={28} className="h-7 w-auto" priority />
-        </Link>
         <button
           onClick={close}
           className="lg:hidden p-2 text-body/60 hover:text-body transition-colors rounded-lg hover:bg-ghost"
@@ -58,7 +56,7 @@ export function Sidebar() {
               prefetch={false}
               onClick={handleLinkClick}
               className={cn(
-                'flex items-center gap-3 font-body font-medium px-3 py-2.5 rounded-xl transition-colors text-sm',
+                'flex items-center gap-3 font-body font-semibold px-3 py-2.5 rounded-xl transition-colors text-sm',
                 isActive
                   ? 'bg-ghost text-primary'
                   : 'text-body hover:text-primary hover:bg-ghost'
@@ -76,7 +74,7 @@ export function Sidebar() {
           href="/api/auth/logout"
           prefetch={false}
           onClick={handleLinkClick}
-          className="flex items-center gap-3 font-body font-medium px-3 py-2.5 rounded-xl transition-colors text-sm text-muted hover:text-error hover:bg-error/5"
+          className="flex items-center gap-3 font-body font-semibold px-3 py-2.5 rounded-xl transition-colors text-sm text-muted hover:text-error hover:bg-error/5"
         >
           <LogOut className="w-5 h-5" />
           Log out

@@ -180,7 +180,7 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
         <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
           <Check className="w-8 h-8 text-success" />
         </div>
-        <h3 className="font-display font-medium text-xl text-body mb-2">Gift sent!</h3>
+        <h3 className="font-display font-semibold text-xl text-body mb-2">Gift sent!</h3>
         <p className="font-body text-sm text-body/60 mb-1">
           Your gift of {formatNaira(amount)} is being processed.
         </p>
@@ -197,7 +197,7 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
             setMessage('');
             setAmount(10000);
           }}
-          className="bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors"
+          className="bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors"
         >
           Give again
         </button>
@@ -208,7 +208,7 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
   return (
     <div>
       <div className="bg-surface border border-default rounded-2xl p-5">
-        <h3 className="font-display font-medium text-lg text-body mb-4">Give a gift</h3>
+        <h3 className="font-display font-semibold text-lg text-body mb-4">Give a gift</h3>
 
         {/* Preset amounts */}
         <div className="flex flex-wrap gap-2 mb-4">
@@ -217,7 +217,7 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
               key={preset}
               onClick={() => handlePresetClick(preset)}
               className={cn(
-                'font-body font-medium px-4 py-2 rounded-full transition-colors text-sm',
+                'font-body font-semibold px-4 py-2 rounded-full transition-colors text-sm',
                 amount === preset && !customAmount
                   ? 'bg-primary text-white'
                   : 'bg-ghost text-primary hover:bg-petal'
@@ -309,7 +309,7 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
         <button
           onClick={handleSubmit}
           disabled={status === 'submitting' || flwStatus === 'loading'}
-          className="w-full bg-primary text-white font-body font-medium px-6 py-3 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          className="w-full bg-primary text-white font-body font-semibold px-6 py-3 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {status === 'submitting' ? (
             <>

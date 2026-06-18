@@ -34,9 +34,9 @@ This project uses **Tailwind CSS** for layout, spacing, sizing, and structure. B
 
 ```tsx
 // ✅ Correct — Tailwind with brand token classes
-<h1 className="font-display font-medium text-2xl text-primary">Ada's Birthday</h1>
-<span className="font-mono font-medium text-xl text-primary">₦120,000.00</span>
-<button className="bg-primary text-white rounded-full px-6 py-2.5 font-body font-medium">
+<h1 className="font-display font-semibold text-2xl text-primary">Ada's Birthday</h1>
+<span className="font-mono font-semibold text-xl text-primary">₦120,000.00</span>
+<button className="bg-primary text-white rounded-full px-6 py-2.5 font-body font-semibold">
   Give a gift
 </button>
 
@@ -155,7 +155,7 @@ import { cn } from '@/lib/utils'
 
 export function Button({ variant = 'primary', className }: ButtonProps) {
   return (
-    <button className={cn('rounded-full font-body font-medium', variant === 'primary' && 'bg-primary text-white', className)}>
+    <button className={cn('rounded-full font-body font-semibold', variant === 'primary' && 'bg-primary text-white', className)}>
       Give a gift
     </button>
   )
@@ -224,7 +224,7 @@ export function formatNaira(amount: number | Decimal): string {
 }
 
 // In components — always font-mono for amounts
-<span className="font-mono font-medium text-xl text-primary">
+<span className="font-mono font-semibold text-xl text-primary">
   {formatNaira(campaign.goalAmount)}
 </span>
 ```

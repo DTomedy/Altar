@@ -77,7 +77,7 @@ export function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="text-center">
-        <h1 className="font-display font-medium text-2xl text-body mb-2">Invalid link</h1>
+        <h1 className="font-display font-semibold text-2xl text-body mb-2">Invalid link</h1>
         <p className="font-body text-sm text-body/60 mb-6">
           This password reset link is invalid or has expired.
         </p>
@@ -91,7 +91,7 @@ export function ResetPasswordForm() {
   if (success) {
     return (
       <div className="text-center">
-        <h1 className="font-display font-medium text-2xl text-body mb-2">Password reset</h1>
+        <h1 className="font-display font-semibold text-2xl text-body mb-2">Password reset</h1>
         <p className="font-body text-sm text-body/60 mb-6">
           Your password has been reset successfully. You can now sign in with your new password.
         </p>
@@ -104,7 +104,7 @@ export function ResetPasswordForm() {
 
   return (
     <>
-      <h1 className="font-display font-medium text-2xl text-body mb-1">Reset your password</h1>
+      <h1 className="font-display font-semibold text-2xl text-body mb-1">Reset your password</h1>
       <p className="font-body text-sm text-body/60 mb-6">Enter your new password below.</p>
 
       {error && (

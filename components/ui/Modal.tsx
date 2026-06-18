@@ -50,7 +50,7 @@ export function Modal({
       >
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
-          <h2 className="font-display font-medium text-xl text-body">{title}</h2>
+          <h2 className="font-display font-semibold text-xl text-body">{title}</h2>
           <button
             type="button"
             className="p-1 rounded-full hover:bg-ghost transition-colors -mr-1 -mt-1 text-body"

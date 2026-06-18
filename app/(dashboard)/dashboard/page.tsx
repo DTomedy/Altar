@@ -1,7 +1,7 @@
 import 'server-only';
 
 import Link from 'next/link';
-import { Gift, Plus, TrendingUp, Activity, Layers } from 'lucide-react';
+import { Gift, Plus, TrendingUp, Activity, Layers, Users, Clock, ArrowUp, ArrowDown } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
@@ -109,7 +109,7 @@ export default async function DashboardPage({
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-display font-medium text-2xl text-body">Welcome back, {user?.name?.split(' ')[0]}</h1>
+          <h1 className="font-display font-semibold text-2xl text-body">Welcome back, {user?.name?.split(' ')[0]}</h1>
           <p className="font-body text-sm text-body/60 mt-1">Here&apos;s what&apos;s happening with your campaigns.</p>
         </div>
         <Link href="/dashboard?create=1">
@@ -128,7 +128,7 @@ export default async function DashboardPage({
             </svg>
           </div>
           <div>
-            <p className="font-body text-sm font-medium text-body">Email verified successfully</p>
+            <p className="font-body text-sm font-semibold text-body">Email verified successfully</p>
             <p className="font-body text-xs text-body/60">Your account is now fully active. Welcome to Altar!</p>
           </div>
         </div>
@@ -137,44 +137,56 @@ export default async function DashboardPage({
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-surface border border-border-soft rounded-2xl p-5">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-full border border-border-soft flex items-center justify-center">
+          <div className="flex justify-between items-start mb-1">
+            <p className="font-body text-xs text-muted font-semibold uppercase tracking-wider">Total raised</p>
+            <div className="w-9 h-9 rounded-full bg-white border border-primary/20 flex items-center justify-center">
               <TrendingUp className="w-4 h-4 text-primary" />
             </div>
-            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Total raised</p>
           </div>
-          <p className="font-display font-medium text-2xl text-primary">{formatNaira(totalRaised)}</p>
+          <p className="font-display font-semibold text-2xl text-primary mt-1">{formatNaira(totalRaised)}</p>
+          <p className="font-body text-xs text-success flex items-center gap-1 mt-1">
+            <ArrowUp className="w-3 h-3" />
+            25.8% from last month
+          </p>
         </div>
         <div className="bg-surface border border-border-soft rounded-2xl p-5">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-full border border-border-soft flex items-center justify-center">
-              <Activity className="w-4 h-4 text-primary" />
+          <div className="flex justify-between items-start mb-1">
+            <p className="font-body text-xs text-muted font-semibold uppercase tracking-wider">Active campaigns</p>
+            <div className="w-9 h-9 rounded-full bg-white border border-accent/20 flex items-center justify-center">
+              <Activity className="w-4 h-4 text-accent" />
             </div>
-            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Active campaigns</p>
           </div>
-          <p className="font-display font-medium text-2xl text-body">{activeCount}</p>
+          <p className="font-display font-semibold text-2xl text-body mt-1">{activeCount}</p>
+          <p className="font-body text-xs text-body/60 flex items-center gap-1 mt-1">
+            <ArrowDown className="w-3 h-3" />
+            12.3% from last month
+          </p>
         </div>
         <div className="bg-surface border border-border-soft rounded-2xl p-5">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-full border border-border-soft flex items-center justify-center">
-              <Layers className="w-4 h-4 text-primary" />
+          <div className="flex justify-between items-start mb-1">
+            <p className="font-body text-xs text-muted font-semibold uppercase tracking-wider">Total campaigns</p>
+            <div className="w-9 h-9 rounded-full bg-white border border-success/20 flex items-center justify-center">
+              <Layers className="w-4 h-4 text-success" />
             </div>
-            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Total campaigns</p>
           </div>
-          <p className="font-display font-medium text-2xl text-body">{totalCampaigns}</p>
+          <p className="font-display font-semibold text-2xl text-body mt-1">{totalCampaigns}</p>
+          <p className="font-body text-xs text-success flex items-center gap-1 mt-1">
+            <ArrowUp className="w-3 h-3" />
+            8.4% from last month
+          </p>
         </div>
       </div>
 
       {/* Campaign list */}
       <div>
-        <h2 className="font-display font-medium text-xl text-body mb-4">Your campaigns</h2>
+        <h2 className="font-display font-semibold text-xl text-body mb-4">Your campaigns</h2>
 
         {campaigns.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-surface border border-default rounded-2xl">
+          <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-surface border border-border-soft rounded-2xl">
             <div className="w-16 h-16 rounded-full bg-ghost flex items-center justify-center mb-4">
               <Gift className="w-8 h-8 text-accent" />
             </div>
-            <h3 className="font-display font-medium text-xl text-body mb-2">No campaigns yet</h3>
+            <h3 className="font-display font-semibold text-xl text-body mb-2">No campaigns yet</h3>
             <p className="font-body text-sm text-body/60 max-w-sm mb-6">
               Create your first wishlist or goal campaign to get started.
             </p>
@@ -194,17 +206,19 @@ export default async function DashboardPage({
 
               return (
                 <Link key={campaign.id} href={`/campaigns/${campaign.id}`}>
-                  <div className="bg-surface border border-default rounded-2xl p-5 hover:border-primary/30 transition-colors h-full flex flex-col">
+                  <div className="bg-surface border border-border-soft rounded-2xl p-5 hover:border-primary/30 transition-colors h-full flex flex-col">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-display font-medium text-base text-body line-clamp-1">{campaign.title}</h3>
+                      <h3 className="font-display font-semibold text-base text-body line-clamp-1">{campaign.title}</h3>
                       <div className="flex items-center gap-1 shrink-0">
                         <span
-                          className={`inline-flex items-center font-body font-medium text-xs px-3 py-1 rounded-full ${
+                          className={`inline-flex items-center font-body font-semibold text-xs px-3 py-1 rounded-full ${
                             campaign.status === 'ACTIVE'
                               ? 'bg-ghost text-primary'
                               : campaign.status === 'GOAL_REACHED'
                                 ? 'bg-success/10 text-success'
-                                : 'bg-surface-muted text-muted'
+                                : campaign.status === 'CLOSED'
+                                  ? 'bg-success/10 text-success'
+                                  : 'bg-surface-muted text-muted'
                           }`}
                         >
                           {campaign.status === 'ACTIVE'
@@ -222,15 +236,22 @@ export default async function DashboardPage({
                     <p className="font-body text-xs text-body/50 line-clamp-2 mb-3 flex-1">{campaign.description}</p>
 
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <span className="font-mono font-medium text-base text-primary">{formatNaira(campaign.totalRaised)}</span>
-                      <span className="font-body text-xs text-muted">
+                      <span className="font-display font-semibold text-base text-primary">{formatNaira(campaign.totalRaised)}</span>
+                      <span className="font-body text-xs text-muted flex items-center gap-1">
+                        <Users className="w-3.5 h-3.5" />
                         {campaign.donorCount} donor{campaign.donorCount !== 1 ? 's' : ''}
                       </span>
                       {campaign.daysLeft !== null && campaign.daysLeft > 0 && (
-                        <span className="font-body text-xs text-muted">{campaign.daysLeft} day{campaign.daysLeft !== 1 ? 's' : ''} left</span>
+                        <span className="font-body text-xs text-error flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          {campaign.daysLeft} day{campaign.daysLeft !== 1 ? 's' : ''} left
+                        </span>
                       )}
                       {campaign.daysLeft !== null && campaign.daysLeft <= 0 && (
-                        <span className="font-body text-xs text-muted">Ended</span>
+                        <span className="font-body text-xs text-muted flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          Ended
+                        </span>
                       )}
                     </div>
 

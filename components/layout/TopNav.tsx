@@ -27,7 +27,7 @@ export async function TopNav() {
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3">
-          <span className="font-body text-sm text-body/80 font-medium">{user.name}</span>
+          <span className="font-body text-sm text-body/80 font-semibold">{user.name}</span>
           <Avatar name={user.name} imageUrl={user.profilePicture} size="sm" />
         </div>
 

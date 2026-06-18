@@ -114,11 +114,11 @@ export function NotificationDropdown() {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-80 bg-surface border border-default rounded-2xl shadow-lg z-50 max-h-[70vh] flex flex-col">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border-soft shrink-0">
-            <h3 className="font-display font-medium text-sm text-body">Notifications</h3>
+            <h3 className="font-display font-semibold text-sm text-body">Notifications</h3>
             {totalUnread > 0 && (
               <button
                 onClick={markAllRead}
-                className="font-body text-xs text-primary hover:text-primary-hover font-medium"
+                className="font-body text-xs text-primary hover:text-primary-hover font-semibold"
               >
                 Mark all read
               </button>
@@ -145,7 +145,7 @@ export function NotificationDropdown() {
                       <p
                         className={cn(
                           'font-body text-sm',
-                          notif.isRead ? 'text-body/70' : 'text-body font-medium'
+                          notif.isRead ? 'text-body/70' : 'text-body font-semibold'
                         )}
                       >
                         {notif.title}

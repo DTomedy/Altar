@@ -31,7 +31,7 @@ export function KycTab({ kycLevel, kycStatus, emailVerified, phone }: KycTabProp
       {/* Status card */}
       <div className="bg-surface border border-default rounded-2xl p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display font-medium text-lg text-body">KYC Level {kycLevel}</h3>
+          <h3 className="font-display font-semibold text-lg text-body">KYC Level {kycLevel}</h3>
           <Badge variant={statusBadgeVariant}>{kycStatus}</Badge>
         </div>
 
@@ -59,7 +59,7 @@ export function KycTab({ kycLevel, kycStatus, emailVerified, phone }: KycTabProp
       <div className="flex items-start gap-3 p-4 bg-ghost border border-border-soft rounded-2xl">
         {statusIcon}
         <div>
-          <p className="font-body font-medium text-sm text-body">
+          <p className="font-body font-semibold text-sm text-body">
             {kycStatus === 'VERIFIED'
               ? 'You are fully verified'
               : kycStatus === 'REJECTED'

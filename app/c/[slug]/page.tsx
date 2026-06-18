@@ -107,17 +107,17 @@ export default async function PublicCampaignPage({ params }: PageProps) {
             <div className="w-16 h-16 rounded-full bg-surface-muted flex items-center justify-center mx-auto mb-4">
               <Gift className="w-8 h-8 text-muted" />
             </div>
-            <h1 className="font-display font-medium text-xl text-body mb-2">{campaign.title}</h1>
+            <h1 className="font-display font-semibold text-xl text-body mb-2">{campaign.title}</h1>
             <p className="font-body text-sm text-body/60 mb-2">
               This campaign has ended.
             </p>
             {totalRaised > 0 && (
-              <p className="font-mono font-medium text-xl text-body mb-4">
+              <p className="font-mono font-semibold text-xl text-body mb-4">
                 {formatNaira(totalRaised)} raised
               </p>
             )}
             <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="inline-flex items-center font-body font-medium text-xs px-3 py-1 rounded-full bg-surface-muted text-muted">
+              <span className="inline-flex items-center font-body font-semibold text-xs px-3 py-1 rounded-full bg-surface-muted text-muted">
                 {statusText}
               </span>
               {campaign.deadline && (
@@ -149,7 +149,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               {/* Title & status */}
               <div>
                 <div className="flex items-start gap-3 mb-2">
-                  <h1 className="font-display font-medium text-3xl text-body flex-1">{campaign.title}</h1>
+                  <h1 className="font-display font-semibold text-3xl text-body flex-1">{campaign.title}</h1>
                   <Badge variant={isActive ? 'primary' : 'success'}>
                     {isGoalReached ? 'Goal reached' : 'Active'}
                   </Badge>
@@ -174,7 +174,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               <div className="bg-surface border border-default rounded-2xl p-5">
                 <div className="flex items-end justify-between mb-3">
                   <div>
-                    <p className="font-display font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
+                    <p className="font-display font-semibold text-3xl text-primary">{formatNaira(totalRaised)}</p>
                     {hasGoal && (
                       <p className="font-body text-sm text-body/60 mt-1">
                         raised of {formatNaira(goal)} goal
@@ -182,7 +182,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                     )}
                   </div>
                   {hasGoal && (
-                    <p className="font-display font-medium text-lg text-body">{percentage}%</p>
+                    <p className="font-display font-semibold text-lg text-body">{percentage}%</p>
                   )}
                 </div>
                 {hasGoal && (
@@ -199,7 +199,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                 <div className="flex items-start gap-3 p-4 bg-success/5 border border-success/20 rounded-2xl">
                   <ShieldCheck className="w-5 h-5 text-success shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-body font-medium text-sm text-body">Goal reached</p>
+                    <p className="font-body font-semibold text-sm text-body">Goal reached</p>
                     <p className="font-body text-xs text-body/60 mt-0.5">
                       This campaign reached its goal. Gifts beyond the goal go directly to the campaign owner.
                     </p>
@@ -209,14 +209,14 @@ export default async function PublicCampaignPage({ params }: PageProps) {
 
               {/* About */}
               <div>
-                <h2 className="font-display font-medium text-lg text-body mb-3">About this campaign</h2>
+                <h2 className="font-display font-semibold text-lg text-body mb-3">About this campaign</h2>
                 <p className="font-body text-sm text-body/60 whitespace-pre-line">{campaign.description}</p>
               </div>
 
               {/* Wishlist items */}
               {campaign.items.length > 0 && (
                 <div>
-                  <h3 className="font-display font-medium text-lg text-body mb-3">Wishlist items</h3>
+                  <h3 className="font-display font-semibold text-lg text-body mb-3">Wishlist items</h3>
                   <div className="space-y-3">
                     {campaign.items.map((item) => {
                       const itemFunded = Number(item.fundedAmount);
@@ -228,7 +228,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                           className="bg-surface border border-default rounded-2xl p-4"
                         >
                           <div className="flex justify-between items-start mb-2">
-                            <p className="font-body font-medium text-sm text-body">{item.name}</p>
+                            <p className="font-body font-semibold text-sm text-body">{item.name}</p>
                             {item.isFulfilled && (
                               <Badge variant="success">Fulfilled</Badge>
                             )}
@@ -236,7 +236,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                           {item.description && (
                             <p className="font-body text-xs text-body/60 mb-2">{item.description}</p>
                           )}
-                          <p className="font-mono font-medium text-sm text-primary mb-2">
+                          <p className="font-mono font-semibold text-sm text-primary mb-2">
                             {formatNaira(itemFunded)} / {formatNaira(itemTarget)}
                           </p>
                           <div className="w-full bg-surface-muted rounded-full h-1.5">
@@ -254,7 +254,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
 
               {/* Recent gifts */}
               <div>
-                <h2 className="font-display font-medium text-lg text-body mb-3">Recent gifts</h2>
+                <h2 className="font-display font-semibold text-lg text-body mb-3">Recent gifts</h2>
                 {campaign.contributions.length === 0 ? (
                   <div className="bg-surface border border-default rounded-2xl p-5 text-center">
                     <p className="font-body text-sm text-body/60">Be the first to leave a gift.</p>
@@ -271,7 +271,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                           </p>
                           <p className="font-body text-xs text-body/40">{formatDate(contribution.createdAt)}</p>
                         </div>
-                        <p className="font-mono font-medium text-sm text-primary">{formatNaira(contribution.amount)}</p>
+                        <p className="font-mono font-semibold text-sm text-primary">{formatNaira(contribution.amount)}</p>
                       </div>
                     ))}
                   </div>
@@ -293,7 +293,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                 <div className="flex items-center gap-2 justify-center py-3">
                   <ShieldCheck className="w-4 h-4 text-success" />
                   <p className="font-body text-xs text-body/50">
-                    Secured by <span className="font-medium text-body/70">Flutterwave</span>
+                    Secured by <span className="font-semibold text-body/70">Flutterwave</span>
                   </p>
                 </div>
 
@@ -310,16 +310,16 @@ export default async function PublicCampaignPage({ params }: PageProps) {
             <div className="w-16 h-16 rounded-full bg-surface-muted flex items-center justify-center mx-auto mb-4">
               <Gift className="w-8 h-8 text-muted" />
             </div>
-            <h1 className="font-display font-medium text-xl text-body mb-2">{campaign.title}</h1>
+            <h1 className="font-display font-semibold text-xl text-body mb-2">{campaign.title}</h1>
             <p className="font-body text-sm text-body/60 mb-2">
               This campaign is no longer accepting gifts.
             </p>
             {totalRaised > 0 && (
-              <p className="font-mono font-medium text-xl text-body mb-4">
+              <p className="font-mono font-semibold text-xl text-body mb-4">
                 {formatNaira(totalRaised)} raised
               </p>
             )}
-            <span className="inline-flex items-center font-body font-medium text-xs px-3 py-1 rounded-full bg-surface-muted text-muted">
+            <span className="inline-flex items-center font-body font-semibold text-xs px-3 py-1 rounded-full bg-surface-muted text-muted">
               {statusText}
             </span>
           </div>

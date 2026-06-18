@@ -43,13 +43,13 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
   if (sent) {
     return (
       <div className="text-center">
-        <h1 className="font-display font-medium text-2xl text-body mb-2">Check your email</h1>
+        <h1 className="font-display font-semibold text-2xl text-body mb-2">Check your email</h1>
         <p className="font-body text-sm text-body/60 mb-6">
           If an account with that email exists, we&apos;ve sent a password reset link.
         </p>
         <button
           onClick={onBackToLogin}
-          className="text-primary font-body font-medium underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
+          className="text-primary font-body font-semibold underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
         >
           Back to sign in
         </button>
@@ -59,7 +59,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
 
   return (
     <>
-      <h1 className="font-display font-medium text-2xl text-body mb-1">Forgot password</h1>
+      <h1 className="font-display font-semibold text-2xl text-body mb-1">Forgot password</h1>
       <p className="font-body text-sm text-body/60 mb-6">Enter your email and we&apos;ll send you a reset link.</p>
 
       {error && (
@@ -88,7 +88,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
         Remember your password?{' '}
         <button
           onClick={onBackToLogin}
-          className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
+          className="text-primary font-semibold underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
         >
           Sign in
         </button>

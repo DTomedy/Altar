@@ -222,7 +222,7 @@ When reporting back to the user:
 - Never store contributor payment card details on Altar servers
 - Never hardcode secrets — use environment variables only
 - Never expose `process.env` in client components — only `NEXT_PUBLIC_` prefixed vars are safe on the client
-- Never use font weights above 500 (`font-medium`)
+- Never use font weights above 500 (`font-semibold`)
 - Never use drop shadows or gradients in the UI
 - Never use red for anything other than error states
 - Never use the words "fundraising" or "donation" in UI copy — use "gifting", "celebrating", "giving"

@@ -50,7 +50,7 @@ export function ConfirmDialog({
           </div>
         )}
 
-        <h2 className="font-display font-medium text-xl text-body mb-2">{title}</h2>
+        <h2 className="font-display font-semibold text-xl text-body mb-2">{title}</h2>
         <p className="font-body text-sm text-body/60 mb-6">{message}</p>
 
         <div className="space-y-3">
@@ -59,8 +59,8 @@ export function ConfirmDialog({
             disabled={loading}
             className={
               variant === 'destructive'
-                ? 'w-full bg-error text-white font-body font-medium px-6 py-2.5 rounded-full hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/40 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed'
-                : 'w-full bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+                ? 'w-full bg-error text-white font-body font-semibold px-6 py-2.5 rounded-full hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/40 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed'
+                : 'w-full bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             }
           >
             {loading ? 'Processing...' : confirmLabel}
@@ -68,7 +68,7 @@ export function ConfirmDialog({
           <button
             onClick={onClose}
             disabled={loading}
-            className="w-full bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-transparent text-primary border border-primary font-body font-semibold px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>

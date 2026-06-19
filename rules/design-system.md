@@ -98,17 +98,17 @@ export default {
 
 ### Font Weight Rules
 
-- Use `font-normal` (400) and `font-semibold` (600) only
-- **Never use `font-bold` or `font-extrabold`**
+- Use `font-normal` (400) and `font-medium` (500) only
+- **Never use `font-semibold`, `font-bold`, or `font-extrabold`**
 - Hierarchy is expressed through size and colour, never weight
 
 ### Examples
 
 ```tsx
 // ✅ Correct
-<h1 className="font-display font-semibold text-4xl text-primary">Ada's Birthday</h1>
+<h1 className="font-display font-medium text-4xl text-primary">Ada's Birthday</h1>
 <p className="font-body font-normal text-sm text-body/60">Help me celebrate turning 28</p>
-<span className="font-mono font-semibold text-xl text-primary">₦120,000.00</span>
+<span className="font-mono font-medium text-xl text-primary">₦120,000.00</span>
 
 // ❌ Wrong — bold weight
 <h1 className="font-bold text-4xl">Ada's Birthday</h1>
@@ -120,12 +120,12 @@ export default {
 
 ```tsx
 {/* Inline text link — for body copy */}
-<a className="text-primary font-body font-semibold underline underline-offset-2 hover:text-primary-hover transition-colors">
+<a className="text-primary font-body font-medium underline underline-offset-2 hover:text-primary-hover transition-colors">
   View campaign
 </a>
 
 {/* Navigation link — for nav bars and sidebars */}
-<a className="font-body font-semibold text-body hover:text-primary transition-colors px-3 py-2 rounded-xl hover:bg-ghost">
+<a className="font-body font-medium text-body hover:text-primary transition-colors px-3 py-2 rounded-xl hover:bg-ghost">
   Dashboard
 </a>
 
@@ -197,22 +197,22 @@ Mobile-first is the default. Design for mobile first, then add breakpoints.
 
 ```tsx
 {/* Primary */}
-<button className="bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+<button className="bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
   Give a gift
 </button>
 
 {/* Secondary */}
-<button className="bg-transparent text-primary border border-primary font-body font-semibold px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+<button className="bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
   Create campaign
 </button>
 
 {/* Ghost */}
-<button className="bg-ghost text-primary font-body font-semibold px-6 py-2.5 rounded-full hover:bg-petal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+<button className="bg-ghost text-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-petal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
   View wishlist
 </button>
 
 {/* Destructive */}
-<button className="bg-error text-white font-body font-semibold px-6 py-2.5 rounded-full hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/40 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+<button className="bg-error text-white font-body font-medium px-6 py-2.5 rounded-full hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/40 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
   Delete campaign
 </button>
 
@@ -265,27 +265,27 @@ import { Gift, Heart, Wallet, Share2, X } from '@phosphor-icons/react'
 
 ```tsx
 {/* Funded */}
-<span className="bg-success/10 text-success font-body font-semibold text-xs px-3 py-1 rounded-full">
+<span className="bg-success/10 text-success font-body font-medium text-xs px-3 py-1 rounded-full">
   Fully funded
 </span>
 
 {/* Active */}
-<span className="bg-ghost text-primary font-body font-semibold text-xs px-3 py-1 rounded-full">
+<span className="bg-ghost text-primary font-body font-medium text-xs px-3 py-1 rounded-full">
   Active
 </span>
 
 {/* Anonymous */}
-<span className="bg-surface-muted text-muted font-body font-semibold text-xs px-3 py-1 rounded-full">
+<span className="bg-surface-muted text-muted font-body font-medium text-xs px-3 py-1 rounded-full">
   Anonymous gift
 </span>
 
 {/* Expired */}
-<span className="bg-surface-muted text-muted font-body font-semibold text-xs px-3 py-1 rounded-full">
+<span className="bg-surface-muted text-muted font-body font-medium text-xs px-3 py-1 rounded-full">
   Expired
 </span>
 
 {/* Error */}
-<span className="bg-error/10 text-error font-body font-semibold text-xs px-3 py-1 rounded-full">
+<span className="bg-error/10 text-error font-body font-medium text-xs px-3 py-1 rounded-full">
   Payment failed
 </span>
 ```
@@ -340,9 +340,9 @@ Fill is always `bg-primary` (Deep Violet). Never use `bg-success` for the fill.
   <div className="w-16 h-16 rounded-full bg-ghost flex items-center justify-center mb-4">
     <Icon name="gift" className="w-8 h-8 text-accent" />
   </div>
-  <h3 className="font-display font-semibold text-xl text-body mb-2">No campaigns yet</h3>
+  <h3 className="font-display font-medium text-xl text-body mb-2">No campaigns yet</h3>
   <p className="font-body text-sm text-body/60 max-w-sm mb-6">Create your first wishlist or goal campaign to get started.</p>
-  <button className="bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full">Create a campaign</button>
+  <button className="bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full">Create a campaign</button>
 </div>
 ```
 
@@ -416,12 +416,12 @@ Fill is always `bg-primary` (Deep Violet). Never use `bg-success` for the fill.
 <div className="bg-surface border border-border-soft rounded-2xl p-5">
   <div className="flex justify-between items-start mb-3">
     <div>
-      <h3 className="font-display font-semibold text-base text-body">{campaign.title}</h3>
+      <h3 className="font-display font-medium text-base text-body">{campaign.title}</h3>
       <p className="font-body text-sm text-body/60 mt-0.5 line-clamp-2">{campaign.description}</p>
     </div>
     <StatusBadge status={campaign.status} />
   </div>
-  <p className="font-mono font-semibold text-xl text-primary">{formatNaira(campaign.totalRaised)}</p>
+  <p className="font-mono font-medium text-xl text-primary">{formatNaira(campaign.totalRaised)}</p>
   <div className="w-full bg-surface-muted rounded-full h-1.5 mt-2 mb-1.5">
     <div className="bg-primary rounded-full h-1.5" style={{ width: `${percentage}%` }} />
   </div>
@@ -443,7 +443,7 @@ Fill is always `bg-primary` (Deep Violet). Never use `bg-success` for the fill.
   <div className="relative bg-surface border border-border-soft rounded-2xl w-full max-w-md p-6 shadow-lg">
     {/* Header */}
     <div className="flex items-start justify-between mb-4">
-      <h2 className="font-display font-semibold text-xl text-body">Confirm your gift</h2>
+      <h2 className="font-display font-medium text-xl text-body">Confirm your gift</h2>
       <button className="p-1 rounded-full hover:bg-ghost transition-colors -mr-1 -mt-1" onClick={onClose}>
         <Icon name="x" className="w-5 h-5 text-body" />
       </button>
@@ -451,13 +451,13 @@ Fill is always `bg-primary` (Deep Violet). Never use `bg-success` for the fill.
     
     {/* Body */}
     <div className="font-body text-sm text-body/60 mb-6">
-      Your contribution of <span className="font-mono font-semibold text-primary">₦5,000.00</span> will be sent to Ada's birthday wishlist.
+      Your contribution of <span className="font-mono font-medium text-primary">₦5,000.00</span> will be sent to Ada's birthday wishlist.
     </div>
     
     {/* Footer */}
     <div className="flex gap-3">
-      <button className="flex-1 bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full">Confirm</button>
-      <button className="flex-1 bg-transparent text-primary border border-primary font-body font-semibold px-6 py-2.5 rounded-full" onClick={onClose}>Cancel</button>
+      <button className="flex-1 bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full">Confirm</button>
+      <button className="flex-1 bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full" onClick={onClose}>Cancel</button>
     </div>
   </div>
 </div>
@@ -479,7 +479,7 @@ Fill is always `bg-primary` (Deep Violet). Never use `bg-success` for the fill.
     <Icon name="check" className="w-4 h-4 text-success" />
   </div>
   <div>
-    <p className="font-body font-semibold text-sm text-body">Payment successful</p>
+    <p className="font-body font-medium text-sm text-body">Payment successful</p>
     <p className="font-body text-xs text-muted mt-0.5">Your contribution has been received.</p>
   </div>
   <button className="p-0.5 rounded-full hover:bg-ghost shrink-0 -mr-1 -mt-1">
@@ -493,7 +493,7 @@ Fill is always `bg-primary` (Deep Violet). Never use `bg-success` for the fill.
     <Icon name="alert-circle" className="w-4 h-4 text-error" />
   </div>
   <div>
-    <p className="font-body font-semibold text-sm text-body">Payment failed</p>
+    <p className="font-body font-medium text-sm text-body">Payment failed</p>
     <p className="font-body text-xs text-muted mt-0.5">Insufficient funds. Please try again.</p>
   </div>
   <button className="p-0.5 rounded-full hover:bg-ghost shrink-0 -mr-1 -mt-1">
@@ -514,7 +514,7 @@ Fill is always `bg-primary` (Deep Violet). Never use `bg-success` for the fill.
 ```tsx
 {/* Initials avatar */}
 <div className="w-10 h-10 rounded-full bg-ghost flex items-center justify-center">
-  <span className="font-body font-semibold text-sm text-primary">AB</span>
+  <span className="font-body font-medium text-sm text-primary">AB</span>
 </div>
 
 {/* Image avatar */}
@@ -540,16 +540,16 @@ Fill is always `bg-primary` (Deep Violet). Never use `bg-success` for the fill.
   <table className="w-full">
     <thead>
       <tr className="border-b border-border-soft">
-        <th className="font-body font-semibold text-xs text-muted uppercase tracking-wider text-left px-5 py-3">Date</th>
-        <th className="font-body font-semibold text-xs text-muted uppercase tracking-wider text-left px-5 py-3">Description</th>
-        <th className="font-body font-semibold text-xs text-muted uppercase tracking-wider text-right px-5 py-3">Amount</th>
+        <th className="font-body font-medium text-xs text-muted uppercase tracking-wider text-left px-5 py-3">Date</th>
+        <th className="font-body font-medium text-xs text-muted uppercase tracking-wider text-left px-5 py-3">Description</th>
+        <th className="font-body font-medium text-xs text-muted uppercase tracking-wider text-right px-5 py-3">Amount</th>
       </tr>
     </thead>
     <tbody>
       <tr className="border-b border-border-soft last:border-b-0 hover:bg-ghost transition-colors">
         <td className="font-body text-sm text-body px-5 py-3">12 Jun 2026</td>
         <td className="font-body text-sm text-body px-5 py-3">Contribution to Ada's Birthday</td>
-        <td className="font-mono font-semibold text-sm text-primary text-right px-5 py-3">₦5,000.00</td>
+        <td className="font-mono font-medium text-sm text-primary text-right px-5 py-3">₦5,000.00</td>
       </tr>
     </tbody>
   </table>

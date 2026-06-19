@@ -148,7 +148,7 @@ export function CampaignForm() {
       {/* Step indicator */}
       <div className="flex items-center justify-center gap-2 mb-6">
         <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-semibold ${
+          className={`w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-medium ${
             step >= 1 ? 'bg-primary text-white' : 'bg-surface-muted text-muted'
           }`}
         >
@@ -156,7 +156,7 @@ export function CampaignForm() {
         </div>
         <div className="w-8 h-0.5 rounded-full bg-border-soft" />
         <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-semibold ${
+          className={`w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-medium ${
             step >= 2 ? 'bg-primary text-white' : 'bg-surface-muted text-muted'
           }`}
         >
@@ -167,7 +167,7 @@ export function CampaignForm() {
       {step === 1 ? (
         /* Step 1 — Campaign Type Selection */
         <div>
-          <h3 className="font-display font-semibold text-lg text-body mb-1">What kind of campaign?</h3>
+          <h3 className="font-display font-medium text-lg text-body mb-1">What kind of campaign?</h3>
           <p className="font-body text-sm text-body/60 mb-5">
             Choose the type that fits your celebration.
           </p>
@@ -185,7 +185,7 @@ export function CampaignForm() {
               <div className="w-12 h-12 rounded-full bg-petal flex items-center justify-center mb-3">
                 <Gift className="w-6 h-6 text-primary" />
               </div>
-              <h4 className="font-display font-semibold text-base text-body mb-1">Birthday Wishlist</h4>
+              <h4 className="font-display font-medium text-base text-body mb-1">Birthday Wishlist</h4>
               <p className="font-body text-sm text-body/60">Share gifts you&apos;d love to receive</p>
             </button>
 
@@ -201,7 +201,7 @@ export function CampaignForm() {
               <div className="w-12 h-12 rounded-full bg-petal flex items-center justify-center mb-3">
                 <Target className="w-6 h-6 text-primary" />
               </div>
-              <h4 className="font-display font-semibold text-base text-body mb-1">Goal Fundraiser</h4>
+              <h4 className="font-display font-medium text-base text-body mb-1">Goal Fundraiser</h4>
               <p className="font-body text-sm text-body/60">Raise money for a specific goal</p>
             </button>
           </div>
@@ -246,7 +246,7 @@ export function CampaignForm() {
 
             {/* Cover image */}
             <div className="w-full">
-              <label className="block font-body text-sm text-body/80 mb-1.5 font-semibold">
+              <label className="block font-body text-sm text-body/80 mb-1.5 font-medium">
                 Cover image
               </label>
               {coverPhoto ? (
@@ -287,7 +287,7 @@ export function CampaignForm() {
             </div>
 
             <div className="w-full">
-              <label htmlFor="description" className="block font-body text-sm text-body/80 mb-1.5 font-semibold">
+              <label htmlFor="description" className="block font-body text-sm text-body/80 mb-1.5 font-medium">
                 Description
               </label>
               <textarea
@@ -325,7 +325,7 @@ export function CampaignForm() {
 
             {type === 'WISHLIST' && (
               <div className="w-full">
-                <label className="block font-body text-sm text-body/80 mb-1.5 font-semibold">
+                <label className="block font-body text-sm text-body/80 mb-1.5 font-medium">
                   Gift items
                 </label>
                 <div className="space-y-3">
@@ -367,7 +367,7 @@ export function CampaignForm() {
                 <button
                   type="button"
                   onClick={handleAddItem}
-                  className="mt-3 flex items-center gap-2 text-primary font-body text-sm font-semibold hover:text-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg px-1"
+                  className="mt-3 flex items-center gap-2 text-primary font-body text-sm font-medium hover:text-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg px-1"
                 >
                   <Plus className="w-4 h-4" />
                   Add item

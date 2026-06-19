@@ -10,7 +10,7 @@ import { useSidebar } from './SidebarProvider';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard?create=1', label: 'Campaigns', icon: Gift },
+  { href: '/campaigns', label: 'Campaigns', icon: Gift },
   { href: '/wallet', label: 'Wallet', icon: Wallet },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
@@ -56,7 +56,7 @@ export function Sidebar() {
               prefetch={false}
               onClick={handleLinkClick}
               className={cn(
-                'flex items-center gap-3 font-body font-semibold px-3 py-2.5 rounded-xl transition-colors text-sm',
+                'flex items-center gap-3 font-body font-medium px-3 py-2.5 rounded-xl transition-colors text-sm',
                 isActive
                   ? 'bg-ghost text-primary'
                   : 'text-body hover:text-primary hover:bg-ghost'
@@ -74,7 +74,7 @@ export function Sidebar() {
           href="/api/auth/logout"
           prefetch={false}
           onClick={handleLinkClick}
-          className="flex items-center gap-3 font-body font-semibold px-3 py-2.5 rounded-xl transition-colors text-sm text-muted hover:text-error hover:bg-error/5"
+          className="flex items-center gap-3 font-body font-medium px-3 py-2.5 rounded-xl transition-colors text-sm text-muted hover:text-error hover:bg-error/5"
         >
           <LogOut className="w-5 h-5" />
           Log out

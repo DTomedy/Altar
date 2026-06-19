@@ -1,24 +1,32 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Gift, Check, AlertCircle, Loader } from 'lucide-react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Gift, Check, AlertCircle, Loader, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatNaira } from '@/lib/formatters';
 
-const PRESET_AMOUNTS = [5000, 10000, 25000, 50000];
 const FLW_SCRIPT_URL = 'https://checkout.flutterwave.com/v3.js';
+
+interface ItemData {
+  id: string;
+  name: string;
+  description: string | null;
+  targetAmount: number;
+  fundedAmount: number;
+  isFulfilled: boolean;
+}
 
 interface GiveFormProps {
   campaignId: string;
   campaignTitle: string;
-  wishlistItemId?: string;
+  items?: ItemData[];
   minAmount?: number;
   maxAmount?: number;
 }
 
 type FlwStatus = 'loading' | 'ready' | 'error';
 
-export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount = 500, maxAmount = 10000000 }: GiveFormProps) {
+export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, maxAmount = 10000000 }: GiveFormProps) {
   const [amount, setAmount] = useState<number>(10000);
   const [customAmount, setCustomAmount] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -27,10 +35,26 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [flwStatus, setFlwStatus] = useState<FlwStatus>(() =>
     typeof FlutterwaveCheckout !== 'undefined' ? 'ready' : 'loading'
   );
   const flwReadyRef = useRef(typeof FlutterwaveCheckout !== 'undefined');
+
+  const hasItems = items && items.length > 0;
+
+  const selectedItem = useMemo(() => {
+    if (!selectedItemId || !items) return null;
+    return items.find((i) => i.id === selectedItemId) ?? null;
+  }, [selectedItemId, items]);
+
+  const remainingBalance = useMemo(() => {
+    if (!selectedItem) return 0;
+    return Math.max(0, selectedItem.targetAmount - selectedItem.fundedAmount);
+  }, [selectedItem]);
+
+  const effectiveMinAmount = hasItems && selectedItem ? Math.min(500, remainingBalance) : minAmount;
+  const effectiveMaxAmount = hasItems && selectedItem ? remainingBalance : maxAmount;
 
   useEffect(() => {
     if (!flwReadyRef.current) {
@@ -65,6 +89,20 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
     }
   }
 
+  function handleSelectItem(itemId: string) {
+    if (selectedItemId === itemId) {
+      setSelectedItemId(null);
+      setAmount(10000);
+      setCustomAmount('');
+    } else {
+      setSelectedItemId(itemId);
+      const item = items!.find((i) => i.id === itemId)!;
+      const remaining = Math.max(0, item.targetAmount - item.fundedAmount);
+      setAmount(remaining);
+      setCustomAmount('');
+    }
+  }
+
   function openFlutterwave(txRef: string) {
     if (!flwReadyRef.current || typeof FlutterwaveCheckout === 'undefined') {
       setStatus('error');
@@ -77,7 +115,7 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
 
     const meta: Record<string, string> = {};
     meta.campaignId = campaignId;
-    if (wishlistItemId) meta.wishlistItemId = wishlistItemId;
+    if (selectedItemId) meta.wishlistItemId = selectedItemId;
     meta.isAnonymous = String(isAnonymous);
     if (displayName && !isAnonymous) meta.displayName = displayName;
 
@@ -113,13 +151,21 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
   }
 
   function handleSubmit() {
-    if (amount < minAmount) {
-      setErrorMessage(`Minimum gift is ${formatNaira(minAmount)}`);
+    if (hasItems && !selectedItemId) {
+      setErrorMessage('Please select a gift item to contribute toward');
       setStatus('error');
       return;
     }
-    if (amount > maxAmount) {
-      setErrorMessage(`Maximum gift is ${formatNaira(maxAmount)}`);
+
+    if (amount < effectiveMinAmount) {
+      setErrorMessage(`Minimum gift is ${formatNaira(effectiveMinAmount)}`);
+      setStatus('error');
+      return;
+    }
+    if (amount > effectiveMaxAmount) {
+      setErrorMessage(hasItems && selectedItem
+        ? `Gift cannot exceed the remaining balance of ${formatNaira(remainingBalance)}`
+        : `Maximum gift is ${formatNaira(effectiveMaxAmount)}`);
       setStatus('error');
       return;
     }
@@ -132,7 +178,7 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         campaignId,
-        wishlistItemId: wishlistItemId ?? null,
+        wishlistItemId: selectedItemId ?? null,
         amount,
         isAnonymous,
         displayName: displayName || null,
@@ -174,13 +220,27 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
     }
   }
 
+  function resetForm() {
+    setStatus('idle');
+    setCustomAmount('');
+    setDisplayName('');
+    setEmail('');
+    setIsAnonymous(false);
+    setMessage('');
+    setAmount(10000);
+    if (hasItems) {
+      setSelectedItemId(null);
+    }
+    window.location.reload();
+  }
+
   if (status === 'success') {
     return (
       <div className="bg-surface border border-default rounded-2xl p-8 text-center">
         <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
           <Check className="w-8 h-8 text-success" />
         </div>
-        <h3 className="font-display font-semibold text-xl text-body mb-2">Gift sent!</h3>
+        <h3 className="font-display font-medium text-xl text-body mb-2">Gift sent!</h3>
         <p className="font-body text-sm text-body/60 mb-1">
           Your gift of {formatNaira(amount)} is being processed.
         </p>
@@ -188,16 +248,8 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
           It will arrive in the campaign wallet shortly.
         </p>
         <button
-          onClick={() => {
-            setStatus('idle');
-            setCustomAmount('');
-            setDisplayName('');
-            setEmail('');
-            setIsAnonymous(false);
-            setMessage('');
-            setAmount(10000);
-          }}
-          className="bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors"
+          onClick={resetForm}
+          className="bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors"
         >
           Give again
         </button>
@@ -208,46 +260,163 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
   return (
     <div>
       <div className="bg-surface border border-default rounded-2xl p-5">
-        <h3 className="font-display font-semibold text-lg text-body mb-4">Give a gift</h3>
+        <h3 className="font-display font-medium text-lg text-body mb-4">Give a gift</h3>
 
-        {/* Preset amounts */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {PRESET_AMOUNTS.map((preset) => (
-            <button
-              key={preset}
-              onClick={() => handlePresetClick(preset)}
-              className={cn(
-                'font-body font-semibold px-4 py-2 rounded-full transition-colors text-sm',
-                amount === preset && !customAmount
-                  ? 'bg-primary text-white'
-                  : 'bg-ghost text-primary hover:bg-petal'
-              )}
-            >
-              {formatNaira(preset)}
-            </button>
-          ))}
-        </div>
+        {/* Item selection for wishlist campaigns */}
+        {hasItems && (
+          <div className="mb-5">
+            <p className="font-body text-sm text-body/80 mb-2.5 font-medium">Select a gift item</p>
+            <div className="space-y-2">
+              {items!.map((item) => {
+                const funded = Number(item.fundedAmount);
+                const target = Number(item.targetAmount);
+                const remaining = Math.max(0, target - funded);
+                const percentage = target > 0 ? Math.min(Math.round((funded / target) * 100), 100) : 0;
+                const isSelected = selectedItemId === item.id;
+                const isPaid = item.isFulfilled;
 
-        {/* Amount range hint */}
-        <p className="font-body text-xs text-body/40 mb-4">
-          Gifts between {formatNaira(minAmount)} and {formatNaira(maxAmount)}
-        </p>
-
-        {/* Custom amount */}
-        <div className="mb-4">
-          <label className="font-body text-sm text-body/60 mb-1.5 block">Custom amount</label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 font-body text-sm text-body/40">₦</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={customAmount ? Number(customAmount).toLocaleString('en-NG') : ''}
-              onChange={handleCustomChange}
-              placeholder="Enter amount"
-              className="w-full border border-border-soft rounded-xl pl-8 pr-4 py-3 font-body text-body bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-body/40 transition-colors"
-            />
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    disabled={isPaid}
+                    onClick={() => handleSelectItem(item.id)}
+                    className={cn(
+                      'w-full text-left rounded-xl border p-3 transition-colors',
+                      isPaid
+                        ? 'border-border-soft bg-surface-muted opacity-50 cursor-not-allowed'
+                        : isSelected
+                          ? 'border-primary bg-primary/5 cursor-pointer'
+                          : 'border-border-soft bg-white hover:border-primary/30 cursor-pointer'
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className={cn(
+                            'font-body text-sm truncate',
+                            isPaid ? 'text-muted' : 'text-body'
+                          )}>
+                            {item.name}
+                          </p>
+                          {isPaid && (
+                            <span className="shrink-0 inline-flex items-center font-body font-medium text-xs px-2 py-0.5 rounded-full bg-success/10 text-success">
+                              Paid
+                            </span>
+                          )}
+                        </div>
+                        <p className={cn(
+                          'font-body text-xs mt-0.5',
+                          isPaid ? 'text-muted' : 'text-body/60'
+                        )}>
+                          {formatNaira(target)}
+                          {!isPaid && funded > 0 && ` · ${formatNaira(funded)} paid`}
+                        </p>
+                        {!isPaid && remaining > 0 && (
+                          <p className="font-body text-xs text-primary mt-0.5">
+                            {formatNaira(remaining)} remaining
+                          </p>
+                        )}
+                      </div>
+                      {!isPaid && (
+                        <ChevronRight className={cn(
+                          'w-4 h-4 mt-0.5 shrink-0',
+                          isSelected ? 'text-primary' : 'text-body/30'
+                        )} />
+                      )}
+                    </div>
+                    {!isPaid && target > 0 && funded > 0 && (
+                      <div className="w-full bg-surface-muted rounded-full h-1 mt-2">
+                        <div
+                          className="bg-primary rounded-full h-1"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Preset amounts — show "Full remaining" + custom when item selected */}
+        {hasItems && selectedItem ? (
+          <div className="mb-4">
+            <p className="font-body text-sm text-body/80 mb-2.5 font-medium">Amount to give</p>
+            <div className="flex flex-wrap gap-2 mb-2">
+              <button
+                onClick={() => handlePresetClick(remainingBalance)}
+                className={cn(
+                  'font-body font-medium px-4 py-2 rounded-full transition-colors text-sm',
+                  amount === remainingBalance && !customAmount
+                    ? 'bg-primary text-white'
+                    : 'bg-ghost text-primary hover:bg-petal'
+                )}
+              >
+                Pay full {formatNaira(remainingBalance)}
+              </button>
+            </div>
+            <p className="font-body text-xs text-body/40 mb-2">
+              Max: {formatNaira(remainingBalance)}
+            </p>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 font-body text-sm text-body/40">₦</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={customAmount ? Number(customAmount).toLocaleString('en-NG') : ''}
+                onChange={handleCustomChange}
+                placeholder="Custom amount"
+                className="w-full border border-border-soft rounded-xl pl-8 pr-4 py-3 font-body text-body bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-body/40 transition-colors"
+              />
+            </div>
+          </div>
+        ) : hasItems && !selectedItem ? (
+          /* When items exist but none selected — show nothing, user must select first */
+          <div className="mb-4 p-3 rounded-xl bg-ghost">
+            <p className="font-body text-xs text-body/60 text-center">Select a gift item above to continue</p>
+          </div>
+        ) : (
+          /* No items — standard presets + custom amount (original behavior) */
+          <>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {[5000, 10000, 25000, 50000].map((preset) => (
+                <button
+                  key={preset}
+                  onClick={() => handlePresetClick(preset)}
+                  className={cn(
+                    'font-body font-medium px-4 py-2 rounded-full transition-colors text-sm',
+                    amount === preset && !customAmount
+                      ? 'bg-primary text-white'
+                      : 'bg-ghost text-primary hover:bg-petal'
+                  )}
+                >
+                  {formatNaira(preset)}
+                </button>
+              ))}
+            </div>
+
+            <p className="font-body text-xs text-body/40 mb-4">
+              Gifts between {formatNaira(minAmount)} and {formatNaira(maxAmount)}
+            </p>
+
+            <div className="mb-4">
+              <label className="font-body text-sm text-body/60 mb-1.5 block">Custom amount</label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 font-body text-sm text-body/40">₦</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={customAmount ? Number(customAmount).toLocaleString('en-NG') : ''}
+                  onChange={handleCustomChange}
+                  placeholder="Enter amount"
+                  className="w-full border border-border-soft rounded-xl pl-8 pr-4 py-3 font-body text-body bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-body/40 transition-colors"
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Display name */}
         <div className="mb-4">
@@ -309,7 +478,7 @@ export function GiveForm({ campaignId, campaignTitle, wishlistItemId, minAmount 
         <button
           onClick={handleSubmit}
           disabled={status === 'submitting' || flwStatus === 'loading'}
-          className="w-full bg-primary text-white font-body font-semibold px-6 py-3 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          className="w-full bg-primary text-white font-body font-medium px-6 py-3 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {status === 'submitting' ? (
             <>

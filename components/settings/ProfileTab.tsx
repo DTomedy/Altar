@@ -95,7 +95,7 @@ export function ProfileTab({ initialName, initialPhone, initialEmail, initialPro
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-2 font-body font-semibold text-sm text-primary hover:text-primary-hover transition-colors"
+              className="inline-flex items-center gap-2 font-body font-medium text-sm text-primary hover:text-primary-hover transition-colors"
             >
               <Upload className="w-4 h-4" />
               Upload photo
@@ -132,7 +132,7 @@ export function ProfileTab({ initialName, initialPhone, initialEmail, initialPro
 
         {/* Email (read-only) */}
         <div>
-          <label className="block font-body text-sm text-body/80 mb-1.5 font-semibold">Email</label>
+          <label className="block font-body text-sm text-body/80 mb-1.5 font-medium">Email</label>
           <div className="w-full border border-border-soft rounded-xl px-4 py-3 font-body text-body bg-surface-muted cursor-not-allowed flex items-center justify-between">
             <span>{initialEmail}</span>
             <span className="font-body text-xs text-body/40">Cannot be changed</span>
@@ -156,7 +156,7 @@ export function ProfileTab({ initialName, initialPhone, initialEmail, initialPro
           <button
             type="submit"
             disabled={saving || !name.trim()}
-            className="bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? 'Saving...' : 'Save changes'}
           </button>

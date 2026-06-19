@@ -37,7 +37,7 @@ function ModalInner() {
         >
           <X className="w-5 h-5" />
         </button>
-        <h2 className="font-display font-semibold text-xl text-body mb-5">Create a campaign</h2>
+        <h2 className="font-display font-medium text-xl text-body mb-5">Create a campaign</h2>
         <CampaignForm />
       </div>
     </div>

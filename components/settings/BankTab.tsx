@@ -160,7 +160,7 @@ export function BankTab({ initialAccountNumber, initialBankCode, initialBankName
 
         {/* Bank selection */}
         <div>
-          <label className="block font-body text-sm text-body/80 mb-1.5 font-semibold">Bank</label>
+          <label className="block font-body text-sm text-body/80 mb-1.5 font-medium">Bank</label>
           {showBankSelect ? (
             <div className="space-y-2">
               <div className="relative">
@@ -232,7 +232,7 @@ export function BankTab({ initialAccountNumber, initialBankCode, initialBankName
           <button
             type="submit"
             disabled={saving || !accountNumber || !bankCode || !accountName.trim()}
-            className="bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? 'Saving...' : hasBankDetails ? 'Update bank account' : 'Save bank account'}
           </button>

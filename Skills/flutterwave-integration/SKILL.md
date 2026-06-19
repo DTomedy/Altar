@@ -91,7 +91,7 @@ export function PaymentButton({
       <Script src="https://checkout.flutterwave.com/v3.js" strategy="lazyOnload" />
       <button
         onClick={handlePay}
-        className="font-body font-semibold rounded-full px-6 py-2.5 bg-primary text-white border-none cursor-pointer transition-colors duration-150 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        className="font-body font-medium rounded-full px-6 py-2.5 bg-primary text-white border-none cursor-pointer transition-colors duration-150 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
       >
         Give {formatNaira(amount)}
       </button>

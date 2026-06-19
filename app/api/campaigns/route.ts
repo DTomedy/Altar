@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: { code: 'VALIDATION_ERROR', message: parsed.error.errors[0]?.message || 'Invalid input', details: parsed.error.flatten() } }, { status: 422 });
     }
 
-    const { title, description, type, minAmount, maxAmount, goalAmount, deadline, coverPhoto, allowOverflow } = parsed.data;
+    const { title, description, type, minAmount, maxAmount, goalAmount, deadline, coverPhoto, allowOverflow, items } = parsed.data;
 
     const coverPhotoUrl = await storageService.uploadPublicImage(coverPhoto, 'campaigns');
 
@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
       deadline: deadline ? new Date(deadline) : null,
       allowOverflow,
       ownerId: userId,
+      items,
     });
 
     return NextResponse.json({ id: campaign.id, slug: campaign.slug }, { status: 201 });

@@ -25,9 +25,9 @@ export default async function NewCampaignPage() {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <div className="w-16 h-16 rounded-full bg-petal flex items-center justify-center mb-4">
-          <span className="font-display font-semibold text-2xl text-primary">!</span>
+          <span className="font-display font-medium text-2xl text-primary">!</span>
         </div>
-        <h1 className="font-display font-semibold text-2xl text-body mb-2">Verify your identity</h1>
+        <h1 className="font-display font-medium text-2xl text-body mb-2">Verify your identity</h1>
         <p className="font-body text-sm text-body/60 max-w-sm mb-6">
           You need to verify your email address before creating campaigns.
         </p>
@@ -37,7 +37,7 @@ export default async function NewCampaignPage() {
 
   return (
     <div>
-      <h1 className="font-display font-semibold text-2xl text-body mb-1">Create a campaign</h1>
+      <h1 className="font-display font-medium text-2xl text-body mb-1">Create a campaign</h1>
       <p className="font-body text-sm text-body/60 mb-8">
         Start a birthday wishlist or a goal fundraiser.
       </p>

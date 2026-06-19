@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import { contributionRepository, paymentService, paymentLogRepository, campaignRepository } from '@/lib/services';
 import { VerifyContributionSchema } from '@/lib/validators';
 import { formatNaira } from '@/lib/formatters';
@@ -147,6 +148,26 @@ export async function POST(req: NextRequest) {
     status: 'SUCCESS',
     flwTxId: String(flwResponse.data!.id!),
   });
+
+  // Update wishlist item fundedAmount if this contribution targets a specific item
+  if (contribution.wishlistItemId) {
+    await prisma.wishlistItem.update({
+      where: { id: contribution.wishlistItemId },
+      data: { fundedAmount: { increment: contribution.amount } },
+    });
+
+    const updatedItem = await prisma.wishlistItem.findUnique({
+      where: { id: contribution.wishlistItemId },
+      select: { fundedAmount: true, targetAmount: true },
+    });
+
+    if (updatedItem && Number(updatedItem.fundedAmount) >= Number(updatedItem.targetAmount)) {
+      await prisma.wishlistItem.update({
+        where: { id: contribution.wishlistItemId },
+        data: { isFulfilled: true },
+      });
+    }
+  }
 
   void paymentLogRepository.create({
     flwTxRef: txRef,

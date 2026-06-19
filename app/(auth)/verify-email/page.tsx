@@ -63,7 +63,7 @@ function VerifyEmailContent() {
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
         </div>
-        <h1 className="font-display text-xl font-semibold text-body mb-2">Verifying your email...</h1>
+        <h1 className="font-display text-xl font-medium text-body mb-2">Verifying your email...</h1>
         <p className="font-body text-sm text-body/60">Please wait while we confirm your account.</p>
       </div>
     );
@@ -80,7 +80,7 @@ function VerifyError({ expired = false }: { expired?: boolean }) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </div>
-      <h1 className="font-display text-xl font-semibold text-body mb-2">
+      <h1 className="font-display text-xl font-medium text-body mb-2">
         Verification {expired ? 'Expired' : 'Failed'}
       </h1>
       <p className="font-body text-sm text-body/60 mb-6">
@@ -90,7 +90,7 @@ function VerifyError({ expired = false }: { expired?: boolean }) {
       </p>
       <Link
         href="/auth?mode=login"
-        className="inline-block rounded-full bg-primary px-6 py-2.5 font-body text-sm font-semibold text-white"
+        className="inline-block rounded-full bg-primary px-6 py-2.5 font-body text-sm font-medium text-white"
       >
         Back to login
       </Link>
@@ -108,7 +108,7 @@ export default function VerifyEmailPage() {
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
         </div>
-        <h1 className="font-display text-xl font-semibold text-body mb-2">Verifying your email...</h1>
+        <h1 className="font-display text-xl font-medium text-body mb-2">Verifying your email...</h1>
         <p className="font-body text-sm text-body/60">Please wait while we confirm your account.</p>
       </div>
     }>

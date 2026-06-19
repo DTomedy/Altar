@@ -19,7 +19,7 @@ export function AuthPage() {
     <div className="bg-surface rounded-2xl p-6 sm:p-8">
       {mode === 'login' && (
         <>
-          <h1 className="font-display font-semibold text-2xl text-body mb-1 text-center">Welcome back</h1>
+          <h1 className="font-display font-medium text-2xl text-body mb-1 text-center">Welcome back</h1>
           <p className="font-body text-sm text-body/60 mb-6 text-center">Sign in to manage your campaigns and wallet.</p>
 
           {verified && (
@@ -41,7 +41,7 @@ export function AuthPage() {
               Don&apos;t have an account?{' '}
               <button
                 onClick={() => setMode('register')}
-                className="text-primary font-semibold underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
+                className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
               >
                 Create one
               </button>
@@ -52,14 +52,14 @@ export function AuthPage() {
 
       {mode === 'register' && (
         <>
-          <h1 className="font-display font-semibold text-2xl text-body mb-1 text-center">Create your account</h1>
+          <h1 className="font-display font-medium text-2xl text-body mb-1 text-center">Create your account</h1>
           <p className="font-body text-sm text-body/60 mb-6 text-center">Set up your profile to start celebrating.</p>
           <RegisterForm />
           <p className="mt-6 font-body text-sm text-body/60 text-center">
             Already have an account?{' '}
             <button
               onClick={() => setMode('login')}
-              className="text-primary font-semibold underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
+              className="text-primary font-medium underline underline-offset-2 hover:text-primary-hover cursor-pointer transition-colors"
             >
               Sign in
             </button>

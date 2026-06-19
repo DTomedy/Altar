@@ -108,7 +108,7 @@ export function PasswordTab() {
           <button
             type="submit"
             disabled={saving || !currentPassword || !newPassword || !confirmPassword}
-            className="bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? 'Updating...' : 'Update password'}
           </button>

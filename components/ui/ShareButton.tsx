@@ -33,7 +33,7 @@ export function ShareButton({ url, label = 'Share' }: ShareButtonProps) {
     <button
       onClick={handleCopy}
       className={cn(
-        'inline-flex items-center justify-center font-body font-semibold px-6 py-2.5 rounded-full transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 cursor-pointer shrink-0',
+        'inline-flex items-center justify-center font-body font-medium px-6 py-2.5 rounded-full transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 cursor-pointer shrink-0',
         copied
           ? 'bg-success/10 text-success border border-success/30 focus-visible:ring-success/40'
           : 'bg-transparent text-primary border border-primary hover:bg-ghost focus-visible:ring-primary/40'

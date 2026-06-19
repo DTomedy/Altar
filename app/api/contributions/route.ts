@@ -71,12 +71,13 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Wishlist item validation (server-side) ────────────────────────────────
-  // If a wishlistItemId is provided, verify the item belongs to this campaign
-  // and that it has not already been fulfilled.
+  // If a wishlistItemId is provided, verify the item belongs to this campaign,
+  // that it has not already been fulfilled, and that the amount does not
+  // exceed the remaining balance.
   if (wishlistItemId) {
     const item = await prisma.wishlistItem.findUnique({
       where: { id: wishlistItemId },
-      select: { campaignId: true, isFulfilled: true, targetAmount: true },
+      select: { campaignId: true, isFulfilled: true, targetAmount: true, fundedAmount: true },
     });
 
     if (!item || item.campaignId !== campaignId) {
@@ -90,6 +91,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: { code: 'ITEM_FULFILLED', message: 'This wishlist item has already been fulfilled' } },
         { status: 400 },
+      );
+    }
+
+    const remaining = Number(item.targetAmount) - Number(item.fundedAmount);
+    if (amount > remaining) {
+      return NextResponse.json(
+        {
+          error: {
+            code: 'AMOUNT_EXCEEDS_REMAINING',
+            message: `Gift amount exceeds the remaining balance of ${formatNaira(remaining)} for this item`,
+          },
+        },
+        { status: 422 },
       );
     }
   }

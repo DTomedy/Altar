@@ -77,7 +77,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             
             {/* Message content */}
             <div className="flex-1">
-              <p className="font-body font-semibold text-sm text-body">{t.title}</p>
+              <p className="font-body font-medium text-sm text-body">{t.title}</p>
               {t.description && (
                 <p className="font-body text-xs text-muted mt-0.5">{t.description}</p>
               )}

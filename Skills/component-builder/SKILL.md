@@ -57,13 +57,13 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
     <Card>
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
-          <h3 className="font-display font-semibold text-base text-body truncate">{campaign.title}</h3>
+          <h3 className="font-display font-medium text-base text-body truncate">{campaign.title}</h3>
           <p className="font-body text-sm text-body/60 mt-0.5 line-clamp-2">{campaign.description}</p>
         </div>
         <StatusBadge status={campaign.status} />
       </div>
 
-      <p className="font-mono font-semibold text-xl text-primary">{formatNaira(campaign.totalRaised)}</p>
+      <p className="font-mono font-medium text-xl text-primary">{formatNaira(campaign.totalRaised)}</p>
 
       {campaign.goalAmount && (
         <>
@@ -167,7 +167,7 @@ export function Button({ variant = 'primary', size = 'md', loading, disabled, cl
   return (
     <button
       className={cn(
-        'font-body font-semibold rounded-full cursor-pointer transition-colors duration-150',
+        'font-body font-medium rounded-full cursor-pointer transition-colors duration-150',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variantClasses[variant],
@@ -204,7 +204,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ error, label, id, className, ...props }, ref) => (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={id} className="font-body text-sm font-semibold text-body">
+        <label htmlFor={id} className="font-body text-sm font-medium text-body">
           {label}
         </label>
       )}
@@ -282,7 +282,7 @@ export function Badge({ variant = 'neutral', className, children, ...props }: Ba
   return (
     <span
       className={cn(
-        'font-body text-xs font-semibold px-2.5 py-0.5 rounded-full inline-block',
+        'font-body text-xs font-medium px-2.5 py-0.5 rounded-full inline-block',
         badgeClasses[variant],
         className,
       )}
@@ -305,5 +305,5 @@ export function Badge({ variant = 'neutral', className, children, ...props }: Ba
 - Never place the Flutterwave Script tag at the page level — co-locate it in `PaymentButton`
 - Never build a modal from scratch — create a shared `Modal` component in `components/ui/`
 - Never format naira amounts manually — always use `formatNaira()`
-- Never use `font-bold`, `font-semibold`, or weight above `font-semibold` (500)
+- Never use `font-bold`, `font-medium`, or weight above `font-medium` (500)
 - Never forget disabled styling — every interactive element must handle `disabled` state

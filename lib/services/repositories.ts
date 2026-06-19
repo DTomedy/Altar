@@ -1,5 +1,5 @@
 import 'server-only';
-import { Prisma } from '@prisma/client';
+import { Prisma, CampaignType } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import {
   IUserRepository,
@@ -45,7 +45,32 @@ export class CampaignRepository implements ICampaignRepository {
   }
 
   async create(data: CreateCampaignData) {
-    return prisma.campaign.create({ data: data as unknown as Prisma.CampaignCreateInput });
+    return prisma.campaign.create({
+      data: {
+        slug: data.slug,
+        title: data.title,
+        description: data.description,
+        type: data.type as CampaignType,
+        coverPhoto: data.coverPhoto,
+        minAmount: data.minAmount,
+        maxAmount: data.maxAmount,
+        goalAmount: data.goalAmount,
+        deadline: data.deadline,
+        allowOverflow: data.allowOverflow,
+        ownerId: data.ownerId,
+        ...(data.items && data.items.length > 0
+          ? {
+              items: {
+                create: data.items.map((item) => ({
+                  name: item.name,
+                  description: item.description,
+                  targetAmount: item.targetAmount,
+                })),
+              },
+            }
+          : {}),
+      },
+    });
   }
 
   async update(id: string, data: Prisma.CampaignUpdateInput) {

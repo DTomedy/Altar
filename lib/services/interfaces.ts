@@ -76,6 +76,12 @@ export interface IUserRepository {
   update(id: string, data: Partial<User>): Promise<User>;
 }
 
+export interface CreateCampaignItemData {
+  name: string;
+  description?: string | null;
+  targetAmount: number;
+}
+
 export interface CreateCampaignData {
   slug: string;
   title: string;
@@ -88,6 +94,7 @@ export interface CreateCampaignData {
   deadline?: Date | null;
   allowOverflow: boolean;
   ownerId: string;
+  items?: CreateCampaignItemData[];
 }
 
 export interface ICampaignRepository {

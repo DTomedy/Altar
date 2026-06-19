@@ -76,7 +76,7 @@ export function OnboardingTour() {
         </p>
 
         {/* Title */}
-        <h2 className="font-display font-semibold text-xl text-body text-center mb-2">
+        <h2 className="font-display font-medium text-xl text-body text-center mb-2">
           {current.title}
         </h2>
 
@@ -102,14 +102,14 @@ export function OnboardingTour() {
           {isFirst ? (
             <button
               onClick={handleComplete}
-              className="flex-1 bg-transparent text-primary border border-primary font-body font-semibold px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
+              className="flex-1 bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
             >
               Skip
             </button>
           ) : (
             <button
               onClick={() => setStep(step - 1)}
-              className="flex-1 bg-transparent text-primary border border-primary font-body font-semibold px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
+              className="flex-1 bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
             >
               Back
             </button>
@@ -118,14 +118,14 @@ export function OnboardingTour() {
             <button
               onClick={handleComplete}
               disabled={loading}
-              className="flex-1 bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Finishing...' : 'Get started'}
             </button>
           ) : (
             <button
               onClick={() => setStep(step + 1)}
-              className="flex-1 bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
+              className="flex-1 bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
             >
               Next
             </button>

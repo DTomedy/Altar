@@ -144,7 +144,7 @@ export function WithdrawDialog({ isOpen, onClose }: WithdrawDialogProps) {
     <Modal isOpen={isOpen} onClose={handleClose} title="Withdraw funds" maxWidth="md">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="w-full">
-          <label className="block font-body text-sm text-body/80 mb-1.5 font-semibold">Bank</label>
+          <label className="block font-body text-sm text-body/80 mb-1.5 font-medium">Bank</label>
           {banksError ? (
             <div className="flex items-center gap-2">
               <p className="font-body text-sm text-error">Could not load banks.</p>
@@ -191,7 +191,7 @@ export function WithdrawDialog({ isOpen, onClose }: WithdrawDialogProps) {
         </div>
 
         <div className="w-full">
-          <label className="block font-body text-sm text-body/80 mb-1.5 font-semibold">
+          <label className="block font-body text-sm text-body/80 mb-1.5 font-medium">
             Account number
           </label>
           <div className="flex gap-2">
@@ -212,7 +212,7 @@ export function WithdrawDialog({ isOpen, onClose }: WithdrawDialogProps) {
               type="button"
               onClick={handleVerify}
               disabled={accountNumber.length !== 10 || !bankCode || verifying}
-              className="shrink-0 px-4 py-3 rounded-xl bg-ghost text-primary font-body text-sm font-semibold hover:bg-petal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="shrink-0 px-4 py-3 rounded-xl bg-ghost text-primary font-body text-sm font-medium hover:bg-petal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {verifying ? <Loader className="w-4 h-4 animate-spin" /> : 'Verify'}
             </button>
@@ -225,7 +225,7 @@ export function WithdrawDialog({ isOpen, onClose }: WithdrawDialogProps) {
         </div>
 
         <div className="w-full">
-          <label className="block font-body text-sm text-body/80 mb-1.5 font-semibold">Amount</label>
+          <label className="block font-body text-sm text-body/80 mb-1.5 font-medium">Amount</label>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 font-body text-body/40">₦</span>
             <input
@@ -250,7 +250,7 @@ export function WithdrawDialog({ isOpen, onClose }: WithdrawDialogProps) {
               <span>Platform fee (3%)</span>
               <span className="font-mono">-{formatNaira(fee)}</span>
             </div>
-            <div className="flex justify-between font-body text-sm font-semibold text-body pt-1 border-t border-border-soft">
+            <div className="flex justify-between font-body text-sm font-medium text-body pt-1 border-t border-border-soft">
               <span>You receive</span>
               <span className="font-mono text-primary">{formatNaira(netAmount)}</span>
             </div>

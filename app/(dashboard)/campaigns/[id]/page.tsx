@@ -64,7 +64,7 @@ export default async function CampaignDetailPage({
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="font-display font-semibold text-2xl text-body">{campaign.title}</h1>
+            <h1 className="font-display font-medium text-2xl text-body">{campaign.title}</h1>
             <Badge variant={statusVariant}>
               {campaign.status === 'ACTIVE' ? 'Active' :
                campaign.status === 'GOAL_REACHED' ? 'Goal reached' :
@@ -105,14 +105,14 @@ export default async function CampaignDetailPage({
       <div className="bg-surface border border-default rounded-2xl p-5 mb-8">
         <div className="flex items-end justify-between mb-3">
           <div>
-            <p className="font-display font-semibold text-3xl text-primary">{formatNaira(totalRaised)}</p>
+            <p className="font-display font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
             {goal && (
               <p className="font-body text-sm text-body/60 mt-1">
                 raised of {formatNaira(goal)} goal
               </p>
             )}
           </div>
-          <p className="font-display font-semibold text-lg text-body">{percentage}%</p>
+          <p className="font-display font-medium text-lg text-body">{percentage}%</p>
         </div>
         {goal && (
           <div className="w-full bg-surface-muted rounded-full h-2">
@@ -127,12 +127,12 @@ export default async function CampaignDetailPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Campaign info */}
         <div>
-          <h2 className="font-display font-semibold text-lg text-body mb-3">About this campaign</h2>
+          <h2 className="font-display font-medium text-lg text-body mb-3">About this campaign</h2>
           <p className="font-body text-sm text-body/60 mb-6">{campaign.description}</p>
 
           {campaign.items.length > 0 && (
             <div>
-              <h3 className="font-display font-semibold text-base text-body mb-3">Wishlist items</h3>
+              <h3 className="font-display font-medium text-base text-body mb-3">Wishlist items</h3>
               <div className="space-y-3">
                 {campaign.items.map((item) => (
                   <div
@@ -140,7 +140,7 @@ export default async function CampaignDetailPage({
                     className="bg-surface border border-default rounded-2xl p-4"
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <p className="font-body font-semibold text-sm text-body">{item.name}</p>
+                      <p className="font-body font-medium text-sm text-body">{item.name}</p>
                       {item.isFulfilled && (
                         <Badge variant="success">Fulfilled</Badge>
                       )}
@@ -148,7 +148,7 @@ export default async function CampaignDetailPage({
                     {item.description && (
                       <p className="font-body text-xs text-body/60 mb-2">{item.description}</p>
                     )}
-<p className="font-display font-semibold text-sm text-primary">
+<p className="font-display font-medium text-sm text-primary">
                       {formatNaira(item.fundedAmount)} / {formatNaira(item.targetAmount)}
                     </p>
                   </div>
@@ -160,7 +160,7 @@ export default async function CampaignDetailPage({
 
         {/* Recent contributions */}
         <div>
-          <h2 className="font-display font-semibold text-lg text-body mb-3">Recent gifts</h2>
+          <h2 className="font-display font-medium text-lg text-body mb-3">Recent gifts</h2>
           {campaign.contributions.length === 0 ? (
             <div className="bg-surface border border-default rounded-2xl p-5 text-center">
               <p className="font-body text-sm text-body/60">No gifts yet. Share your campaign to start receiving contributions.</p>
@@ -177,7 +177,7 @@ export default async function CampaignDetailPage({
                     </p>
                     <p className="font-body text-xs text-body/40">{formatDate(contribution.createdAt)}</p>
                   </div>
-                  <p className="font-mono font-semibold text-sm text-primary">{formatNaira(contribution.amount)}</p>
+                  <p className="font-mono font-medium text-sm text-primary">{formatNaira(contribution.amount)}</p>
                 </div>
               ))}
             </div>

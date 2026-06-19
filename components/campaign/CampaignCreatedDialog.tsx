@@ -41,7 +41,7 @@ export function CampaignCreatedDialog({ id, slug }: CampaignCreatedDialogProps) 
         </div>
 
         {/* Title */}
-        <h2 className="font-display font-semibold text-xl text-body mb-2">
+        <h2 className="font-display font-medium text-xl text-body mb-2">
           Campaign created successfully
         </h2>
 
@@ -54,13 +54,13 @@ export function CampaignCreatedDialog({ id, slug }: CampaignCreatedDialogProps) 
         <div className="space-y-3">
           <button
             onClick={handleCopy}
-            className="w-full bg-primary text-white font-body font-semibold px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
+            className="w-full bg-primary text-white font-body font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
           >
             {copied ? 'Copied!' : 'Copy the link'}
           </button>
           <button
             onClick={handleCancel}
-            className="w-full bg-transparent text-primary border border-primary font-body font-semibold px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
+            className="w-full bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
           >
             Cancel
           </button>

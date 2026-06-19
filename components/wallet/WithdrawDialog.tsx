@@ -244,15 +244,15 @@ export function WithdrawDialog({ isOpen, onClose }: WithdrawDialogProps) {
           <div className="bg-ghost rounded-xl px-4 py-3 space-y-1">
             <div className="flex justify-between font-body text-sm text-body/60">
               <span>Withdrawal amount</span>
-              <span className="font-mono">{formatNaira(numericAmount)}</span>
+              <span className="font-display">{formatNaira(numericAmount)}</span>
             </div>
             <div className="flex justify-between font-body text-sm text-body/60">
               <span>Platform fee (3%)</span>
-              <span className="font-mono">-{formatNaira(fee)}</span>
+              <span className="font-display">-{formatNaira(fee)}</span>
             </div>
             <div className="flex justify-between font-body text-sm font-medium text-body pt-1 border-t border-border-soft">
               <span>You receive</span>
-              <span className="font-mono text-primary">{formatNaira(netAmount)}</span>
+              <span className="font-display text-primary">{formatNaira(netAmount)}</span>
             </div>
           </div>
         )}

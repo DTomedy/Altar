@@ -94,12 +94,12 @@ export default async function WalletPage() {
   return (
     <div>
       <h1 className="font-display font-medium text-2xl text-body mb-1">Wallet</h1>
-      <p className="font-body text-sm text-body/60 mb-8">Manage your contributions and withdrawals.</p>
+      <p className="font-body text-sm text-body/70 mb-8">Manage your contributions and withdrawals.</p>
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-surface border border-border-soft rounded-2xl p-5">
-          <p className="font-body text-sm text-body/60 mb-1">Total received</p>
+          <p className="font-body text-sm text-body/70 mb-1">Total received</p>
           <p className="font-display font-medium text-2xl text-primary">
             {formatNaira(totalReceived)}
           </p>
@@ -114,7 +114,7 @@ export default async function WalletPage() {
         </div>
 
         <div className="bg-surface border border-border-soft rounded-2xl p-5">
-          <p className="font-body text-sm text-body/60 mb-1">Amount withdrawn</p>
+          <p className="font-body text-sm text-body/70 mb-1">Amount withdrawn</p>
           <p className="font-display font-medium text-2xl text-body">
             {formatNaira(totalWithdrawn)}
           </p>
@@ -127,46 +127,46 @@ export default async function WalletPage() {
 
         {contributions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="font-body text-sm text-body/60">No transactions yet.</p>
+            <p className="font-body text-sm text-body/70">No transactions yet.</p>
           </div>
         ) : (
           <div className="overflow-x-auto -mx-5">
             <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-border-soft">
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
-                    Transaction
-                  </th>
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-right px-5 py-3">
-                    Amount
-                  </th>
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
-                    Status
-                  </th>
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
-                    Payer
-                  </th>
-                  <th className="font-body text-xs text-muted font-medium uppercase tracking-wider text-left px-5 py-3">
-                    Date
-                  </th>
+                    <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-left px-5 py-3">
+                      Transaction
+                    </th>
+                    <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-right px-5 py-3">
+                      Amount
+                    </th>
+                    <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-left px-5 py-3">
+                      Status
+                    </th>
+                    <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-left px-5 py-3">
+                      Payer
+                    </th>
+                    <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-left px-5 py-3">
+                      Date
+                    </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-soft">
                 {contributions.map((c) => (
                   <tr key={c.id} className="hover:bg-ghost/30 transition-colors">
                     <td className="px-5 py-4">
-                      <span className="font-mono text-xs text-primary font-medium" title={c.flwTxRef}>
+                      <span className="font-mono text-sm text-primary font-medium" title={c.flwTxRef}>
                         {shortCode(c.id)}
                       </span>
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <span className="font-mono font-medium text-sm text-body">
+                      <span className="font-display font-medium text-sm text-body">
                         {formatNaira(c.amount)}
                       </span>
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`inline-flex items-center font-body font-medium text-xs px-2.5 py-1 rounded-full ${
+                        className={`inline-flex items-center font-body font-medium text-sm px-2.5 py-1 rounded-full ${
                           STATUS_STYLES[c.status as PaymentStatus]
                         }`}
                       >
@@ -179,7 +179,7 @@ export default async function WalletPage() {
                       </span>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="font-body text-sm text-muted">
+                      <span className="font-body text-sm text-body/70">
                         {formatDateTime(c.createdAt)}
                       </span>
                     </td>

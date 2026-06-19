@@ -113,7 +113,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               This campaign has ended.
             </p>
             {totalRaised > 0 && (
-              <p className="font-mono font-medium text-xl text-body mb-4">
+              <p className="font-display font-medium text-xl text-body mb-4">
                 {formatNaira(totalRaised)} raised
               </p>
             )}
@@ -254,7 +254,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                           </div>
 
                           <div className="flex items-baseline gap-2 mb-1">
-                            <span className="font-mono font-medium text-base text-primary">{formatNaira(itemTarget)}</span>
+                            <span className="font-display font-medium text-base text-primary">{formatNaira(itemTarget)}</span>
                             {itemFunded > 0 && (
                               <span className="font-body text-xs text-body/60">
                                 {formatNaira(itemFunded)} paid
@@ -308,7 +308,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                           </p>
                           <p className="font-body text-xs text-body/40">{formatDate(contribution.createdAt)}</p>
                         </div>
-                        <p className="font-mono font-medium text-sm text-primary">{formatNaira(contribution.amount)}</p>
+                        <p className="font-display font-medium text-sm text-primary">{formatNaira(contribution.amount)}</p>
                       </div>
                     ))}
                   </div>
@@ -360,7 +360,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               This campaign is no longer accepting gifts.
             </p>
             {totalRaised > 0 && (
-              <p className="font-mono font-medium text-xl text-body mb-4">
+              <p className="font-display font-medium text-xl text-body mb-4">
                 {formatNaira(totalRaised)} raised
               </p>
             )}

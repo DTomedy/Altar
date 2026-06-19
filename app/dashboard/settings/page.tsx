@@ -46,7 +46,7 @@ export default function SettingsPage() {
     return (
       <div>
         <h1 className="font-display font-medium text-2xl text-body mb-1">Settings</h1>
-        <p className="font-body text-sm text-body/60 mb-8">Manage your profile and account settings.</p>
+        <p className="font-body text-sm text-body/70 mb-8">Manage your profile and account settings.</p>
         <div className="animate-pulse space-y-4">
           <div className="h-10 bg-surface-muted rounded-xl w-full max-w-lg" />
           <div className="h-64 bg-surface-muted rounded-2xl w-full max-w-lg" />
@@ -59,7 +59,7 @@ export default function SettingsPage() {
     return (
       <div>
         <h1 className="font-display font-medium text-2xl text-body mb-1">Settings</h1>
-        <p className="font-body text-sm text-body/60">Please log in to access settings.</p>
+        <p className="font-body text-sm text-body/70">Please log in to access settings.</p>
       </div>
     );
   }
@@ -67,7 +67,7 @@ export default function SettingsPage() {
   return (
     <div>
       <h1 className="font-display font-medium text-2xl text-body mb-1">Settings</h1>
-      <p className="font-body text-sm text-body/60 mb-8">Manage your profile and account settings.</p>
+      <p className="font-body text-sm text-body/70 mb-8">Manage your profile and account settings.</p>
 
       {/* Tabs */}
       <div className="flex gap-1 mb-8 border-b border-border-soft overflow-x-auto">
@@ -79,7 +79,7 @@ export default function SettingsPage() {
               'font-body font-medium text-sm px-4 py-3 border-b-2 transition-colors whitespace-nowrap',
               activeTab === tab.id
                 ? 'border-primary text-primary'
-                : 'border-transparent text-body/60 hover:text-body hover:border-default'
+                : 'border-transparent text-body/70 hover:text-body hover:border-default'
             )}
           >
             {tab.label}

@@ -19,7 +19,7 @@
   --color-surface-muted:  #F5F5F5; /* muted surfaces (hover, disabled bg) */
   --color-muted:          #787878; /* secondary text, placeholder */
   --color-muted-strong:   #666666; /* stronger muted text */
-  --color-border-default: #EEEEEE; /* default borders — light grey */
+  --color-border-default: #E4E2E2; /* default borders — neutral 90 */
   --color-neutral-0:      #000000; /* neutral 0 — pure black */
   --color-neutral-10:     #1B1D1D; /* neutral 10 — onBackground */
 

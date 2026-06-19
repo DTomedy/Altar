@@ -175,7 +175,7 @@
                 "onSurface": "{color.palette.neutral.50}",
                 "surfaceVariant": "{color.palette.neutralVariant.90}",
                 "onSurfaceVariant": "{color.palette.neutralVariant.30}",
-                "outline": "{color.palette.neutralVariant.70}",
+                "outline": "{color.palette.neutral.90}",
                 "outlineVariant": "{color.palette.neutralVariant.80}",
                 "inverseSurface": "{color.palette.neutral.20}",
                 "inverseOnSurface": "{color.palette.neutral.95}",

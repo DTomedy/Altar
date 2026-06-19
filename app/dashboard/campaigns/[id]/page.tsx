@@ -71,7 +71,7 @@ export default async function CampaignDetailPage({
                campaign.status === 'EXPIRED' ? 'Expired' : 'Closed'}
             </Badge>
           </div>
-          <p className="font-body text-sm text-body/60">
+          <p className="font-body text-sm text-body/70">
             Created {formatDate(campaign.createdAt)}
             {campaign.deadline && ` · Deadline ${formatDate(campaign.deadline)}`}
           </p>
@@ -146,7 +146,7 @@ export default async function CampaignDetailPage({
                       )}
                     </div>
                     {item.description && (
-                      <p className="font-body text-xs text-body/60 mb-2">{item.description}</p>
+                      <p className="font-body text-xs text-body/70 mb-2">{item.description}</p>
                     )}
 <p className="font-display font-medium text-sm text-primary">
                       {formatNaira(item.fundedAmount)} / {formatNaira(item.targetAmount)}
@@ -163,7 +163,7 @@ export default async function CampaignDetailPage({
           <h2 className="font-display font-medium text-lg text-body mb-3">Recent gifts</h2>
           {campaign.contributions.length === 0 ? (
             <div className="bg-surface border border-default rounded-2xl p-5 text-center">
-              <p className="font-body text-sm text-body/60">No gifts yet. Share your campaign to start receiving contributions.</p>
+              <p className="font-body text-sm text-body/70">No gifts yet. Share your campaign to start receiving contributions.</p>
             </div>
           ) : (
             <div className="bg-surface border border-default rounded-2xl divide-y divide-border-soft">
@@ -177,7 +177,7 @@ export default async function CampaignDetailPage({
                     </p>
                     <p className="font-body text-xs text-body/40">{formatDate(contribution.createdAt)}</p>
                   </div>
-                  <p className="font-mono font-medium text-sm text-primary">{formatNaira(contribution.amount)}</p>
+                  <p className="font-display font-medium text-sm text-primary">{formatNaira(contribution.amount)}</p>
                 </div>
               ))}
             </div>

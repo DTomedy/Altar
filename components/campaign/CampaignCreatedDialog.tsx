@@ -62,7 +62,7 @@ export function CampaignCreatedDialog({ id, slug }: CampaignCreatedDialogProps) 
             onClick={handleCancel}
             className="w-full bg-transparent text-primary border border-primary font-body font-medium px-6 py-2.5 rounded-full hover:bg-ghost focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors"
           >
-            Cancel
+            Done
           </button>
         </div>
       </div>

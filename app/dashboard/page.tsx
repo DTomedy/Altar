@@ -110,7 +110,7 @@ export default async function DashboardPage({
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-display font-medium text-2xl text-body">Welcome back, {user?.name?.split(' ')[0]}</h1>
-          <p className="font-body text-sm text-body/60 mt-1">Here&apos;s what&apos;s happening with your campaigns.</p>
+          <p className="font-body text-sm text-body/70 mt-1">Here&apos;s what&apos;s happening with your campaigns.</p>
         </div>
         <Link href="/dashboard?create=1">
           <Button variant="primary">
@@ -129,7 +129,7 @@ export default async function DashboardPage({
           </div>
           <div>
             <p className="font-body text-sm font-medium text-body">Email verified successfully</p>
-            <p className="font-body text-xs text-body/60">Your account is now fully active. Welcome to Altar!</p>
+            <p className="font-body text-xs text-body/70">Your account is now fully active. Welcome to Altar!</p>
           </div>
         </div>
       )}
@@ -138,7 +138,7 @@ export default async function DashboardPage({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-surface border border-border-soft rounded-2xl p-5">
           <div className="flex justify-between items-start mb-1">
-            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Total raised</p>
+            <p className="font-body text-xs text-body/70 font-medium uppercase tracking-wider">Total raised</p>
             <div className="w-9 h-9 rounded-full bg-white border border-primary/20 flex items-center justify-center">
               <TrendingUp className="w-4 h-4 text-primary" />
             </div>
@@ -151,20 +151,20 @@ export default async function DashboardPage({
         </div>
         <div className="bg-surface border border-border-soft rounded-2xl p-5">
           <div className="flex justify-between items-start mb-1">
-            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Active campaigns</p>
+            <p className="font-body text-xs text-body/70 font-medium uppercase tracking-wider">Active campaigns</p>
             <div className="w-9 h-9 rounded-full bg-white border border-accent/20 flex items-center justify-center">
               <Activity className="w-4 h-4 text-accent" />
             </div>
           </div>
           <p className="font-display font-medium text-2xl text-body mt-1">{activeCount}</p>
-          <p className="font-body text-xs text-body/60 flex items-center gap-1 mt-1">
+          <p className="font-body text-xs text-body/70 flex items-center gap-1 mt-1">
             <ArrowDown className="w-3 h-3" />
             12.3% from last month
           </p>
         </div>
         <div className="bg-surface border border-border-soft rounded-2xl p-5">
           <div className="flex justify-between items-start mb-1">
-            <p className="font-body text-xs text-muted font-medium uppercase tracking-wider">Total campaigns</p>
+            <p className="font-body text-xs text-body/70 font-medium uppercase tracking-wider">Total campaigns</p>
             <div className="w-9 h-9 rounded-full bg-white border border-success/20 flex items-center justify-center">
               <Layers className="w-4 h-4 text-success" />
             </div>
@@ -187,7 +187,7 @@ export default async function DashboardPage({
               <Gift className="w-8 h-8 text-accent" />
             </div>
             <h3 className="font-display font-medium text-xl text-body mb-2">No campaigns yet</h3>
-            <p className="font-body text-sm text-body/60 max-w-sm mb-6">
+            <p className="font-body text-sm text-body/70 max-w-sm mb-6">
               Create your first wishlist or goal campaign to get started.
             </p>
             <Link href="/dashboard?create=1">
@@ -237,7 +237,7 @@ export default async function DashboardPage({
 
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <span className="font-display font-medium text-base text-primary">{formatNaira(campaign.totalRaised)}</span>
-                      <span className="font-body text-xs text-muted flex items-center gap-1">
+                      <span className="font-body text-xs text-body/70 flex items-center gap-1">
                         <Users className="w-3.5 h-3.5" />
                         {campaign.donorCount} donor{campaign.donorCount !== 1 ? 's' : ''}
                       </span>
@@ -248,7 +248,7 @@ export default async function DashboardPage({
                         </span>
                       )}
                       {campaign.daysLeft !== null && campaign.daysLeft <= 0 && (
-                        <span className="font-body text-xs text-muted flex items-center gap-1">
+                        <span className="font-body text-xs text-body/70 flex items-center gap-1">
                           <Clock className="w-3.5 h-3.5" />
                           Ended
                         </span>

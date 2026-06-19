@@ -7,6 +7,7 @@ import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { Button } from '@/components/ui';
 import { CampaignActions } from '@/components/campaign/CampaignActions';
+import { CampaignModal } from '@/components/campaign/CampaignModal';
 import { formatNaira } from '@/lib/formatters';
 
 interface CampaignSummary {
@@ -87,9 +88,9 @@ export default async function CampaignsPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-display font-medium text-2xl text-body">Campaigns</h1>
-          <p className="font-body text-sm text-body/60 mt-1">Manage all your campaigns in one place.</p>
+          <p className="font-body text-sm text-body/70 mt-1">Manage all your campaigns in one place.</p>
         </div>
-        <Link href="/dashboard/campaigns/new">
+        <Link href="?create=1">
           <Button variant="primary">
             <Plus className="w-5 h-5 mr-2" />
             New campaign
@@ -103,10 +104,10 @@ export default async function CampaignsPage() {
             <Gift className="w-8 h-8 text-accent" />
           </div>
           <h3 className="font-display font-medium text-xl text-body mb-2">No campaigns yet</h3>
-          <p className="font-body text-sm text-body/60 max-w-sm mb-6">
+          <p className="font-body text-sm text-body/70 max-w-sm mb-6">
             Create your first wishlist or goal campaign to get started.
           </p>
-          <Link href="/dashboard/campaigns/new">
+          <Link href="?create=1">
             <Button variant="primary">
               <Plus className="w-5 h-5 mr-2" />
               Create a campaign
@@ -153,7 +154,7 @@ export default async function CampaignsPage() {
 
                   <div className="flex items-center gap-3 mb-2 flex-wrap">
                     <span className="font-display font-medium text-base text-primary">{formatNaira(campaign.totalRaised)}</span>
-                    <span className="font-body text-xs text-muted flex items-center gap-1">
+                    <span className="font-body text-xs text-body/70 flex items-center gap-1">
                       <Users className="w-3.5 h-3.5" />
                       {campaign.donorCount} donor{campaign.donorCount !== 1 ? 's' : ''}
                     </span>
@@ -164,7 +165,7 @@ export default async function CampaignsPage() {
                       </span>
                     )}
                     {campaign.daysLeft !== null && campaign.daysLeft <= 0 && (
-                      <span className="font-body text-xs text-muted flex items-center gap-1">
+                      <span className="font-body text-xs text-body/70 flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" />
                         Ended
                       </span>
@@ -187,6 +188,8 @@ export default async function CampaignsPage() {
           })}
         </div>
       )}
+
+      <CampaignModal />
     </div>
   );
 }

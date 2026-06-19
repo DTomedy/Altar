@@ -127,7 +127,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                 </span>
               )}
             </div>
-            <ShareButton url={campaignUrl} label="Share link" />
+            <ShareButton url={campaignUrl} label="Share link" title={campaign.title} />
           </div>
         ) : isAcceptingContributions ? (
           <div className="lg:grid lg:grid-cols-3 lg:gap-8">
@@ -344,7 +344,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
 
                 {/* Share */}
                 <div className="text-center">
-                  <ShareButton url={campaignUrl} label="Share this campaign" />
+                  <ShareButton url={campaignUrl} label="Share this campaign" title={campaign.title} />
                 </div>
               </div>
             </div>

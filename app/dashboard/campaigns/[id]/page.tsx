@@ -5,8 +5,8 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
-import { Badge, ShareButton } from '@/components/ui';
-import { formatNaira, formatDate } from '@/lib/formatters';
+import { Badge, ShareButton, BackButton } from '@/components/ui';
+import { formatNaira, formatDate, formatDateTime } from '@/lib/formatters';
 
 async function getCampaign(id: string) {
   const cookieStore = await cookies();
@@ -21,7 +21,7 @@ async function getCampaign(id: string) {
       contributions: {
         where: { status: 'SUCCESS' },
         orderBy: { createdAt: 'desc' },
-        take: 20,
+        take: 50,
       },
       items: true,
     },
@@ -61,6 +61,7 @@ export default async function CampaignDetailPage({
 
   return (
     <div>
+      <BackButton />
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
@@ -81,6 +82,7 @@ export default async function CampaignDetailPage({
             <>
               <ShareButton
                 url={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/c/${campaign.slug}`}
+                title={campaign.title}
               />
             </>
           )}
@@ -101,88 +103,124 @@ export default async function CampaignDetailPage({
         </div>
       )}
 
-      {/* Progress */}
-      <div className="bg-surface border border-default rounded-2xl p-5 mb-8">
-        <div className="flex items-end justify-between mb-3">
-          <div>
-            <p className="font-display font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
-            {goal && (
-              <p className="font-body text-sm text-body/60 mt-1">
-                raised of {formatNaira(goal)} goal
-              </p>
-            )}
+      {/* Progress + Description side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Progress */}
+        <div className="bg-surface border border-default rounded-2xl p-5">
+          <div className="flex items-end justify-between mb-3">
+            <div>
+              <p className="font-display font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
+              {goal && (
+                <p className="font-body text-sm text-body/70 mt-1">
+                  raised of {formatNaira(goal)} goal
+                </p>
+              )}
+            </div>
+            <p className="font-display font-medium text-lg text-body">{percentage}%</p>
           </div>
-          <p className="font-display font-medium text-lg text-body">{percentage}%</p>
+          {goal && (
+            <div className="w-full bg-surface-muted rounded-full h-2">
+              <div
+                className="bg-primary rounded-full h-2 transition-all duration-300"
+                style={{ width: `${percentage}%` }}
+              />
+            </div>
+          )}
         </div>
-        {goal && (
-          <div className="w-full bg-surface-muted rounded-full h-2">
-            <div
-              className="bg-primary rounded-full h-2 transition-all duration-300"
-              style={{ width: `${percentage}%` }}
-            />
-          </div>
-        )}
+
+        {/* Description */}
+        <div className="bg-surface border border-default rounded-2xl p-5">
+          <h2 className="font-display font-medium text-lg text-body mb-3">About this campaign</h2>
+          <p className="font-body text-sm text-body/70 leading-relaxed">{campaign.description}</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Campaign info */}
-        <div>
-          <h2 className="font-display font-medium text-lg text-body mb-3">About this campaign</h2>
-          <p className="font-body text-sm text-body/60 mb-6">{campaign.description}</p>
-
-          {campaign.items.length > 0 && (
-            <div>
-              <h3 className="font-display font-medium text-base text-body mb-3">Wishlist items</h3>
-              <div className="space-y-3">
-                {campaign.items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-surface border border-default rounded-2xl p-4"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <p className="font-body font-medium text-sm text-body">{item.name}</p>
-                      {item.isFulfilled && (
-                        <Badge variant="success">Fulfilled</Badge>
-                      )}
-                    </div>
-                    {item.description && (
-                      <p className="font-body text-xs text-body/70 mb-2">{item.description}</p>
-                    )}
-<p className="font-display font-medium text-sm text-primary">
-                      {formatNaira(item.fundedAmount)} / {formatNaira(item.targetAmount)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Recent contributions */}
-        <div>
-          <h2 className="font-display font-medium text-lg text-body mb-3">Recent gifts</h2>
-          {campaign.contributions.length === 0 ? (
-            <div className="bg-surface border border-default rounded-2xl p-5 text-center">
-              <p className="font-body text-sm text-body/70">No gifts yet. Share your campaign to start receiving contributions.</p>
-            </div>
-          ) : (
-            <div className="bg-surface border border-default rounded-2xl divide-y divide-border-soft">
-              {campaign.contributions.map((contribution) => (
-                <div key={contribution.id} className="flex items-center justify-between p-4">
-                  <div>
-                    <p className="font-body text-sm text-body">
-                      {contribution.isAnonymous
-                        ? 'Anonymous'
-                        : contribution.displayName || 'A friend'}
-                    </p>
-                    <p className="font-body text-xs text-body/40">{formatDate(contribution.createdAt)}</p>
-                  </div>
-                  <p className="font-display font-medium text-sm text-primary">{formatNaira(contribution.amount)}</p>
+      {/* Wishlist items */}
+      {campaign.items.length > 0 && (
+        <div className="mb-8">
+          <h2 className="font-display font-medium text-lg text-body mb-3">Wishlist items</h2>
+          <div className="space-y-3">
+            {campaign.items.map((item) => (
+              <div
+                key={item.id}
+                className="bg-surface border border-default rounded-2xl p-4"
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <p className="font-body font-medium text-sm text-body">{item.name}</p>
+                  {item.isFulfilled && (
+                    <Badge variant="success">Fulfilled</Badge>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
+                {item.description && (
+                  <p className="font-body text-xs text-body/70 mb-2">{item.description}</p>
+                )}
+                <p className="font-display font-medium text-sm text-primary">
+                  {formatNaira(item.fundedAmount)} / {formatNaira(item.targetAmount)}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
+      )}
+
+      {/* Donors table */}
+      <div className="bg-surface border border-default rounded-2xl p-5">
+        <h2 className="font-display font-medium text-lg text-body mb-4">Gifts received</h2>
+
+        {campaign.contributions.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="font-body text-sm text-body/70">No gifts yet. Share your campaign to start receiving contributions.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto -mx-5">
+            <table className="w-full min-w-[600px]">
+              <thead>
+                <tr className="border-b border-border-soft">
+                  <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-left px-5 py-3">
+                    Donor
+                  </th>
+                  <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-right px-5 py-3">
+                    Amount
+                  </th>
+                  <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-left px-5 py-3">
+                    Date & time
+                  </th>
+                  <th className="font-body text-xs text-body/70 font-medium uppercase tracking-wider text-left px-5 py-3">
+                    Message
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-soft">
+                {campaign.contributions.map((contribution) => (
+                  <tr key={contribution.id} className="hover:bg-ghost/30 transition-colors">
+                    <td className="px-5 py-4">
+                      <span className="font-body text-sm text-body">
+                        {contribution.isAnonymous
+                          ? 'Anonymous'
+                          : contribution.displayName || 'A friend'}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <span className="font-display font-medium text-sm text-body">
+                        {formatNaira(contribution.amount)}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="font-body text-sm text-body/70">
+                        {formatDateTime(contribution.createdAt)}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="font-body text-sm text-body/70 max-w-[200px] block truncate" title={contribution.message ?? undefined}>
+                        {contribution.message || '—'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

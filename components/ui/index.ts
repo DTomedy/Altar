@@ -8,3 +8,4 @@ export { ToastProvider, useToast, type ToastType, type ToastMessage } from './To
 export { Avatar, type AvatarProps } from './Avatar';
 export { ShareButton } from './ShareButton';
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog';
+export { BackButton } from './BackButton';

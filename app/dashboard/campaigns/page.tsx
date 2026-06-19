@@ -99,7 +99,7 @@ export default async function CampaignsPage() {
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-surface border border-default rounded-2xl">
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-surface border border-gray-200 rounded-2xl">
           <div className="w-16 h-16 rounded-full bg-ghost flex items-center justify-center mb-4">
             <Gift className="w-8 h-8 text-accent" />
           </div>
@@ -123,7 +123,7 @@ export default async function CampaignsPage() {
 
             return (
               <Link key={campaign.id} href={`/dashboard/campaigns/${campaign.id}`}>
-                <div className="bg-surface border border-border-soft rounded-2xl p-5 hover:border-primary transition-colors h-full flex flex-col">
+                <div className="bg-surface border border-gray-200 rounded-2xl p-5 hover:border-primary transition-colors h-full flex flex-col">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-display font-medium text-base text-body line-clamp-1">{campaign.title}</h3>
                     <div className="flex items-center gap-1 shrink-0">

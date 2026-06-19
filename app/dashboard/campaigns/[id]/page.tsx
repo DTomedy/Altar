@@ -106,7 +106,7 @@ export default async function CampaignDetailPage({
       {/* Progress + Description side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Progress */}
-        <div className="bg-surface border border-default rounded-2xl p-5">
+        <div className="bg-surface border border-gray-200 rounded-2xl p-5">
           <div className="flex items-end justify-between mb-3">
             <div>
               <p className="font-display font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
@@ -129,7 +129,7 @@ export default async function CampaignDetailPage({
         </div>
 
         {/* Description */}
-        <div className="bg-surface border border-default rounded-2xl p-5">
+        <div className="bg-surface rounded-2xl p-5">
           <h2 className="font-display font-medium text-lg text-body mb-3">About this campaign</h2>
           <p className="font-body text-sm text-body/70 leading-relaxed">{campaign.description}</p>
         </div>
@@ -143,7 +143,7 @@ export default async function CampaignDetailPage({
             {campaign.items.map((item) => (
               <div
                 key={item.id}
-                className="bg-surface border border-default rounded-2xl p-4"
+                className="bg-surface border border-gray-200 rounded-2xl p-4"
               >
                 <div className="flex justify-between items-start mb-2">
                   <p className="font-body font-medium text-sm text-body">{item.name}</p>
@@ -164,7 +164,7 @@ export default async function CampaignDetailPage({
       )}
 
       {/* Donors table */}
-      <div className="bg-surface border border-default rounded-2xl p-5">
+      <div className="bg-surface border border-gray-200 rounded-2xl p-5">
         <h2 className="font-display font-medium text-lg text-body mb-4">Gifts received</h2>
 
         {campaign.contributions.length === 0 ? (

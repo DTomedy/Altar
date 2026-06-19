@@ -34,7 +34,7 @@ export function CampaignCreatedDialog({ id, slug }: CampaignCreatedDialogProps) 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40" />
 
-      <div className="relative bg-surface border border-border-soft rounded-2xl w-full max-w-sm p-6 shadow-lg text-center">
+      <div className="relative bg-surface border border-gray-200 rounded-2xl w-full max-w-sm p-6 shadow-lg text-center">
         {/* Success icon */}
         <div className="w-14 h-14 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="w-7 h-7 text-success" />

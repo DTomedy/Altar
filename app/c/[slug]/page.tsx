@@ -172,7 +172,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               </div>
 
               {/* Progress card */}
-              <div className="bg-surface border border-default rounded-2xl p-5">
+              <div className="bg-surface border border-gray-200 rounded-2xl p-5">
                 <div className="flex items-end justify-between mb-3">
                   <div>
                     <p className="font-display font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
@@ -231,7 +231,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                           key={item.id}
                           className={cn(
                             'bg-surface border rounded-2xl p-4',
-                            isPaid ? 'border-border-soft opacity-60' : 'border-default'
+                            isPaid ? 'border-border-soft opacity-60' : 'border-gray-200'
                           )}
                         >
                           <div className="flex justify-between items-start mb-2">
@@ -293,11 +293,11 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               <div>
                 <h2 className="font-display font-medium text-lg text-body mb-3">Recent gifts</h2>
                 {campaign.contributions.length === 0 ? (
-                  <div className="bg-surface border border-default rounded-2xl p-5 text-center">
+                  <div className="bg-surface border border-gray-200 rounded-2xl p-5 text-center">
                     <p className="font-body text-sm text-body/60">Be the first to leave a gift.</p>
                   </div>
                 ) : (
-                  <div className="bg-surface border border-default rounded-2xl divide-y divide-border-soft">
+                  <div className="bg-surface border border-gray-200 rounded-2xl divide-y divide-border-soft">
                     {campaign.contributions.map((contribution) => (
                       <div key={contribution.id} className="flex items-center justify-between p-4">
                         <div>

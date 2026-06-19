@@ -98,7 +98,7 @@ export default async function WalletPage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-surface border border-border-soft rounded-2xl p-5">
+        <div className="bg-surface border border-gray-200 rounded-2xl p-5">
           <p className="font-body text-sm text-body/70 mb-1">Total received</p>
           <p className="font-display font-medium text-2xl text-primary">
             {formatNaira(totalReceived)}
@@ -113,7 +113,7 @@ export default async function WalletPage() {
           <WalletWithdrawButton canWithdraw={canWithdraw} />
         </div>
 
-        <div className="bg-surface border border-border-soft rounded-2xl p-5">
+        <div className="bg-surface border border-gray-200 rounded-2xl p-5">
           <p className="font-body text-sm text-body/70 mb-1">Amount withdrawn</p>
           <p className="font-display font-medium text-2xl text-body">
             {formatNaira(totalWithdrawn)}
@@ -122,7 +122,7 @@ export default async function WalletPage() {
       </div>
 
       {/* Transactions table */}
-      <div className="bg-surface border border-default rounded-2xl p-5">
+      <div className="bg-surface border border-gray-200 rounded-2xl p-5">
         <h3 className="font-display font-medium text-lg text-body mb-4">Transaction history</h3>
 
         {contributions.length === 0 ? (

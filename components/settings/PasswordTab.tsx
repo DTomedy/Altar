@@ -58,7 +58,7 @@ export function PasswordTab() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="bg-surface border border-default rounded-2xl p-5 space-y-6">
+      <div className="bg-surface border border-gray-200 rounded-2xl p-5 space-y-6">
         <p className="font-body text-sm text-body/60">
           Your password must be at least 8 characters long.
         </p>

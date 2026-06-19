@@ -14,8 +14,8 @@ export function Card({
     <div
       className={cn(
         'rounded-2xl p-5 transition-all duration-150',
-        variant === 'default' && 'bg-surface border border-default',
-        variant === 'petal' && 'bg-petal border border-border-soft',
+        variant === 'default' && 'bg-surface border border-gray-200',
+        variant === 'petal' && 'bg-petal border border-gray-200',
         variant === 'flat' && 'bg-surface-muted border-none',
         className
       )}

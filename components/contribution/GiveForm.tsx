@@ -236,7 +236,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
 
   if (status === 'success') {
     return (
-      <div className="bg-surface border border-default rounded-2xl p-8 text-center">
+      <div className="bg-surface border border-gray-200 rounded-2xl p-8 text-center">
         <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
           <Check className="w-8 h-8 text-success" />
         </div>
@@ -259,7 +259,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
 
   return (
     <div>
-      <div className="bg-surface border border-default rounded-2xl p-5">
+      <div className="bg-surface border border-gray-200 rounded-2xl p-5">
         <h3 className="font-display font-medium text-lg text-body mb-4">Give a gift</h3>
 
         {/* Item selection for wishlist campaigns */}

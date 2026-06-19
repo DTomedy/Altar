@@ -138,7 +138,7 @@ export function ShareModal({ isOpen, onClose, title, url }: ShareModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 transition-opacity" onClick={onClose} />
 
-      <div className="relative bg-surface border border-border-soft rounded-2xl w-full max-w-sm p-6 shadow-lg">
+      <div className="relative bg-surface border border-gray-200 rounded-2xl w-full max-w-sm p-6 shadow-lg">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1 rounded-full hover:bg-ghost transition-colors text-body"

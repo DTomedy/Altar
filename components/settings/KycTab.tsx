@@ -29,7 +29,7 @@ export function KycTab({ kycLevel, kycStatus, emailVerified, phone }: KycTabProp
   return (
     <div className="space-y-6">
       {/* Status card */}
-      <div className="bg-surface border border-default rounded-2xl p-5">
+      <div className="bg-surface border border-gray-200 rounded-2xl p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-display font-medium text-lg text-body">KYC Level {kycLevel}</h3>
           <Badge variant={statusBadgeVariant}>{kycStatus}</Badge>
@@ -56,7 +56,7 @@ export function KycTab({ kycLevel, kycStatus, emailVerified, phone }: KycTabProp
       </div>
 
       {/* Info card */}
-      <div className="flex items-start gap-3 p-4 bg-ghost border border-border-soft rounded-2xl">
+      <div className="flex items-start gap-3 p-4 bg-ghost border border-gray-200 rounded-2xl">
         {statusIcon}
         <div>
           <p className="font-body font-medium text-sm text-body">

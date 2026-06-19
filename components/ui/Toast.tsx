@@ -61,7 +61,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             className={cn(
-              'pointer-events-auto bg-surface border border-border-soft rounded-2xl p-4 shadow-lg flex items-start gap-3 animate-slide-in w-full transition-all duration-300'
+              'pointer-events-auto bg-surface border border-gray-200 rounded-2xl p-4 shadow-lg flex items-start gap-3 animate-slide-in w-full transition-all duration-300'
             )}
           >
             {/* Icon */}

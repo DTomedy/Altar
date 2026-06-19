@@ -56,7 +56,7 @@ export function OnboardingTour() {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40" />
 
-      <div className="relative bg-surface border border-border-soft rounded-2xl w-full max-w-md p-6 shadow-lg">
+      <div className="relative bg-surface border border-gray-200 rounded-2xl w-full max-w-md p-6 shadow-lg">
         {/* Skip link — always available */}
         <button
           onClick={handleComplete}

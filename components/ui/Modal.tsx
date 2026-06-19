@@ -43,7 +43,7 @@ export function Modal({
       {/* Panel */}
       <div
         className={cn(
-          'relative bg-surface border border-border-soft rounded-2xl w-full p-6 shadow-lg z-10 animate-in fade-in zoom-in-95 duration-150',
+          'relative bg-surface border border-gray-200 rounded-2xl w-full p-6 shadow-lg z-10 animate-in fade-in zoom-in-95 duration-150',
           maxWidth === 'md' && 'max-w-md',
           maxWidth === 'lg' && 'max-w-lg'
         )}

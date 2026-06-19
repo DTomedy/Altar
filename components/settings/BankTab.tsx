@@ -126,7 +126,7 @@ export function BankTab({ initialAccountNumber, initialBankCode, initialBankName
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="bg-surface border border-default rounded-2xl p-5 space-y-6">
+      <div className="bg-surface border border-gray-200 rounded-2xl p-5 space-y-6">
         {hasBankDetails && (
           <div className="flex items-start gap-3 p-3 bg-success/5 border border-success/20 rounded-xl">
             <Check className="w-5 h-5 text-success shrink-0 mt-0.5" />

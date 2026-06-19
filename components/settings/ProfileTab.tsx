@@ -81,7 +81,7 @@ export function ProfileTab({ initialName, initialPhone, initialEmail, initialPro
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="bg-surface border border-default rounded-2xl p-5 space-y-6">
+      <div className="bg-surface border border-gray-200 rounded-2xl p-5 space-y-6">
         {/* Profile picture */}
         <div className="flex items-center gap-4">
           <div className="relative w-16 h-16 rounded-full bg-ghost flex items-center justify-center overflow-hidden shrink-0">

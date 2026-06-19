@@ -26,9 +26,6 @@ function parseToken(token: string): Record<string, unknown> | null {
 
 const PROTECTED_PATHS = [
   "/dashboard",
-  "/wallet",
-  "/settings",
-  "/campaigns/new",
 ];
 
 export function middleware(req: NextRequest) {
@@ -61,8 +58,5 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/dashboard/:path*",
-    "/wallet/:path*",
-    "/settings/:path*",
-    "/campaigns/new",
   ],
 };

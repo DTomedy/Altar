@@ -27,7 +27,7 @@ export function CampaignCreatedDialog({ id, slug }: CampaignCreatedDialogProps) 
   }, [campaignUrl]);
 
   const handleCancel = useCallback(() => {
-    router.push(`/campaigns/${id}`);
+    router.push(`/dashboard/campaigns/${id}`);
   }, [id, router]);
 
   return (

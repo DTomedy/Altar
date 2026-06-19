@@ -10,9 +10,9 @@ import { useSidebar } from './SidebarProvider';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/campaigns', label: 'Campaigns', icon: Gift },
-  { href: '/wallet', label: 'Wallet', icon: Wallet },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard/campaigns', label: 'Campaigns', icon: Gift },
+  { href: '/dashboard/wallet', label: 'Wallet', icon: Wallet },
+  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
 
 export function Sidebar() {

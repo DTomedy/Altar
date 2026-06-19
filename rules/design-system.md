@@ -62,7 +62,7 @@ export default {
 | `bg-surface` | `colors.neutral-100` | #FFFFFF | Card, modal, and elevated surface backgrounds |
 | `bg-surface-muted` | `colors.neutral-96` | #F5F5F5 | Muted surface (hover, disabled background) |
 | `text-muted` / `text-muted-strong` | `colors.neutral-50` / `colors.neutral-40` | #787878 / #666666 | Secondary text, placeholder text |
-| `border-default` | `colors.neutral-90` | #E5E5E5 | Default border on cards and inputs |
+| `border-default` | — | #EEEEEE | Default border on cards and inputs — light grey |
 | `text-error` / `bg-error` | — | #D93025 | Error states only |
 
 **Critical rules:**

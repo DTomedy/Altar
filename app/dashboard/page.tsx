@@ -205,8 +205,8 @@ export default async function DashboardPage({
                 : 0;
 
               return (
-                <Link key={campaign.id} href={`/campaigns/${campaign.id}`}>
-                  <div className="bg-surface border border-border-soft rounded-2xl p-5 hover:border-primary/30 transition-colors h-full flex flex-col">
+                <Link key={campaign.id} href={`/dashboard/campaigns/${campaign.id}`}>
+                  <div className="bg-surface border border-border-soft rounded-2xl p-5 hover:border-primary transition-colors h-full flex flex-col">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-display font-medium text-base text-body line-clamp-1">{campaign.title}</h3>
                       <div className="flex items-center gap-1 shrink-0">

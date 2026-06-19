@@ -4,8 +4,8 @@ import { usePathname } from 'next/navigation';
 
 const titles: Record<string, string> = {
   '/dashboard': 'Dashboard',
-  '/wallet': 'Wallet',
-  '/settings': 'Settings',
+  '/dashboard/wallet': 'Wallet',
+  '/dashboard/settings': 'Settings',
 };
 
 export function PageTitle() {

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -11,18 +12,7 @@ const steps = [
     description:
       'Pick a birthday wishlist or a goal fundraiser, add what you\'re celebrating, and you\'re live in minutes.',
     visual: (
-      <div className="w-full h-full flex flex-col items-center justify-center p-8">
-        <div className="w-20 h-20 rounded-2xl bg-white/15 flex items-center justify-center mb-6">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="8" width="32" height="26" rx="4" stroke="white" strokeWidth="2" fill="none" />
-            <path d="M12 8 L12 4 M28 8 L28 4" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            <rect x="10" y="16" width="20" height="3" rx="1.5" fill="white" fillOpacity="0.6" />
-            <rect x="10" y="22" width="14" height="3" rx="1.5" fill="white" fillOpacity="0.6" />
-            <circle cx="20" cy="29" r="3" fill="white" fillOpacity="0.8" />
-          </svg>
-        </div>
-        <p className="font-body text-sm text-white/60 text-center max-w-[200px]">Set up your campaign with a cover photo, title, and details.</p>
-      </div>
+      <Image src="/images/Step%201.svg" alt="Step 1: Create your campaign" fill className="object-cover" />
     ),
   },
   {
@@ -31,17 +21,7 @@ const steps = [
     description:
       'One link is all it takes. Drop it on WhatsApp, Instagram, or wherever your people are.',
     visual: (
-      <div className="w-full h-full flex flex-col items-center justify-center p-8">
-        <div className="w-20 h-20 rounded-2xl bg-white/15 flex items-center justify-center mb-6">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="20" cy="20" r="16" stroke="white" strokeWidth="2" fill="none" />
-            <path d="M14 20 L18 24 L26 16" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M28 8 L32 12 L28 16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M12 24 L8 28 L12 32" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <p className="font-body text-sm text-white/60 text-center max-w-[200px]">Share your unique link anywhere your friends and family are.</p>
-      </div>
+      <Image src="/images/Step%202.svg" alt="Step 2: Share it everywhere" fill className="object-cover" />
     ),
   },
   {
@@ -50,18 +30,7 @@ const steps = [
     description:
       'Every contribution lands straight in your wallet. Withdraw whenever you\'re ready.',
     visual: (
-      <div className="w-full h-full flex flex-col items-center justify-center p-8">
-        <div className="w-20 h-20 rounded-2xl bg-white/15 flex items-center justify-center mb-6">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 20 L16 28 L32 12" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <rect x="6" y="30" width="28" height="4" rx="2" fill="white" fillOpacity="0.5" />
-            <circle cx="20" cy="10" r="3" fill="white" fillOpacity="0.7" />
-            <circle cx="30" cy="6" r="2" fill="white" fillOpacity="0.4" />
-            <circle cx="10" cy="6" r="2" fill="white" fillOpacity="0.4" />
-          </svg>
-        </div>
-        <p className="font-body text-sm text-white/60 text-center max-w-[200px]">Funds arrive securely in your Altar wallet. Withdraw anytime.</p>
-      </div>
+      <Image src="/images/Step%203.svg" alt="Step 3: Watch the gifts roll in" fill className="object-cover" />
     ),
   },
 ];
@@ -113,7 +82,7 @@ export function HowItWorks() {
         <div className="hidden md:flex gap-12 lg:gap-16 relative">
           {/* Left — sticky illustration area */}
           <div className="w-[45%] shrink-0">
-            <div className="sticky top-24 h-[400px] rounded-2xl bg-primary-hover border border-white/10 overflow-hidden">
+            <div className="sticky top-24 h-[400px] rounded-2xl bg-primary-hover border border-white/10 overflow-hidden relative">
               {steps[activeStep].visual}
             </div>
           </div>
@@ -181,7 +150,7 @@ export function HowItWorks() {
 
                 {isOpen && (
                   <div className="px-5 pb-5">
-                    <div className="h-48 rounded-xl bg-primary-hover border border-white/10 overflow-hidden mb-4">
+                    <div className="h-48 rounded-xl bg-primary-hover border border-white/10 overflow-hidden mb-4 relative">
                       {step.visual}
                     </div>
                     <p className="font-body text-sm text-white/60 leading-relaxed">

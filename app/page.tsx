@@ -34,16 +34,26 @@ export default function HomePage() {
                 Give with intention
               </h1>
               <p className="font-body text-body/60 max-w-lg mt-4 leading-relaxed" style={{ fontSize: 'clamp(0.875rem, 2vw, 1.125rem)' }}>
-                Create a birthday wishlist or goal campaign, share the link, and receive gifts from the people who matter most.
+                Create a wishlist or fundraiser, share one link, and let the people who love you show up.
               </p>
-              <div className="flex items-center mt-8 justify-center lg:justify-start">
+              <div className="flex items-center gap-4 mt-8 justify-center lg:justify-start">
                 <Link href="/auth?mode=register">
                   <Button variant="primary">Create your Campaign</Button>
                 </Link>
+                <Link
+                  href="/#how-it-works"
+                  className="font-body font-medium text-sm text-primary hover:text-primary-hover transition-colors underline underline-offset-2"
+                >
+                  See how it works &rarr;
+                </Link>
               </div>
+              <p className="font-body text-xs text-body/40 mt-6 text-center lg:text-left">
+                Trusted by people celebrating birthdays &amp; big goals across Nigeria
+              </p>
             </div>
-            <div className="flex-1 flex justify-center lg:justify-end">
-              <Image src="/images/hero.svg" alt="Hero illustration" width={600} height={500} className="w-full max-w-2xl h-auto" priority />
+            <div className="flex-1 relative flex justify-center lg:justify-end">
+              <div className="absolute w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl -z-10" />
+              <Image src="/images/Feature%20Image.svg" alt="Feature illustration" width={381} height={616} className="w-full max-w-sm h-auto relative z-0" priority />
             </div>
           </div>
         </section>

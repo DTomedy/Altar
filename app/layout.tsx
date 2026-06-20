@@ -33,6 +33,9 @@ export const metadata: Metadata = {
   title: 'Altar — Give with intention',
   description: 'Personal gifting and goal celebrations for the Nigerian market. Create a wishlist or fundraiser, share a single link, and receive contributions directly.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  icons: {
+    icon: '/images/Favicon.svg',
+  },
   openGraph: {
     title: 'Altar — Give with intention',
     description: 'Personal gifting and goal celebrations for the Nigerian market.',

@@ -30,10 +30,10 @@ export default function HomePage() {
           <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:pt-16 lg:pb-0">
           <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12 lg:gap-16">
             <div className="flex-1 text-center lg:text-left">
-              <h1 className="font-heading font-medium text-primary leading-tight" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
+              <h1 className="font-heading font-bold text-primary leading-tight" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
                 Give with intention
               </h1>
-              <p className="font-body text-body/60 max-w-lg mt-4 leading-relaxed" style={{ fontSize: 'clamp(0.875rem, 2vw, 1.125rem)' }}>
+              <p className="font-body text-body/80 max-w-lg mt-4 leading-relaxed" style={{ fontSize: 'clamp(0.875rem, 2vw, 1.125rem)' }}>
                 Create a wishlist or fundraiser, share one link, and let the people who love you show up.
               </p>
               <div className="flex items-center gap-4 mt-8 justify-center lg:justify-start">

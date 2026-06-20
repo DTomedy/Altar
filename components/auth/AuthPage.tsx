@@ -20,7 +20,7 @@ export function AuthPage() {
       {mode === 'login' && (
         <>
           <h1 className="font-display font-medium text-2xl text-body mb-1 text-center">Welcome back</h1>
-          <p className="font-body text-sm text-body/60 mb-6 text-center">Sign in to manage your campaigns and wallet.</p>
+          <p className="font-body text-sm text-body/80 mb-6 text-center">Sign in to manage your campaigns and wallet.</p>
 
           {verified && (
             <div className="bg-success/10 text-success font-body text-sm px-4 py-3 rounded-xl mb-4">
@@ -37,7 +37,7 @@ export function AuthPage() {
           <LoginForm onForgotPassword={() => setMode('forgot-password')} />
 
           <div className="mt-6 flex flex-col items-center gap-2">
-            <p className="font-body text-sm text-body/60">
+            <p className="font-body text-sm text-body/80">
               Don&apos;t have an account?{' '}
               <button
                 onClick={() => setMode('register')}
@@ -53,9 +53,9 @@ export function AuthPage() {
       {mode === 'register' && (
         <>
           <h1 className="font-display font-medium text-2xl text-body mb-1 text-center">Create your account</h1>
-          <p className="font-body text-sm text-body/60 mb-6 text-center">Set up your profile to start celebrating.</p>
+          <p className="font-body text-sm text-body/80 mb-6 text-center">Set up your profile to start celebrating.</p>
           <RegisterForm />
-          <p className="mt-6 font-body text-sm text-body/60 text-center">
+          <p className="mt-6 font-body text-sm text-body/80 text-center">
             Already have an account?{' '}
             <button
               onClick={() => setMode('login')}

@@ -168,7 +168,7 @@ export function CampaignForm() {
         /* Step 1 — Campaign Type Selection */
         <div>
           <h3 className="font-display font-medium text-lg text-body mb-1">What kind of campaign?</h3>
-          <p className="font-body text-sm text-body/60 mb-5">
+          <p className="font-body text-sm text-body/80 mb-5">
             Choose the type that fits your celebration.
           </p>
 
@@ -186,7 +186,7 @@ export function CampaignForm() {
                 <Gift className="w-6 h-6 text-primary" />
               </div>
               <h4 className="font-display font-medium text-base text-body mb-1">Birthday Wishlist</h4>
-              <p className="font-body text-sm text-body/60">Share gifts you&apos;d love to receive</p>
+              <p className="font-body text-sm text-body/80">Share gifts you&apos;d love to receive</p>
             </button>
 
             <button
@@ -202,7 +202,7 @@ export function CampaignForm() {
                 <Target className="w-6 h-6 text-primary" />
               </div>
               <h4 className="font-display font-medium text-base text-body mb-1">Goal Fundraiser</h4>
-              <p className="font-body text-sm text-body/60">Raise money for a specific goal</p>
+              <p className="font-body text-sm text-body/80">Raise money for a specific goal</p>
             </button>
           </div>
 
@@ -216,7 +216,7 @@ export function CampaignForm() {
           <button
             type="button"
             onClick={handleBack}
-            className="flex items-center gap-1 text-body/60 hover:text-body font-body text-sm mb-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg px-1"
+            className="flex items-center gap-1 text-body/80 hover:text-body font-body text-sm mb-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg px-1"
           >
             <ChevronLeft className="w-4 h-4" />
             Back
@@ -270,7 +270,7 @@ export function CampaignForm() {
               ) : (
                 <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border-soft rounded-xl cursor-pointer hover:border-primary/50 transition-colors bg-surface-muted/30">
                   <div className="flex flex-col items-center gap-1">
-                    <span className="font-body text-sm text-body/60">Click to upload</span>
+                    <span className="font-body text-sm text-body/80">Click to upload</span>
                     <span className="font-body text-xs text-body/40">PNG or JPG, max 2MB</span>
                   </div>
                   <input

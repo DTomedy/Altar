@@ -81,7 +81,7 @@ export function OnboardingTour() {
         </h2>
 
         {/* Description */}
-        <p className="font-body text-sm text-body/60 text-center mb-6 max-w-sm mx-auto">
+        <p className="font-body text-sm text-body/80 text-center mb-6 max-w-sm mx-auto">
           {current.description}
         </p>
 

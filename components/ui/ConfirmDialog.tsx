@@ -51,7 +51,7 @@ export function ConfirmDialog({
         )}
 
         <h2 className="font-display font-medium text-xl text-body mb-2">{title}</h2>
-        <p className="font-body text-sm text-body/60 mb-6">{message}</p>
+        <p className="font-body text-sm text-body/80 mb-6">{message}</p>
 
         <div className="space-y-3">
           <button

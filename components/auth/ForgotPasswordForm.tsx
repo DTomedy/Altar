@@ -44,7 +44,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
     return (
       <div className="text-center">
         <h1 className="font-display font-medium text-2xl text-body mb-2">Check your email</h1>
-        <p className="font-body text-sm text-body/60 mb-6">
+        <p className="font-body text-sm text-body/80 mb-6">
           If an account with that email exists, we&apos;ve sent a password reset link.
         </p>
         <button
@@ -60,7 +60,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
   return (
     <>
       <h1 className="font-display font-medium text-2xl text-body mb-1">Forgot password</h1>
-      <p className="font-body text-sm text-body/60 mb-6">Enter your email and we&apos;ll send you a reset link.</p>
+      <p className="font-body text-sm text-body/80 mb-6">Enter your email and we&apos;ll send you a reset link.</p>
 
       {error && (
         <div className="bg-error/10 text-error font-body text-sm px-4 py-3 rounded-xl mb-4">
@@ -84,7 +84,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
         </Button>
       </form>
 
-      <p className="mt-6 font-body text-sm text-body/60 text-center">
+      <p className="mt-6 font-body text-sm text-body/80 text-center">
         Remember your password?{' '}
         <button
           onClick={onBackToLogin}

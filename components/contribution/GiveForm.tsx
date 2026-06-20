@@ -241,7 +241,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
           <Check className="w-8 h-8 text-success" />
         </div>
         <h3 className="font-display font-medium text-xl text-body mb-2">Gift sent!</h3>
-        <p className="font-body text-sm text-body/60 mb-1">
+        <p className="font-body text-sm text-body/80 mb-1">
           Your gift of {formatNaira(amount)} is being processed.
         </p>
         <p className="font-body text-xs text-body/40 mb-6">
@@ -307,7 +307,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
                         </div>
                         <p className={cn(
                           'font-body text-xs mt-0.5',
-                          isPaid ? 'text-muted' : 'text-body/60'
+                          isPaid ? 'text-muted' : 'text-body/80'
                         )}>
                           {formatNaira(target)}
                           {!isPaid && funded > 0 && ` · ${formatNaira(funded)} paid`}
@@ -375,7 +375,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
         ) : hasItems && !selectedItem ? (
           /* When items exist but none selected — show nothing, user must select first */
           <div className="mb-4 p-3 rounded-xl bg-ghost">
-            <p className="font-body text-xs text-body/60 text-center">Select a gift item above to continue</p>
+            <p className="font-body text-xs text-body/80 text-center">Select a gift item above to continue</p>
           </div>
         ) : (
           /* No items — standard presets + custom amount (original behavior) */
@@ -402,7 +402,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
             </p>
 
             <div className="mb-4">
-              <label className="font-body text-sm text-body/60 mb-1.5 block">Custom amount</label>
+              <label className="font-body text-sm text-body/80 mb-1.5 block">Custom amount</label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 font-body text-sm text-body/40">₦</span>
                 <input
@@ -420,7 +420,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
 
         {/* Display name */}
         <div className="mb-4">
-          <label className="font-body text-sm text-body/60 mb-1.5 block">Your name (optional)</label>
+          <label className="font-body text-sm text-body/80 mb-1.5 block">Your name (optional)</label>
           <input
             type="text"
             value={displayName}
@@ -433,7 +433,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
 
         {/* Email */}
         <div className="mb-4">
-          <label className="font-body text-sm text-body/60 mb-1.5 block">Email (for receipt)</label>
+          <label className="font-body text-sm text-body/80 mb-1.5 block">Email (for receipt)</label>
           <input
             type="email"
             value={email}
@@ -456,7 +456,7 @@ export function GiveForm({ campaignId, campaignTitle, items, minAmount = 500, ma
 
         {/* Message */}
         <div className="mb-6">
-          <label className="font-body text-sm text-body/60 mb-1.5 block">Message (optional)</label>
+          <label className="font-body text-sm text-body/80 mb-1.5 block">Message (optional)</label>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}

@@ -64,7 +64,7 @@ function VerifyEmailContent() {
           </svg>
         </div>
         <h1 className="font-display text-xl font-medium text-body mb-2">Verifying your email...</h1>
-        <p className="font-body text-sm text-body/60">Please wait while we confirm your account.</p>
+        <p className="font-body text-sm text-body/80">Please wait while we confirm your account.</p>
       </div>
     );
   }
@@ -83,7 +83,7 @@ function VerifyError({ expired = false }: { expired?: boolean }) {
       <h1 className="font-display text-xl font-medium text-body mb-2">
         Verification {expired ? 'Expired' : 'Failed'}
       </h1>
-      <p className="font-body text-sm text-body/60 mb-6">
+      <p className="font-body text-sm text-body/80 mb-6">
         {expired
           ? 'This verification link has expired. Please request a new one.'
           : 'This verification link is invalid. Please try again.'}
@@ -109,7 +109,7 @@ export default function VerifyEmailPage() {
           </svg>
         </div>
         <h1 className="font-display text-xl font-medium text-body mb-2">Verifying your email...</h1>
-        <p className="font-body text-sm text-body/60">Please wait while we confirm your account.</p>
+        <p className="font-body text-sm text-body/80">Please wait while we confirm your account.</p>
       </div>
     }>
       <VerifyEmailContent />

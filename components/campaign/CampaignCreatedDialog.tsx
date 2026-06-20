@@ -46,7 +46,7 @@ export function CampaignCreatedDialog({ id, slug }: CampaignCreatedDialogProps) 
         </h2>
 
         {/* Message */}
-        <p className="font-body text-sm text-body/60 mb-6">
+        <p className="font-body text-sm text-body/80 mb-6">
           This campaign has been created successfully. You will be able to edit this campaign and republish changes.
         </p>
 

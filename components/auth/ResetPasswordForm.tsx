@@ -78,7 +78,7 @@ export function ResetPasswordForm() {
     return (
       <div className="text-center">
         <h1 className="font-display font-medium text-2xl text-body mb-2">Invalid link</h1>
-        <p className="font-body text-sm text-body/60 mb-6">
+        <p className="font-body text-sm text-body/80 mb-6">
           This password reset link is invalid or has expired.
         </p>
         <Button onClick={() => router.push('/auth')} className="w-full">
@@ -92,7 +92,7 @@ export function ResetPasswordForm() {
     return (
       <div className="text-center">
         <h1 className="font-display font-medium text-2xl text-body mb-2">Password reset</h1>
-        <p className="font-body text-sm text-body/60 mb-6">
+        <p className="font-body text-sm text-body/80 mb-6">
           Your password has been reset successfully. You can now sign in with your new password.
         </p>
         <Button onClick={() => router.push('/auth')} className="w-full">
@@ -105,7 +105,7 @@ export function ResetPasswordForm() {
   return (
     <>
       <h1 className="font-display font-medium text-2xl text-body mb-1">Reset your password</h1>
-      <p className="font-body text-sm text-body/60 mb-6">Enter your new password below.</p>
+      <p className="font-body text-sm text-body/80 mb-6">Enter your new password below.</p>
 
       {error && (
         <div className="bg-error/10 text-error font-body text-sm px-4 py-3 rounded-xl mb-4">
@@ -135,7 +135,7 @@ export function ResetPasswordForm() {
                   ) : (
                     <Circle className="w-4 h-4 text-muted shrink-0" />
                   )}
-                  <span className={cn('font-body text-xs', met ? 'text-success' : 'text-body/60')}>
+                  <span className={cn('font-body text-xs', met ? 'text-success' : 'text-body/80')}>
                     {check.label}
                   </span>
                 </div>

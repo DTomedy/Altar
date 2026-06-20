@@ -66,7 +66,7 @@ export function KycTab({ kycLevel, kycStatus, emailVerified, phone }: KycTabProp
                 ? 'Your verification was rejected'
                 : 'Verification in progress'}
           </p>
-          <p className="font-body text-xs text-body/60 mt-0.5">
+          <p className="font-body text-xs text-body/80 mt-0.5">
             {kycStatus === 'VERIFIED'
               ? 'You can withdraw funds from your wallet.'
               : kycStatus === 'REJECTED'

@@ -109,7 +109,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               <Gift className="w-8 h-8 text-muted" />
             </div>
             <h1 className="font-display font-medium text-xl text-body mb-2">{campaign.title}</h1>
-            <p className="font-body text-sm text-body/60 mb-2">
+            <p className="font-body text-sm text-body/80 mb-2">
               This campaign has ended.
             </p>
             {totalRaised > 0 && (
@@ -155,7 +155,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                     {isGoalReached ? 'Goal reached' : 'Active'}
                   </Badge>
                 </div>
-                <div className="flex flex-wrap items-center gap-4 font-body text-sm text-body/60">
+                <div className="flex flex-wrap items-center gap-4 font-body text-sm text-body/80">
                   {campaign.deadline && (
                     <span className="flex items-center gap-1.5">
                       <CalendarDays className="w-4 h-4" />
@@ -177,7 +177,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                   <div>
                     <p className="font-display font-medium text-3xl text-primary">{formatNaira(totalRaised)}</p>
                     {hasGoal && (
-                      <p className="font-body text-sm text-body/60 mt-1">
+                      <p className="font-body text-sm text-body/80 mt-1">
                         raised of {formatNaira(goal)} goal
                       </p>
                     )}
@@ -201,7 +201,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                   <ShieldCheck className="w-5 h-5 text-success shrink-0 mt-0.5" />
                   <div>
                     <p className="font-body font-medium text-sm text-body">Goal reached</p>
-                    <p className="font-body text-xs text-body/60 mt-0.5">
+                    <p className="font-body text-xs text-body/80 mt-0.5">
                       This campaign reached its goal. Gifts beyond the goal go directly to the campaign owner.
                     </p>
                   </div>
@@ -211,7 +211,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               {/* About */}
               <div>
                 <h2 className="font-display font-medium text-lg text-body mb-3">About this campaign</h2>
-                <p className="font-body text-sm text-body/60 whitespace-pre-line">{campaign.description}</p>
+                <p className="font-body text-sm text-body/80 whitespace-pre-line">{campaign.description}</p>
               </div>
 
               {/* Wishlist items */}
@@ -256,7 +256,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                           <div className="flex items-baseline gap-2 mb-1">
                             <span className="font-display font-medium text-base text-primary">{formatNaira(itemTarget)}</span>
                             {itemFunded > 0 && (
-                              <span className="font-body text-xs text-body/60">
+                              <span className="font-body text-xs text-body/80">
                                 {formatNaira(itemFunded)} paid
                               </span>
                             )}
@@ -266,7 +266,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                             <p className="font-body text-xs text-success">Fully paid</p>
                           ) : itemFunded > 0 ? (
                             <>
-                              <p className="font-body text-xs text-body/60 mb-2">
+                              <p className="font-body text-xs text-body/80 mb-2">
                                 {formatNaira(itemFunded)} of {formatNaira(itemTarget)} paid —{' '}
                                 <span className="text-primary font-medium">{formatNaira(itemRemaining)} remaining</span>
                               </p>
@@ -278,7 +278,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                               </div>
                             </>
                           ) : (
-                            <p className="font-body text-xs text-body/60">
+                            <p className="font-body text-xs text-body/80">
                               Full amount — {formatNaira(itemRemaining)} remaining
                             </p>
                           )}
@@ -294,7 +294,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
                 <h2 className="font-display font-medium text-lg text-body mb-3">Recent gifts</h2>
                 {campaign.contributions.length === 0 ? (
                   <div className="bg-surface border border-gray-200 rounded-2xl p-5 text-center">
-                    <p className="font-body text-sm text-body/60">Be the first to leave a gift.</p>
+                    <p className="font-body text-sm text-body/80">Be the first to leave a gift.</p>
                   </div>
                 ) : (
                   <div className="bg-surface border border-gray-200 rounded-2xl divide-y divide-border-soft">
@@ -356,7 +356,7 @@ export default async function PublicCampaignPage({ params }: PageProps) {
               <Gift className="w-8 h-8 text-muted" />
             </div>
             <h1 className="font-display font-medium text-xl text-body mb-2">{campaign.title}</h1>
-            <p className="font-body text-sm text-body/60 mb-2">
+            <p className="font-body text-sm text-body/80 mb-2">
               This campaign is no longer accepting gifts.
             </p>
             {totalRaised > 0 && (

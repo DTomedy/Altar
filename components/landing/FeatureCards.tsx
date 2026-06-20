@@ -42,7 +42,7 @@ export function FeatureCards() {
           Give with intention,<br />
           <span className="text-primary">not coordination.</span>
         </h2>
-        <p className="font-body text-body/60 mt-4 leading-relaxed" style={{ fontSize: 'clamp(0.875rem, 2vw, 1.125rem)' }}>
+        <p className="font-body text-body/80 mt-4 leading-relaxed" style={{ fontSize: 'clamp(0.875rem, 2vw, 1.125rem)' }}>
           Altar makes it simple to ask for what you actually want and easy for the people who love you to show up.
         </p>
 
@@ -60,7 +60,7 @@ export function FeatureCards() {
               <h3 className="font-heading font-medium text-base text-body mb-1.5">
                 {feature.title}
               </h3>
-              <p className="font-body text-sm text-body/60 leading-relaxed">
+              <p className="font-body text-sm text-body/80 leading-relaxed">
                 {feature.description}
               </p>
             </div>

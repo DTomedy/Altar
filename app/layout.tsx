@@ -11,7 +11,7 @@ export const viewport: Viewport = {
 const displayFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['400', '500'],
+  weight: ['400', '500', '700'],
   display: 'swap',
 });
 
@@ -55,7 +55,7 @@ export default function RootLayout({
       lang="en"
       className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable} h-full scroll-smooth`}
     >
-      <body className="bg-page text-body antialiased min-h-screen flex flex-col font-body">
+      <body className="bg-page text-body antialiased min-h-screen flex flex-col font-body overflow-x-hidden">
         <ToastProvider>
           <div className="flex flex-col flex-1 min-h-screen">
             {children}

@@ -38,7 +38,7 @@ export function Sidebar() {
           <Image src="/logo/Altar Logo.svg" alt="Altar" width={100} height={28} className="h-7 w-auto" priority />
         <button
           onClick={close}
-          className="lg:hidden p-2 text-body/60 hover:text-body transition-colors rounded-lg hover:bg-ghost"
+          className="lg:hidden p-2 text-body/80 hover:text-body transition-colors rounded-lg hover:bg-ghost"
           aria-label="Close sidebar"
         >
           <X className="w-5 h-5" />
@@ -89,7 +89,7 @@ export function Sidebar() {
       {!isOpen && (
         <button
           onClick={open}
-          className="lg:hidden fixed top-3 left-3 z-40 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white border border-border-soft text-body/60 hover:text-body hover:bg-ghost shadow-sm"
+          className="lg:hidden fixed top-3 left-3 z-40 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white border border-border-soft text-body/80 hover:text-body hover:bg-ghost shadow-sm"
           aria-label="Open sidebar"
         >
           <Menu className="w-5 h-5" />

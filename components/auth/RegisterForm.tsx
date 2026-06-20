@@ -131,7 +131,7 @@ export function RegisterForm() {
             </svg>
           </div>
           <h2 className="font-display font-medium text-xl text-body mb-2">Check your email</h2>
-          <p className="font-body text-sm text-body/60 max-w-sm mx-auto">
+          <p className="font-body text-sm text-body/80 max-w-sm mx-auto">
             We sent a verification link to <strong className="text-body">{email}</strong>. Click the link to activate your account and access the dashboard.
           </p>
         </div>
@@ -210,7 +210,7 @@ export function RegisterForm() {
                     <span
                       className={cn(
                         'font-body text-xs transition-all duration-300',
-                        met ? 'text-success' : 'text-body/60'
+                        met ? 'text-success' : 'text-body/80'
                       )}
                     >
                       {check.label}

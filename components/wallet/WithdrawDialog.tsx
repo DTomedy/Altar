@@ -124,11 +124,11 @@ export function WithdrawDialog({ isOpen, onClose }: WithdrawDialogProps) {
           <div className="w-14 h-14 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
             <Check className="w-7 h-7 text-success" />
           </div>
-          <p className="font-body text-sm text-body/60 mb-2">
+          <p className="font-body text-sm text-body/80 mb-2">
             Your withdrawal of {formatNaira(success.amount)} has been initiated.
           </p>
           <p className="font-body text-xs text-body/40 mb-6 break-all">Ref: {success.reference}</p>
-          <p className="font-body text-xs text-body/60 mb-6">
+          <p className="font-body text-xs text-body/80 mb-6">
             A platform fee of {formatNaira(success.fee)} (3%) was deducted. You will receive{' '}
             {formatNaira(success.amount - success.fee)}.
           </p>
@@ -242,11 +242,11 @@ export function WithdrawDialog({ isOpen, onClose }: WithdrawDialogProps) {
 
         {numericAmount >= 500 && (
           <div className="bg-ghost rounded-xl px-4 py-3 space-y-1">
-            <div className="flex justify-between font-body text-sm text-body/60">
+            <div className="flex justify-between font-body text-sm text-body/80">
               <span>Withdrawal amount</span>
               <span className="font-display">{formatNaira(numericAmount)}</span>
             </div>
-            <div className="flex justify-between font-body text-sm text-body/60">
+            <div className="flex justify-between font-body text-sm text-body/80">
               <span>Platform fee (3%)</span>
               <span className="font-display">-{formatNaira(fee)}</span>
             </div>

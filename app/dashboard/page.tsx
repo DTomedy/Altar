@@ -45,7 +45,7 @@ async function getUserData() {
   const campaigns = await prisma.campaign.findMany({
     where: { ownerId: payload.userId },
     orderBy: { createdAt: 'desc' },
-    take: 10,
+    take: 6,
   });
 
   const campaignIds = campaigns.map((c) => c.id);
@@ -136,7 +136,7 @@ export default async function DashboardPage({
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-surface border border-gray-200 rounded-2xl p-5">
+        <div className="bg-ghost border border-gray-200 rounded-2xl p-5">
           <div className="flex justify-between items-start mb-1">
             <p className="font-body text-xs text-body/70 font-medium uppercase tracking-wider">Total raised</p>
             <div className="w-9 h-9 rounded-full bg-white border border-primary/20 flex items-center justify-center">
@@ -149,7 +149,7 @@ export default async function DashboardPage({
             25.8% from last month
           </p>
         </div>
-        <div className="bg-surface border border-gray-200 rounded-2xl p-5">
+        <div className="bg-ghost border border-gray-200 rounded-2xl p-5">
           <div className="flex justify-between items-start mb-1">
             <p className="font-body text-xs text-body/70 font-medium uppercase tracking-wider">Active campaigns</p>
             <div className="w-9 h-9 rounded-full bg-white border border-accent/20 flex items-center justify-center">
@@ -162,7 +162,7 @@ export default async function DashboardPage({
             12.3% from last month
           </p>
         </div>
-        <div className="bg-surface border border-gray-200 rounded-2xl p-5">
+        <div className="bg-ghost border border-gray-200 rounded-2xl p-5">
           <div className="flex justify-between items-start mb-1">
             <p className="font-body text-xs text-body/70 font-medium uppercase tracking-wider">Total campaigns</p>
             <div className="w-9 h-9 rounded-full bg-white border border-success/20 flex items-center justify-center">
@@ -179,7 +179,17 @@ export default async function DashboardPage({
 
       {/* Campaign list */}
       <div>
-        <h2 className="font-display font-medium text-xl text-body mb-4">Your campaigns</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display font-medium text-xl text-body">Your campaigns</h2>
+          {campaigns.length > 0 && (
+            <Link
+              href="/dashboard/campaigns"
+              className="font-body text-sm text-primary hover:text-primary-hover font-medium transition-colors"
+            >
+              View all
+            </Link>
+          )}
+        </div>
 
         {campaigns.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-surface border border-gray-200 rounded-2xl">

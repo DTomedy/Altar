@@ -1,6 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500&family=DM+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 
+/* ── Tomato Grotesk — Landing page headers ─────────────────────────────────── */
+@font-face {
+  font-family: "Tomato Grotesk";
+  src: url("/fonts/TomatoGrotesk-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ── Altar Brand Tokens ─────────────────────────────────────────────────────── */
 @theme inline {
   /* Colours */
@@ -27,6 +36,7 @@
   --font-display: "Plus Jakarta Sans", sans-serif;
   --font-body:    "DM Sans", sans-serif;
   --font-mono:    "IBM Plex Mono", monospace;
+  --font-heading: "Tomato Grotesk", sans-serif;
 
   /* Custom animations */
   --animate-slide-in: slide-in 0.2s ease-out forwards;

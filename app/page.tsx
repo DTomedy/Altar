@@ -9,6 +9,10 @@ const FeatureCards = dynamic(() => import('@/components/landing/FeatureCards').t
   ssr: true,
 });
 
+const PublicCampaignsSection = dynamic(() => import('@/components/landing/PublicCampaignsSection').then(mod => mod.PublicCampaignsSection), {
+  ssr: true,
+});
+
 export default function HomePage() {
   return (
     <div className="flex flex-col flex-1">
@@ -42,7 +46,7 @@ export default function HomePage() {
         </div>
 
         {/* How it works */}
-        <div className="bg-primary/70 w-full">
+        <div id="how-it-works" className="bg-primary/70 w-full">
           <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
           <h2 className="font-heading font-medium text-white text-center mb-8 sm:mb-12" style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}>How it works</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
@@ -72,12 +76,14 @@ export default function HomePage() {
         </div>
 
         {/* Features */}
-        <div className="bg-white">
+        <div id="features" className="bg-white">
           <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
           <h2 className="font-heading font-medium text-body text-center mb-8 sm:mb-12" style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}>Why Altar</h2>
           <FeatureCards />
         </section>
         </div>
+
+        <PublicCampaignsSection />
       </main>
 
       <LandingFooter />

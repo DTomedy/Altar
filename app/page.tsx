@@ -27,7 +27,7 @@ export default function HomePage() {
       <main className="flex-1">
         {/* Hero */}
         <div className="bg-[url('/images/hero_Bg.svg')] bg-cover bg-center bg-no-repeat">
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:pt-16 lg:pb-0">
           <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12 lg:gap-16">
             <div className="flex-1 text-center lg:text-left">
               <h1 className="font-heading font-medium text-primary leading-tight" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
@@ -51,7 +51,7 @@ export default function HomePage() {
                 Trusted by people celebrating birthdays &amp; big goals across Nigeria
               </p>
             </div>
-            <div className="flex-1 relative flex justify-center lg:justify-end">
+            <div className="flex-1 relative flex justify-center lg:justify-end lg:self-end">
               <div className="absolute w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl -z-10" />
               <Image src="/images/Feature%20Image.svg" alt="Feature illustration" width={381} height={616} className="w-full max-w-sm h-auto relative z-0" priority />
             </div>

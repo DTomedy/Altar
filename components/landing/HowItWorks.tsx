@@ -11,27 +11,18 @@ const steps = [
     title: 'Create your campaign',
     description:
       'Pick a birthday wishlist or a goal fundraiser, add what you\'re celebrating, and you\'re live in minutes.',
-    visual: (
-      <Image src="/images/Step%201.svg" alt="Step 1: Create your campaign" fill className="object-cover" />
-    ),
   },
   {
     number: '02',
     title: 'Share it everywhere',
     description:
       'One link is all it takes. Drop it on WhatsApp, Instagram, or wherever your people are.',
-    visual: (
-      <Image src="/images/Step%202.svg" alt="Step 2: Share it everywhere" fill className="object-cover" />
-    ),
   },
   {
     number: '03',
     title: 'Watch the gifts roll in',
     description:
       'Every contribution lands straight in your wallet. Withdraw whenever you\'re ready.',
-    visual: (
-      <Image src="/images/Step%203.svg" alt="Step 3: Watch the gifts roll in" fill className="object-cover" />
-    ),
   },
 ];
 
@@ -83,7 +74,7 @@ export function HowItWorks() {
           {/* Left — sticky illustration area */}
           <div className="w-[45%] shrink-0">
             <div className="sticky top-24 h-[400px] rounded-2xl bg-primary-hover border border-white/10 overflow-hidden relative">
-              {steps[activeStep].visual}
+              <Image src="/images/Step%201.svg" alt="How it works" fill className="object-cover" />
             </div>
           </div>
 
@@ -150,9 +141,6 @@ export function HowItWorks() {
 
                 {isOpen && (
                   <div className="px-5 pb-5">
-                    <div className="h-48 rounded-xl bg-primary-hover border border-white/10 overflow-hidden mb-4 relative">
-                      {step.visual}
-                    </div>
                     <p className="font-body text-sm text-white/60 leading-relaxed">
                       {step.description}
                     </p>

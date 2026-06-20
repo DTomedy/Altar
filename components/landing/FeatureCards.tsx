@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Wallet, MaskHappy, Gift, Smiley } from '@phosphor-icons/react';
 
 const features = [
@@ -45,27 +46,8 @@ export function FeatureCards() {
           Altar makes it simple to ask for what you actually want and easy for the people who love you to show up.
         </p>
 
-        <div className="mt-8 hidden lg:block">
-          <svg viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-[200px] text-primary">
-            <rect x="20" y="60" width="60" height="80" rx="8" fill="currentColor" fillOpacity="0.12" />
-            <rect x="30" y="72" width="40" height="4" rx="2" fill="currentColor" fillOpacity="0.25" />
-            <rect x="30" y="82" width="28" height="4" rx="2" fill="currentColor" fillOpacity="0.25" />
-            <rect x="30" y="92" width="34" height="4" rx="2" fill="currentColor" fillOpacity="0.25" />
-            <circle cx="50" cy="110" r="6" fill="currentColor" fillOpacity="0.3" />
-            <rect x="90" y="40" width="60" height="80" rx="8" fill="currentColor" fillOpacity="0.20" />
-            <rect x="100" y="52" width="40" height="4" rx="2" fill="currentColor" fillOpacity="0.35" />
-            <rect x="100" y="62" width="28" height="4" rx="2" fill="currentColor" fillOpacity="0.35" />
-            <rect x="100" y="72" width="34" height="4" rx="2" fill="currentColor" fillOpacity="0.35" />
-            <circle cx="120" cy="90" r="6" fill="currentColor" fillOpacity="0.4" />
-            <rect x="160" y="50" width="60" height="80" rx="8" fill="currentColor" fillOpacity="0.08" />
-            <rect x="170" y="62" width="40" height="4" rx="2" fill="currentColor" fillOpacity="0.20" />
-            <rect x="170" y="72" width="28" height="4" rx="2" fill="currentColor" fillOpacity="0.20" />
-            <rect x="170" y="82" width="34" height="4" rx="2" fill="currentColor" fillOpacity="0.20" />
-            <circle cx="190" cy="100" r="6" fill="currentColor" fillOpacity="0.25" />
-            <path d="M50 140 L50 170 L190 170 L190 140" stroke="currentColor" strokeOpacity="0.15" strokeWidth="2" fill="none" />
-            <path d="M70 148 L120 148" stroke="currentColor" strokeOpacity="0.15" strokeWidth="2" />
-            <path d="M70 156 L140 156" stroke="currentColor" strokeOpacity="0.15" strokeWidth="2" />
-          </svg>
+        <div className="mt-8 -ml-4 sm:-ml-6 lg:-ml-8 hidden lg:block">
+          <Image src="/images/Feature.svg" alt="" width={569} height={399} className="w-[calc(100%+1rem)] sm:w-[calc(100%+1.5rem)] lg:w-[calc(100%+2rem)] max-w-none h-auto" />
         </div>
       </div>
 

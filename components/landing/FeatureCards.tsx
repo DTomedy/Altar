@@ -46,8 +46,8 @@ export function FeatureCards() {
           Altar makes it simple to ask for what you actually want and easy for the people who love you to show up.
         </p>
 
-        <div className="mt-8 -ml-4 sm:-ml-6 lg:-ml-8 hidden lg:block">
-          <Image src="/images/Feature.svg" alt="" width={569} height={399} className="w-[calc(100%+1rem)] sm:w-[calc(100%+1.5rem)] lg:w-[calc(100%+2rem)] max-w-none h-auto" />
+        <div className="mt-8 -ml-4 sm:-ml-6 lg:-ml-8 w-[calc(100%+1rem)] sm:w-[calc(100%+1.5rem)] lg:w-[calc(100%+2rem)] hidden lg:block">
+          <Image src="/images/Feature.svg" alt="" width={569} height={399} className="w-full h-auto" />
         </div>
       </div>
 
@@ -57,7 +57,7 @@ export function FeatureCards() {
           {features.map((feature) => (
             <div key={feature.title}>
               <feature.icon className="w-6 h-6 text-primary mb-3" weight="bold" />
-              <h3 className="font-display font-medium text-base text-body mb-1.5">
+              <h3 className="font-heading font-medium text-base text-body mb-1.5">
                 {feature.title}
               </h3>
               <p className="font-body text-sm text-body/60 leading-relaxed">

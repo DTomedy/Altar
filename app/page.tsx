@@ -53,7 +53,7 @@ export default function HomePage() {
             </div>
             <div className="flex-1 relative flex justify-center lg:justify-end lg:self-end">
               <div className="absolute w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl -z-10" />
-              <Image src="/images/Feature%20Image.svg" alt="Feature illustration" width={381} height={616} className="w-full max-w-sm h-auto relative z-0" priority />
+              <Image src="/images/Hero_Image.svg" alt="Feature illustration" width={381} height={616} className="w-full max-w-sm h-auto relative z-0" priority />
             </div>
           </div>
         </section>

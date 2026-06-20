@@ -73,8 +73,8 @@ export function HowItWorks() {
         <div className="hidden md:flex gap-12 lg:gap-16 relative">
           {/* Left — sticky illustration area */}
           <div className="w-[45%] shrink-0">
-            <div className="sticky top-24 h-[400px] rounded-2xl bg-primary-hover border border-white/10 overflow-hidden relative">
-              <Image src="/images/Step%201.svg" alt="How it works" fill className="object-cover" />
+            <div className="sticky top-10 sm:top-16 h-[580px] rounded-2xl bg-primary-hover border border-white/10 overflow-hidden relative">
+              <Image src="/images/Step%201.png" alt="How it works" fill className="object-cover" />
             </div>
           </div>
 

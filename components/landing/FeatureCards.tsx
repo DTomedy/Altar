@@ -1,3 +1,5 @@
+'use client';
+
 import { Wallet, MaskHappy, Gift, Smiley } from '@phosphor-icons/react';
 
 const features = [

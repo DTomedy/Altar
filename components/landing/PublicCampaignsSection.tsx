@@ -49,7 +49,7 @@ export async function PublicCampaignsSection() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 sm:mb-12 gap-4">
           <h2
-            className="font-heading font-medium text-body"
+            className="font-heading font-bold text-body"
             style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}
           >
             Active Campaigns

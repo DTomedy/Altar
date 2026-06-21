@@ -36,7 +36,7 @@ export function FeatureCards() {
       {/* Left — heading + illustration */}
       <div className="w-full lg:w-[35%] lg:sticky lg:top-16">
         <h2
-          className="font-heading font-medium text-body leading-tight"
+          className="font-heading font-bold text-body leading-tight"
           style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}
         >
           Give with intention,<br />

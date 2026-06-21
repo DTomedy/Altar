@@ -59,7 +59,7 @@ export function HowItWorks() {
         {/* Section heading */}
         <div className="text-center mb-10 sm:mb-14">
           <h2
-            className="font-heading font-medium text-white"
+            className="font-heading font-bold text-white"
             style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}
           >
             How it works
@@ -93,7 +93,7 @@ export function HowItWorks() {
                     : 'opacity-40',
                 )}
               >
-                <span className="font-mono font-medium text-5xl text-white/20 block mb-3">
+                <span className="font-heading font-medium text-5xl text-white/20 block mb-3">
                   {step.number}
                 </span>
                 <h3 className="font-heading font-medium text-2xl text-white mb-3">
@@ -124,7 +124,7 @@ export function HowItWorks() {
                   className="w-full flex items-center justify-between px-5 py-4 text-left"
                 >
                   <div className="flex items-center gap-4">
-                    <span className="font-mono font-medium text-white/40 text-sm">
+                    <span className="font-heading font-medium text-white/40 text-sm">
                       {step.number}
                     </span>
                     <h3 className="font-heading font-medium text-base text-white">

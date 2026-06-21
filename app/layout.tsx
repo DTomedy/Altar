@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans, DM_Sans, IBM_Plex_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
+import { DM_Sans, IBM_Plex_Mono } from 'next/font/google';
 import { ToastProvider } from '@/components/ui';
 import './globals.css';
 
@@ -8,10 +9,20 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const displayFont = Plus_Jakarta_Sans({
-  subsets: ['latin'],
+const displayFont = localFont({
+  src: [
+    {
+      path: '../public/fonts/TomatoGrotesk-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/TomatoGrotesk-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
   variable: '--font-display',
-  weight: ['400', '500', '700'],
   display: 'swap',
 });
 

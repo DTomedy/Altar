@@ -26,10 +26,19 @@ const steps = [
   },
 ];
 
+const stepImages = ['/images/Step 1.png', '/images/Step 1.png', '/images/Step 1.png'];
+
 export function HowItWorks() {
   const [activeStep, setActiveStep] = useState(0);
+  const [displayedIdx, setDisplayedIdx] = useState(0);
   const [mobileOpen, setMobileOpen] = useState<number | null>(null);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    if (activeStep === displayedIdx) return;
+    const timer = setTimeout(() => setDisplayedIdx(activeStep), 300);
+    return () => clearTimeout(timer);
+  }, [activeStep, displayedIdx]);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -74,7 +83,18 @@ export function HowItWorks() {
           {/* Left — sticky illustration area */}
           <div className="w-[45%] shrink-0">
             <div className="sticky top-10 sm:top-16 h-[580px] rounded-2xl bg-primary-hover border border-white/10 overflow-hidden relative">
-              <Image src="/images/Step%201.png" alt="How it works" fill className="object-cover" />
+              <Image
+                src={stepImages[displayedIdx]}
+                alt=""
+                fill
+                className={cn('object-cover transition-opacity duration-300 ease-in-out', activeStep !== displayedIdx ? 'opacity-0' : 'opacity-100')}
+              />
+              <Image
+                src={stepImages[activeStep]}
+                alt="How it works"
+                fill
+                className={cn('object-cover transition-opacity duration-300 ease-in-out', activeStep !== displayedIdx ? 'opacity-100' : 'opacity-0')}
+              />
             </div>
           </div>
 

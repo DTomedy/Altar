@@ -39,8 +39,12 @@
   --font-heading: "Tomato Grotesk", sans-serif;
 
   /* Custom animations */
-  --animate-slide-in: slide-in 0.2s ease-out forwards;
-  --animate-spin:     spin 1s linear infinite;
+  --animate-slide-in:      slide-in 0.2s ease-out forwards;
+  --animate-spin:          spin 1s linear infinite;
+  --animate-fade-in-up:    fade-in-up 500ms ease-out forwards;
+  --animate-fade-in:       fade-in 500ms ease-out forwards;
+  --animate-scale-in:      scale-in 500ms ease-out forwards;
+  --animate-slide-in-left: slide-in-left 500ms ease-out forwards;
 }
 
 /* ── Keyframes ───────────────────────────────────────────────────────────────── */
@@ -60,6 +64,37 @@
   to   { transform: rotate(360deg); }
 }
 
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-fade-in,
+  .animate-scale-in,
+  .animate-slide-in-left {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ── Base Styles ─────────────────────────────────────────────────────────────── */
 html {
   font-size: 16px;
@@ -68,11 +103,13 @@ html {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 body {
   min-height: 100vh;
   background-color: var(--color-page);
+  overflow-x: hidden;
 }
 
 /* ── Focus ring reset ────────────────────────────────────────────────────────── */

@@ -7,7 +7,7 @@ export function LandingHeader() {
   return (
     <header className="flex items-center justify-between py-6 max-w-7xl mx-auto w-full px-4 sm:px-12">
       <Link href="/">
-        <Image src="/logo/Altar Logo_white.svg" alt="Altar" width={115} height={32} className="h-8 w-auto" priority />
+        <Image src="/logo/Altar Logo_white.svg" alt="Altar" width={115} height={32} className="h-6 sm:h-8 w-auto" priority />
       </Link>
       <nav className="hidden md:flex items-center gap-6">
         <Link href="/#features" className="font-body text-sm text-white/80 hover:text-white transition-colors">
